@@ -23,10 +23,15 @@ class SigninForm extends StatefulWidget {
 
 class _SigninFormState extends State<SigninForm> {
   final _formKey = GlobalKey<FormState>();
+
+  // TODO: Validate against database
+  // Show failure text and clear inputs if validation fails
   String _usernameOrEmail;
   String _password;
   bool _storeLoginInfo = false; // TODO: Get/set in local storage
   bool _validationFailed = false;
+  // TODO: Time out authentication attempts after x number in y amount of time
+  int _loginAttempts = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +80,11 @@ class _SigninFormState extends State<SigninForm> {
                 TextFormField(
                   autofocus: true,
                   textInputAction: TextInputAction.next,
-                  //validator: (value) {return x},
+                  validator: (value) {
+                    if (value.isEmpty)
+                      return 'Please enter a username or email';
+                    return null;
+                  },
                   decoration: InputDecoration(
                     filled: true,
                     labelText: 'Enter your username or email',
@@ -92,7 +101,10 @@ class _SigninFormState extends State<SigninForm> {
 
                 // Password field - will validate against database
                 TextFormField(
-                  //validator: (value) { return x; },
+                  validator: (value) {
+                    if (value.isEmpty) return 'Please enter a password';
+                    return null;
+                  },
                   decoration: InputDecoration(
                     filled: true,
                     labelText: 'Enter your password',
@@ -141,24 +153,47 @@ class _SigninFormState extends State<SigninForm> {
                   height: 24,
                 ),
 
-                TextButton(
-                  //TODO: Style button so it's visible
-                  //style: TextButton.styleFrom(primary: Colors.white),
-                  child: Text('Log in'),
-                  onPressed: () {
-                    // Checks the input fields are not empty
+                ConstrainedBox(
+                  constraints: BoxConstraints.tightFor(width: 200, height: 50),
+                  child: ElevatedButton(
+                    child: Text('Log in'),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.blue,
+                        textStyle:
+                            TextStyle(fontSize: 15, color: Colors.white)),
+                    onPressed: () {
+                      // Checks the input fields are not empty
 
-                    var valid = _formKey.currentState.validate();
-                    if (!valid) return;
+                      var valid = _formKey.currentState.validate();
+                      if (!valid) return;
 
-                    setState(() {
-                      // For debugging visibility - Remove once we actually do validation
-                      _validationFailed = !_validationFailed;
-                    });
+                      setState(() {
+                        // For debugging visibility - Remove once we actually do validation
+                        _validationFailed = !_validationFailed;
+                      });
+                    },
+                  ),
+                ),
 
-                    // TODO: Validate against database
-                    // Show failure text and clear inputs if validation fails
-                  },
+                SizedBox(
+                  height: 10,
+                ),
+
+                ConstrainedBox(
+                  constraints: BoxConstraints.tightFor(width: 200, height: 50),
+                  child: ElevatedButton(
+                    child: Text('Sign up'),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.blue,
+                        textStyle:
+                            TextStyle(fontSize: 15, color: Colors.white)),
+                    onPressed: () {
+                      // Moves to signup page, current page is still on the Navigator stack underneath
+                      // Optional page transition sample:
+                      // https://github.com/flutter/samples/blob/master/animations/lib/src/basics/02_page_route_builder.dart
+                      Navigator.pushNamed(context, '/Signup');
+                    },
+                  ),
                 ),
               ],
             ),
@@ -168,18 +203,3 @@ class _SigninFormState extends State<SigninForm> {
     );
   }
 }
-
-/*
-//Validate form data when button is pressed
-onPressed: () {
-  // Validate the form by getting the FormState from the GlobalKey
-  // and calling validate() on it.
-  var valid = _formKey.currentState.validate();
-  if (!valid) {
-    return;
-  }
-
-  //Do our other stuff
-},
-
-*/
