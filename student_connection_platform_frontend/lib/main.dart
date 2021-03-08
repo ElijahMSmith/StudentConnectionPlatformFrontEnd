@@ -3,7 +3,7 @@ import 'pages/signin.dart';
 import 'pages/signup.dart';
 import 'pages/content_frame.dart';
 
-final String appName = "Student Connection Platform";
+final String appName = "NameTBD";
 
 void main() {
   runApp(AppHome());

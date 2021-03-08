@@ -1,3 +1,23 @@
-- Signin and signup forms
-- Page routing (initial route to signin)
+- Signin form
+    - Add button to go to Signup
+    - Add signup to stack (in which case stop doing page routing) 
+        or route to page (or I might be mixing up the two)
+- Signup form
+    - Three input pages
+        - Email and password confirmation
+        - Username, profile picture
+        - Major, hobbies/interests, other needed info input
 - Content page
+    - Frame with bottom tabs to three other pages
+    - Implement those tab pages
+
+
+
+
+
+
+Fix app name in:
+- android/app/src/main/AndroidManifest.xml - android:label = "NameTBD"
+- ios/Runner/info.plist ->
+	<key>CFBundleName</key>
+	<string>NameTBD</string> //This one

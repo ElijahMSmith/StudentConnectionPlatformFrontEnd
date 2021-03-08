@@ -26,6 +26,7 @@ class _SigninFormState extends State<SigninForm> {
   String _usernameOrEmail;
   String _password;
   bool _storeLoginInfo = false; // TODO: Get/set in local storage
+  bool _validationFailed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,18 +43,33 @@ class _SigninFormState extends State<SigninForm> {
                 Text('Welcome!',
                     textAlign: TextAlign.center,
                     style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 2.0)),
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+
+                SizedBox(
+                  height: 5,
+                ),
 
                 // Welcome description
                 Text('Log in using the fields below',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 1.5)),
+                    style: TextStyle(fontSize: 20)),
 
-                // Validation error text: Hidden until login attempt fails
-                Text(
-                    'The login information provided didn\'t match anything in our system.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 1.5)),
+                SizedBox(
+                  height: 10,
+                ),
+
+                // Validation error text: Hidden until login attempt fail
+                Visibility(
+                  visible: _validationFailed,
+                  child: Text(
+                      'We couldn\'t find a user with that login information',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15, color: Colors.red)),
+                ),
+
+                // Adds extra padding below error message when it shows
+                Visibility(
+                    visible: _validationFailed, child: SizedBox(height: 10)),
 
                 // Username or email field - will validate against database
                 TextFormField(
@@ -62,7 +78,7 @@ class _SigninFormState extends State<SigninForm> {
                   //validator: (value) {return x},
                   decoration: InputDecoration(
                     filled: true,
-                    labelText: 'Enter your username or password',
+                    labelText: 'Enter your username or email',
                     //hintText: ''
                   ),
                   onChanged: (value) {
@@ -76,7 +92,7 @@ class _SigninFormState extends State<SigninForm> {
 
                 // Password field - will validate against database
                 TextFormField(
-                  validator: (value) {},
+                  //validator: (value) { return x; },
                   decoration: InputDecoration(
                     filled: true,
                     labelText: 'Enter your password',
@@ -92,19 +108,33 @@ class _SigninFormState extends State<SigninForm> {
                 ),
 
                 // Checkbox for retaining login information for next session
-                Row(
-                  children: [
-                    Checkbox(
-                      value: _storeLoginInfo,
-                      onChanged: (value) {
-                        _storeLoginInfo = value;
-                      },
-                    ),
-                    Text(
-                      'Remember my last login',
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                  ],
+                FormField(
+                  initialValue: _storeLoginInfo,
+                  builder: (FormFieldState formFieldState) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _storeLoginInfo,
+                              onChanged: (value) {
+                                formFieldState.didChange(value);
+                                setState(() {
+                                  _storeLoginInfo = value;
+                                });
+                              },
+                            ),
+                            Text(
+                              'Remember my last login',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        )
+                      ],
+                    );
+                  },
                 ),
 
                 SizedBox(
@@ -112,12 +142,19 @@ class _SigninFormState extends State<SigninForm> {
                 ),
 
                 TextButton(
-                  style: TextButton.styleFrom(primary: Colors.white),
+                  //TODO: Style button so it's visible
+                  //style: TextButton.styleFrom(primary: Colors.white),
                   child: Text('Log in'),
                   onPressed: () {
                     // Checks the input fields are not empty
+
                     var valid = _formKey.currentState.validate();
                     if (!valid) return;
+
+                    setState(() {
+                      // For debugging visibility - Remove once we actually do validation
+                      _validationFailed = !_validationFailed;
+                    });
 
                     // TODO: Validate against database
                     // Show failure text and clear inputs if validation fails
