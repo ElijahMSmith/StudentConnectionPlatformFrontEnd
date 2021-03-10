@@ -13,8 +13,10 @@ Various states:
 
 String _appName;
 
-class SignupForm extends StatefulWidget {
-  SignupForm(String appName) {
+class SignupForm extends StatefulWidget
+{
+  SignupForm(String appName)
+  {
     _appName = appName;
   }
 
@@ -22,9 +24,11 @@ class SignupForm extends StatefulWidget {
   _SignupFormState createState() => _SignupFormState();
 }
 
-class _SignupFormState extends State<SignupForm> {
+class _SignupFormState extends State<SignupForm>
+{
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return Scaffold();
   }
 }

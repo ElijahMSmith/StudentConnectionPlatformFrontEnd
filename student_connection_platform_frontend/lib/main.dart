@@ -5,13 +5,16 @@ import 'pages/content_frame.dart';
 
 final String appName = "NameTBD";
 
-void main() {
+void main()
+{
   runApp(AppHome());
 }
 
-class AppHome extends StatelessWidget {
+class AppHome extends StatelessWidget
+{
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return MaterialApp(
         title: appName,
         theme: ThemeData(
