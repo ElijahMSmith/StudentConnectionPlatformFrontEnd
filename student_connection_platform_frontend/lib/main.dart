@@ -23,9 +23,7 @@ class AppHome extends StatelessWidget {
         initialRoute: '/Signin',
         routes: {
           '/Signin': (context) => SigninForm(appName),
-          '/Signup/1': (context) => AccountDetails(appName),
-          '/Signup/2': (context) => UserOverview(appName),
-          '/Signup/3': (context) => UserDetails(appName),
+          '/Signup': (context) => SignupForm(appName),
           '/ContentFrame': (context) => ContentFrame(appName),
         });
   }

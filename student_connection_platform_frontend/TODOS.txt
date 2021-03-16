@@ -1,9 +1,8 @@
-- Signup form
-    - Account Details
-        - Back button
-        - Toggle hide password (false initially)
-        - Fix column centering
-        - Check on phone formatting
+- Signup 
+    - Get individual signup widgets centered in signup scaffold
+    - Turn arrows into buttons
+    - Swap pages with buttons
+    - Return data to signup - possible without Navigator and page routing?
 - Content page
     - Frame with bottom tabs to three other pages
     - Implement those tab pages

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:student_connection_platform_frontend/pages/SignupSections/AccountDetails.dart';
 
 // Once finished on signup:
 // Navigator.pop(context) - pop the current page off the Navigator stack
@@ -22,6 +23,73 @@ class SignupForm extends StatefulWidget {
 class _SignupFormState extends State<SignupForm> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: AccountDetails(_appName),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  // Backwards button
+                  Image(
+                    image: AssetImage('assets/images/BackwardsButton.png'),
+                    width: 50,
+                    height: 50,
+                  ),
+
+                  SizedBox(
+                    width: 25,
+                  ),
+
+                  // Page tracker dots
+                  Image(
+                    image: AssetImage('assets/images/EmptyDot.png'),
+                    width: 25,
+                    height: 25,
+                  ),
+
+                  SizedBox(
+                    width: 15,
+                  ),
+
+                  Image(
+                    image: AssetImage('assets/images/FilledDot.png'),
+                    width: 25,
+                    height: 25,
+                  ),
+
+                  SizedBox(
+                    width: 15,
+                  ),
+
+                  Image(
+                    image: AssetImage('assets/images/EmptyDot.png'),
+                    width: 25,
+                    height: 25,
+                  ),
+
+                  SizedBox(
+                    width: 25,
+                  ),
+
+                  // Forwards button
+                  Image(
+                    image: AssetImage('assets/images/ForwardsButton.png'),
+                    width: 50,
+                    height: 50,
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

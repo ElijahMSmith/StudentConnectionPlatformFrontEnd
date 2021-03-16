@@ -58,123 +58,122 @@ class _AccountDetailsState extends State<AccountDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Form(
-            key: _formKey,
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  // Welcome message
-                  SizedBox(
-                    height: 40,
-                  ),
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          // Welcome message
+          SizedBox(
+            height: 40,
+          ),
 
-                  Text('Account Signup!',
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+          Text('Account Signup!',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
 
-                  SizedBox(
-                    height: 40,
-                  ),
+          SizedBox(
+            height: 40,
+          ),
 
-                  // Email input field
-                  Container(
-                    width: 250,
-                    child: TextFormField(
-                      autofocus: true,
-                      textInputAction: TextInputAction.next,
-                      maxLines: 1,
-                      validator: (value) {
-                        if (value.isEmpty)
-                          return 'Please enter an email for this account.';
+          // Email input field
+          Container(
+            width: 250,
+            child: TextFormField(
+              autofocus: true,
+              textInputAction: TextInputAction.next,
+              maxLines: 1,
+              validator: (value) {
+                if (value.isEmpty)
+                  return 'Please enter an email for this account.';
 
-                        // TODO: Also validate database doesn't have this email in it already
-                        // Further, if this email IS valid, can we instead make this box green to signify it's good
-                        // and that green drops off when we go back to it?
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        filled: true,
-                        labelText: 'Account email',
-                        //hintText: ''
-                      ),
-                      onChanged: (value) {
-                        _email = value;
-                        _validationSuccessful = false;
-                      },
-                    ),
-                  ),
+                // TODO: Also validate database doesn't have this email in it already
+                // Further, if this email IS valid, can we instead make this box green to signify it's good
+                // and that green drops off when we go back to it?
+                return null;
+              },
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'Account email',
+                //hintText: ''
+              ),
+              onChanged: (value) {
+                _email = value;
+                _validationSuccessful = false;
+              },
+            ),
+          ),
 
-                  SizedBox(
-                    height: 25,
-                  ),
+          SizedBox(
+            height: 25,
+          ),
 
-                  // Password field
-                  Container(
-                    width: 250,
-                    child: TextFormField(
-                      validator: (value) {
-                        //TODO: Validate password against TBD criteria
-                        if (value.isEmpty) return 'Please enter a password';
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        filled: true,
-                        labelText: 'Choose a password',
-                        //hintText: ''
-                      ),
-                      onChanged: (value) {
-                        _password = value;
-                        _validationSuccessful = false;
-                      },
-                    ),
-                  ),
+          // Password field
+          Container(
+            width: 250,
+            child: TextFormField(
+              validator: (value) {
+                //TODO: Validate password against TBD criteria
+                if (value.isEmpty) return 'Please enter a password';
+                return null;
+              },
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'Choose a password',
+                //hintText: ''
+              ),
+              onChanged: (value) {
+                _password = value;
+                _validationSuccessful = false;
+              },
+            ),
+          ),
 
-                  SizedBox(
-                    height: 25,
-                  ),
+          SizedBox(
+            height: 25,
+          ),
 
-                  // Password confirmation field
-                  Container(
-                    width: 250,
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value != _password)
-                          return 'Passwords don\'t match!';
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        filled: true,
-                        labelText: 'Confirm your password',
-                        //hintText: ''
-                      ),
-                    ),
-                  ),
+          // Password confirmation field
+          Container(
+            width: 250,
+            child: TextFormField(
+              validator: (value) {
+                if (value != _password) return 'Passwords don\'t match!';
+                return null;
+              },
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'Confirm your password',
+                //hintText: ''
+              ),
+            ),
+          ),
 
-                  SizedBox(
-                    height: 40,
-                  ),
+          SizedBox(
+            height: 40,
+          ),
 
-                  ConstrainedBox(
-                    constraints:
-                        BoxConstraints.tightFor(width: 200, height: 50),
-                    child: ElevatedButton(
-                      child: Text('Validate and Continue'),
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.blue,
-                          textStyle:
-                              TextStyle(fontSize: 15, color: Colors.white)),
-                      onPressed: () {
-                        // Checks the input fields are not empty
+          ConstrainedBox(
+            constraints: BoxConstraints.tightFor(width: 200, height: 50),
+            child: ElevatedButton(
+              child: Text('Validate'),
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                  textStyle: TextStyle(fontSize: 15, color: Colors.white)),
+              onPressed: () {
+                // Checks the input fields are not empty
 
-                        var valid = _formKey.currentState.validate();
-                        if (!valid) return;
+                var valid = _formKey.currentState.validate();
+                if (!valid) return;
 
-                        setState(() {
-                          _validationSuccessful = true;
-                        });
-                      },
-                    ),
-                  ),
-                ])));
+                setState(() {
+                  _validationSuccessful = true;
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }
