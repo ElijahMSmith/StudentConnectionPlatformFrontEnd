@@ -67,7 +67,7 @@ class _SigninFormState extends State<SigninForm> {
                 Visibility(
                   visible: _validationFailed,
                   child: Text(
-                      'We couldn\'t find a user with that login information',
+                      'We couldn\'t find a user with that login information.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 15, color: Colors.red)),
                 ),
@@ -191,7 +191,7 @@ class _SigninFormState extends State<SigninForm> {
                       // Moves to signup page, current page is still on the Navigator stack underneath
                       // Optional page transition sample:
                       // https://github.com/flutter/samples/blob/master/animations/lib/src/basics/02_page_route_builder.dart
-                      Navigator.pushNamed(context, '/Signup');
+                      Navigator.pushNamed(context, '/Signup/1');
                     },
                   ),
                 ),
