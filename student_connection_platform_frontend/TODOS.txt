@@ -1,6 +1,7 @@
 - Signup 
     - Get individual signup widgets centered in signup scaffold
     - Turn arrows into buttons
+        - Try to make an image for all three dot states and fade between them when we swap to a page
     - Swap pages with buttons
     - Return data to signup - possible without Navigator and page routing?
 - Content page
