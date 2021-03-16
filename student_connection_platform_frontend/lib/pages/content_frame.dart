@@ -10,6 +10,7 @@ String _appName;
 
 class ContentFrame extends StatefulWidget
 {
+  static const String routeId = 'content_frame';
   ContentFrame(String appName)
   {
     _appName = appName;

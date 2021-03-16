@@ -15,6 +15,8 @@ String _appName;
 
 class SignupForm extends StatefulWidget
 {
+  static const String routeId = 'sign_up_form';
+
   SignupForm(String appName)
   {
     _appName = appName;

@@ -14,6 +14,8 @@ String _appName;
 
 class SigninForm extends StatefulWidget
 {
+  static const String routeId = 'sign_in_form';
+
   SigninForm(String appName)
   {
     _appName = appName;
@@ -23,8 +25,7 @@ class SigninForm extends StatefulWidget
   _SigninFormState createState() => _SigninFormState();
 }
 
-class _SigninFormState extends State<SigninForm>
-{
+class _SigninFormState extends State<SigninForm> {
   final _formKey = GlobalKey<FormState>();
   String _usernameOrEmail;
   String _password;
@@ -32,8 +33,7 @@ class _SigninFormState extends State<SigninForm>
   bool _validationFailed = false;
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Sign in to $_appName")),
       body: Form(
@@ -85,8 +85,7 @@ class _SigninFormState extends State<SigninForm>
                     labelText: 'Enter your username or email',
                     //hintText: ''
                   ),
-                  onChanged: (value)
-                  {
+                  onChanged: (value) {
                     _usernameOrEmail = value;
                   },
                 ),
@@ -103,8 +102,7 @@ class _SigninFormState extends State<SigninForm>
                     labelText: 'Enter your password',
                     //hintText: ''
                   ),
-                  onChanged: (value)
-                  {
+                  onChanged: (value) {
                     _password = value;
                   },
                 ),
@@ -116,8 +114,7 @@ class _SigninFormState extends State<SigninForm>
                 // Checkbox for retaining login information for next session
                 FormField(
                   initialValue: _storeLoginInfo,
-                  builder: (FormFieldState formFieldState)
-                  {
+                  builder: (FormFieldState formFieldState) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -152,8 +149,7 @@ class _SigninFormState extends State<SigninForm>
                   //TODO: Style button so it's visible
                   //style: TextButton.styleFrom(primary: Colors.white),
                   child: Text('Log in'),
-                  onPressed: ()
-                  {
+                  onPressed: () {
                     // Checks the input fields are not empty
 
                     var valid = _formKey.currentState.validate();

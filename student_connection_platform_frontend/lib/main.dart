@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/signin.dart';
 import 'pages/signup.dart';
 import 'pages/content_frame.dart';
+import 'pages_by_leo/profile_page.dart';
 
 final String appName = "NameTBD";
 
@@ -29,11 +30,14 @@ class AppHome extends StatelessWidget
           // is not restarted.
           primarySwatch: Colors.teal,
         ),
-        initialRoute: '/Signin',
-        routes: {
-          '/Signin': (context) => SigninForm(appName),
-          '/Signup': (context) => SignupForm(appName),
-          '/ContentFrame': (context) => ContentFrame(appName),
+        initialRoute: ProfilePage.routeId,
+        routes:
+        {
+          // use static strings for the route id as a way to avoid typos
+          SigninForm.routeId: (context) => SigninForm(appName),
+          SignupForm.routeId: (context) => SignupForm(appName),
+          ContentFrame.routeId: (context) => ContentFrame(appName),
+          ProfilePage.routeId: (context) => ProfilePage(),
         });
   }
 }
