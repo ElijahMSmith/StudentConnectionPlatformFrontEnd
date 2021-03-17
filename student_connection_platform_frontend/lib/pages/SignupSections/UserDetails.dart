@@ -6,7 +6,7 @@ Defines the layout for the sign up page for the app
 
 Various states:
   - AccountDetails: Holds fields for the email, password, and password confirmation
-  - UserOverview: Pick a username, add a profile picture
+  - UserOverview: Pick a username, add a profile picture, short bio
   - UserDetails: Add interests, hobbies, major, etc (check 3/4 doc for full list)
 
 One option:

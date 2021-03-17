@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/AccountDetails.dart';
+import 'package:student_connection_platform_frontend/pages/SignupSections/UserOverview.dart';
 
 // Once finished on signup:
 // Navigator.pop(context) - pop the current page off the Navigator stack
@@ -27,7 +28,7 @@ class _SignupFormState extends State<SignupForm> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: AccountDetails(_appName),
+            child: UserOverview(_appName), //TBD: Pick on rotation of pages
           ),
           Padding(
             padding: const EdgeInsets.all(15),

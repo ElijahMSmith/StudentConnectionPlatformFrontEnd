@@ -1,5 +1,5 @@
 name: student_connection_platform_frontend
-description: A new Flutter project.
+description: Connect with other students all across the world!
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  image_picker: ^0.7.0
 
 
   # The following adds the Cupertino Icons font to your application.
