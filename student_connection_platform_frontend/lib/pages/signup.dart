@@ -75,6 +75,10 @@ class _SignupFormState extends State<SignupForm> {
       body: Column(
         children: <Widget>[
           Expanded(
+            // Try this out:
+            // https://discord.com/channels/420324994703163402/421445334716121091/821898700015927366
+            // https://bloclibrary.dev/
+
             child: _pages[_currentPage],
           ),
           Padding(
