@@ -59,6 +59,7 @@ class _AccountDetailsState extends State<AccountDetails> {
     return Scaffold(
         body: Form(
       key: _formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -153,6 +154,9 @@ class _AccountDetailsState extends State<AccountDetails> {
             height: 40,
           ),
 
+          /*
+          DELETE WHEN SAFE
+
           ConstrainedBox(
             constraints: BoxConstraints.tightFor(width: 200, height: 50),
             child: ElevatedButton(
@@ -171,7 +175,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                 });
               },
             ),
-          ),
+          ),*/
         ],
       ),
     ));

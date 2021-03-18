@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/AccountDetails.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/UserOverview.dart';
+import 'package:student_connection_platform_frontend/pages/SignupSections/UserDetails.dart';
 
 // Once finished on signup:
 // Navigator.pop(context) - pop the current page off the Navigator stack
@@ -22,13 +23,59 @@ class SignupForm extends StatefulWidget {
 }
 
 class _SignupFormState extends State<SignupForm> {
+  // Create widgets for each page - write accessors to getting their data
+  // Make a current page tracker count - display a different page depending on which widget is pressed
+  // When button is pressed, validate if current page is complete. If so, can more forwards. Can always move back.
+  // Each page keeps its data when transitioning pages. Eventually make this transition an animation.
+
+  List<Widget> _pages = [
+    AccountDetails(_appName),
+    UserOverview(_appName),
+    UserDetails(_appName)
+  ];
+
+  // 0 - account details, 1 - user overview, 2 - user details
+  int _currentPage = 0;
+
+  final AssetImage _emptyDotAsset =
+      new AssetImage('assets/images/EmptyDot.png');
+  final AssetImage _fullDotAsset =
+      new AssetImage('assets/images/FilledDot.png');
+
+  bool _submitAccount() {
+    // TODO - at this point all widgets should have valid account information
+    // Just a question of how to access it here.
+    return true;
+  }
+
+  void _nextPage() {
+    if (_currentPage == 2) {
+      if (_submitAccount()) {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, '/ContentFrame');
+      } else {
+        print("Submission Failed!");
+      }
+    } else {
+      _currentPage++;
+    }
+  }
+
+  void _previousPage() {
+    if (_currentPage == 0) {
+      Navigator.pop(context);
+    } else {
+      _currentPage--;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: <Widget>[
           Expanded(
-            child: UserOverview(_appName), //TBD: Pick on rotation of pages
+            child: _pages[_currentPage],
           ),
           Padding(
             padding: const EdgeInsets.all(15),
@@ -38,10 +85,13 @@ class _SignupFormState extends State<SignupForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   // Backwards button
-                  Image(
-                    image: AssetImage('assets/images/BackwardsButton.png'),
-                    width: 50,
-                    height: 50,
+                  GestureDetector(
+                    onTap: () {},
+                    child: Image(
+                      image: AssetImage('assets/images/BackwardsButton.png'),
+                      width: 50,
+                      height: 50,
+                    ),
                   ),
 
                   SizedBox(
@@ -50,7 +100,7 @@ class _SignupFormState extends State<SignupForm> {
 
                   // Page tracker dots
                   Image(
-                    image: AssetImage('assets/images/EmptyDot.png'),
+                    image: _currentPage == 0 ? _fullDotAsset : _emptyDotAsset,
                     width: 25,
                     height: 25,
                   ),
@@ -60,7 +110,7 @@ class _SignupFormState extends State<SignupForm> {
                   ),
 
                   Image(
-                    image: AssetImage('assets/images/FilledDot.png'),
+                    image: _currentPage == 1 ? _fullDotAsset : _emptyDotAsset,
                     width: 25,
                     height: 25,
                   ),
@@ -70,7 +120,7 @@ class _SignupFormState extends State<SignupForm> {
                   ),
 
                   Image(
-                    image: AssetImage('assets/images/EmptyDot.png'),
+                    image: _currentPage == 2 ? _fullDotAsset : _emptyDotAsset,
                     width: 25,
                     height: 25,
                   ),
@@ -79,12 +129,14 @@ class _SignupFormState extends State<SignupForm> {
                     width: 25,
                   ),
 
-                  // Forwards button
-                  Image(
-                    image: AssetImage('assets/images/ForwardsButton.png'),
-                    width: 50,
-                    height: 50,
-                  )
+                  GestureDetector(
+                    onTap: _nextPage,
+                    child: Image(
+                      image: AssetImage('assets/images/ForwardsButton.png'),
+                      width: 50,
+                      height: 50,
+                    ),
+                  ),
                 ],
               ),
             ),

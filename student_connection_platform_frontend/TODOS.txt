@@ -1,5 +1,6 @@
 - Signup 
     - Get individual signup widgets centered in signup scaffold
+    - Make bottom bar NOT an action bar (shouldn't raise with keyboard opening on the phone)
     - Turn arrows into buttons
         - Try to make an image for all three dot states and fade between them when we swap to a page
     - Swap pages with buttons

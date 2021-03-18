@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/signin.dart';
 import 'pages/signup.dart';
-import 'pages/SignupSections/AccountDetails.dart';
-import 'pages/SignupSections/UserOverview.dart';
-import 'pages/SignupSections/UserDetails.dart';
 import 'pages/content_frame.dart';
 
 final String appName = "NameTBD";

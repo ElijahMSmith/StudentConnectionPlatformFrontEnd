@@ -43,7 +43,7 @@ class _UserOverviewState extends State<UserOverview> {
   String _username = "";
   String _bio = "";
   File _profilePicturePath;
-  Image _profilePicture = Image.asset('assets/images/choosePictureIcon.png');
+  AssetImage _profilePicture = AssetImage('assets/images/choosePicture.png');
   final picker = ImagePicker();
 
   Future getImage() async {
@@ -69,30 +69,43 @@ class _UserOverviewState extends State<UserOverview> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 15),
-            GestureDetector(
-              onTap: () => getImage,
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: Image(
-                  image: AssetImage('assets/images/choosePictureIcon.png'),
-                  width: 100,
-                  height: 100,
+            SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image(
+                        image: _profilePicture,
+                        fit: BoxFit.fill,
+                        width: 100,
+                        height: 100,
+                      ),
+                    )),
+                SizedBox(width: 15),
+                ConstrainedBox(
+                  constraints: BoxConstraints.tightFor(width: 200, height: 50),
+                  child: ElevatedButton(
+                    child: Text('Choose Profile Picture'),
+                    style: ElevatedButton.styleFrom(
+                        primary: Color.fromRGBO(0, 194, 155, 1),
+                        textStyle:
+                            TextStyle(fontSize: 12, color: Colors.white)),
+                    onPressed: getImage,
+                  ),
                 ),
-              ),
+              ],
             ),
-            IconButton(
-              icon: _profilePicture, // TODO: Update to whatever they pick
-              iconSize: 75,
-              onPressed: getImage,
-            ),
+            SizedBox(height: 25),
             Container(
               width: 400,
               height: 100,
@@ -128,7 +141,7 @@ class _UserOverviewState extends State<UserOverview> {
             SizedBox(height: 20),
             Container(
               width: 400,
-              height: 400,
+              height: 250,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

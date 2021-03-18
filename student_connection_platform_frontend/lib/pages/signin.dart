@@ -78,7 +78,6 @@ class _SigninFormState extends State<SigninForm> {
 
                 // Username or email field - will validate against database
                 TextFormField(
-                  autofocus: true,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value.isEmpty)
