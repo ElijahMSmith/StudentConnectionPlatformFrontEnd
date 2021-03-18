@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/match_maker.dart';
+import '../constants.dart';
 
 class ProfilePage extends StatefulWidget
 {
@@ -10,9 +12,6 @@ class ProfilePage extends StatefulWidget
 
 class _ProfilePageState extends State<ProfilePage>
 {
-
-  int _selectedIndex = 0;
-
   final aboutMe = [
     'Greetings! I am currently a Computer Science graduate student attending ',
     'The University of Central Florida. My productive spare-time ',
@@ -25,27 +24,19 @@ class _ProfilePageState extends State<ProfilePage>
     'and leverage such skills to contribute in the software idustry.'
   ];
 
-  final aboutMeBuffer = StringBuffer();
-
-
   // navigate to the page based on the index selected
   // one approach is to use a switch statement on the index selected
   void _onItemTapped(int bottomNavButtonIndex)
   {
     _selectedIndex = bottomNavButtonIndex;
-    setState((){});
-
-    switch (_selectedIndex)
-    {
-      // todo navigate to the proper page
-    }
+    setState(() {});
   }
 
   /// initialize the buffer.
   /// Note that this method
   /// clears out any contents
   /// previously inside.
-  void fillBufferFromList(StringBuffer b, List < String > l)
+  void fillBufferFromList(StringBuffer b, List<String> l)
   {
     if (b.isNotEmpty)
     {
@@ -57,88 +48,64 @@ class _ProfilePageState extends State<ProfilePage>
 
   SingleChildScrollView bioSection({
     Widget body = const Text('bio text'),
-    EdgeInsetsGeometry padding = const EdgeInsets.all(16.0),})
+    EdgeInsetsGeometry padding = const EdgeInsets.all(16.0),
+  })
   {
     return SingleChildScrollView(
-      child: Padding(
-        padding: padding,
-        child: body
-      ),
+      child: Padding(padding: padding, child: body),
     );
   }
 
+  int _selectedIndex = 0;
+  StringBuffer aboutMeBuffer;
 
+  @override
+  void initState()
+  {
+    // TODO: implement initState
+    super.initState();
+    aboutMeBuffer = StringBuffer();
+    fillBufferFromList(aboutMeBuffer, aboutMe);
+  }
 
   @override
   Widget build(BuildContext context)
   {
-    fillBufferFromList(aboutMeBuffer, aboutMe);
-
     return Scaffold(
       body: SafeArea(
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget> [
-                    // for picture and text
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(50, 8, 8, 8),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage('please profile pic here')
-                          ),
-                          SizedBox(width: 30),
-                          Text('User\'s settings')
-                        ],
-                      ),
-                    ),
-
-                    // bio text
-                    Container(
-                      child: bioSection(body: SelectableText(
-                        aboutMeBuffer.toString()
-                      ))
-                    ),
-
-                    // log out button
-                    RaisedButton(onPressed: () => print('log out'),child: Text('Log out'),),
-
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              // for picture and text
+              Padding(
+                padding: const EdgeInsets.fromLTRB(50, 8, 8, 8),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                        backgroundImage: AssetImage('assets/baby_yoda.jpg'),
+                        radius: 40),
+                    SizedBox(width: 30),
+                    Text('User\'s settings')
                   ],
-
                 ),
+              ),
+
+              // bio text
+              Container(
+                  child: bioSection(
+                      body: SelectableText(aboutMeBuffer.toString())
+                )
+              ),
+              // log out button
+              RaisedButton(
+                onPressed: () => print('log out'),
+                child: Text('Log out'),
+              ),
+            ],
+          ),
         ),
       ),
-
-      // https://api.flutter.dev/flutter/material/BottomNavigationBar-class.html
-      // https://www.youtube.com/watch?v=elLkVWt7gRM&ab_channel=ProgrammingAddict
-      bottomNavigationBar: BottomNavigationBar(items:
-      const <BottomNavigationBarItem>
-      [
-          BottomNavigationBarItem(
-          backgroundColor: Colors.red,
-          icon: Icon(Icons.add, color: Colors.black),
-          label: 'Post'),
-
-          BottomNavigationBarItem(
-          backgroundColor: Colors.green,
-          icon: Icon(Icons.chat, color: Colors.black),
-          label: 'Chat'),
-
-          BottomNavigationBarItem(
-          backgroundColor: Colors.purple,
-          icon: Icon(Icons.search, color: Colors.black),
-          label: 'Search'),
-
-          BottomNavigationBarItem(
-          backgroundColor: Colors.pink,
-          icon: Icon(Icons.settings, color: Colors.black),
-          label: 'Settings'),
-
-      ],
-      currentIndex: _selectedIndex,
-      selectedItemColor: Colors.black,
-      onTap: _onItemTapped),
     );
   }
 }
