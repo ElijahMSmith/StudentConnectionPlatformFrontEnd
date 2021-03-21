@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 /*
 
@@ -20,10 +21,6 @@ One option:
 
 */
 
-// Once finished on signup:
-// Navigator.pop(context) - pop the current page off the Navigator stack
-// Navigator.pushNamed(context, '/ContentFrame');
-
 String _appName;
 
 class AccountDetails extends StatefulWidget {
@@ -42,17 +39,43 @@ class _AccountDetailsState extends State<AccountDetails> {
   // For now, just make sure email/username aren't taken
   bool _invalidEmail = false;
   bool _takenEmail = false;
-  bool _invalidUsername = false;
-  bool _takenUsername = false;
   bool _invalidPassword = false;
 
   String _email = "";
-  String _username = "";
   String _password = "";
+  String _dateOfBirth = "Select Your Date of Birth";
 
   // Whether current inputs in text fields are all valid inputs for a new account
   // Resets to false when any form field is changed, must re-submit with button to make true
+  bool _validDOB = false;
   bool _validationSuccessful = false;
+
+  bool isValidDOB(String birthDateString) {
+    // 00/00/0000 format only
+    RegExp regExp = new RegExp("^[0-9]{2}\/[0-9]{2}\/[0-9]{4}\$");
+
+    return regExp.hasMatch(birthDateString);
+  }
+
+  bool isAdult(String birthDateString) {
+    String datePattern = "MM/dd/yyyy";
+
+    // Current time - at this moment
+    DateTime today = DateTime.now();
+
+    // Parsed date to check
+    DateTime birthDate = DateFormat(datePattern).parse(birthDateString);
+
+    // Date to check but moved 18 years ahead
+    DateTime adultDate = DateTime(
+      birthDate.year + 18,
+      birthDate.month,
+      birthDate.day,
+    );
+
+    _validDOB = adultDate.isBefore(today);
+    return _validDOB;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +112,6 @@ class _AccountDetailsState extends State<AccountDetails> {
                   return 'Please enter an email for this account.';
 
                 // TODO: Also validate database doesn't have this email in it already
-                // Further, if this email IS valid, can we instead make this box green to signify it's good
-                // and that green drops off when we go back to it?
                 return null;
               },
               decoration: InputDecoration(
@@ -102,6 +123,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                 _email = value;
                 _validationSuccessful = false;
               },
+              textAlign: TextAlign.center,
             ),
           ),
 
@@ -121,12 +143,12 @@ class _AccountDetailsState extends State<AccountDetails> {
               decoration: InputDecoration(
                 filled: true,
                 labelText: 'Choose a password',
-                //hintText: ''
               ),
               onChanged: (value) {
                 _password = value;
                 _validationSuccessful = false;
               },
+              textAlign: TextAlign.center,
             ),
           ),
 
@@ -147,35 +169,32 @@ class _AccountDetailsState extends State<AccountDetails> {
                 labelText: 'Confirm your password',
                 //hintText: ''
               ),
+              textAlign: TextAlign.center,
             ),
           ),
 
           SizedBox(
-            height: 40,
+            height: 25,
           ),
 
-          /*
-          DELETE WHEN SAFE
-
-          ConstrainedBox(
-            constraints: BoxConstraints.tightFor(width: 200, height: 50),
-            child: ElevatedButton(
-              child: Text('Validate'),
-              style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
-                  textStyle: TextStyle(fontSize: 15, color: Colors.white)),
-              onPressed: () {
-                // Checks the input fields are not empty
-
-                var valid = _formKey.currentState.validate();
-                if (!valid) return;
-
-                setState(() {
-                  _validationSuccessful = true;
-                });
+          // Date of birth field
+          Container(
+            width: 250,
+            child: TextFormField(
+              validator: (value) {
+                if (!isValidDOB(value))
+                  return 'Invalid Format - Must be mm/dd/yyyy';
+                if (!isAdult(value))
+                  return 'You must be at least 18 years old to sign up!';
+                return null;
               },
+              decoration: InputDecoration(
+                  filled: true,
+                  labelText: 'Enter Your Date of Birth',
+                  hintText: 'mm/dd/yyyy'),
+              textAlign: TextAlign.center,
             ),
-          ),*/
+          ),
         ],
       ),
     ));

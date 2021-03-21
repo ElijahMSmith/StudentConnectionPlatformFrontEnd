@@ -41,6 +41,8 @@ class _UserOverviewState extends State<UserOverview> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _username = "";
+  bool _takenUsername = false;
+
   String _bio = "";
   File _profilePicturePath;
   AssetImage _profilePicture = AssetImage('assets/images/choosePicture.png');
@@ -120,14 +122,17 @@ class _UserOverviewState extends State<UserOverview> {
                   ),
                   TextFormField(
                     validator: (value) {
-                      if (value.isEmpty || value.length < 5)
-                        return 'Usernames must be at least 5 characters';
+                      if (value.isEmpty || value.length < 3)
+                        return 'Usernames must be at least 3 characters';
+
+                      //Validate against existing usernames, return failure if username already exists
+                      //_takenUsername
 
                       //TODO: Check against database for existing usernames
                       return null;
                     },
                     textAlign: TextAlign.start,
-                    maxLength: 25,
+                    maxLength: 20,
                     decoration: InputDecoration(
                         filled: true,
                         hintText: 'This doesn\'t have to be your real name.'),

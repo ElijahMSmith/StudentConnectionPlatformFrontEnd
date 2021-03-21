@@ -13,6 +13,21 @@
 
 
 
+Collection data signup page:
+- Username (3+ chars)
+- Email
+- Password
+- Personal bio
+- DOB
+- Interests (List of strings - predefined values?)
+- City and country
+- School
+- Major
+- Job
+
+
+
+
 
 Fix app name in:
 - android/app/src/main/AndroidManifest.xml - android:label = "NameTBD"
