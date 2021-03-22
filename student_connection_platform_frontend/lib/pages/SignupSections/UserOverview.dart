@@ -2,30 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-/*
-
-Defines the layout for the sign up page for the app
-
-Various states:
-  - AccountDetails: Holds fields for the email, password, and password confirmation
-  - UserOverview: Pick a username, add a profile picture, short bio
-  - UserDetails: Add interests, hobbies, major, etc (check 3/4 doc for full list)
-
-One option:
-- Make each section its own stateful widget (in own file) and simply pick which one 
-  to include in this widget (keep a counter that decides which to show, show that)
-- Will need to be able to pass information back to signup (input information)
-- Need forward and backward buttons to move to next or previous signup page (if possible)
-    - Validate current page form data before moving, then send back to hold on
-    - Need to pass in defaults from this signup widget to whatever section is shown
-- If we back while on first section, simply pop this signup widget off and quit
-
-*/
-
-// Once finished on signup:
-// Navigator.pop(context) - pop the current page off the Navigator stack
-// Navigator.pushNamed(context, '/ContentFrame');
-
 String _appName;
 
 class UserOverview extends StatefulWidget {
@@ -45,15 +21,21 @@ class _UserOverviewState extends State<UserOverview> {
 
   String _bio = "";
   File _profilePicturePath;
-  AssetImage _profilePicture = AssetImage('assets/images/choosePicture.png');
+  AssetImage _choosePictureAsset =
+      AssetImage('assets/images/choosePicture.png');
+  FileImage _profileImage;
+
+  // Works on mobile. On web it opens the prompt, but doesn't actually load the selected image
+  // Not building for web yet, so I'm not going to work on fixing that yet.
   final picker = ImagePicker();
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
         _profilePicturePath = File(pickedFile.path);
+        _profileImage = FileImage(_profilePicturePath);
       } else {
         print('No image selected.');
       }
@@ -87,7 +69,7 @@ class _UserOverviewState extends State<UserOverview> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
                       child: Image(
-                        image: _profilePicture,
+                        image: _profileImage ?? _choosePictureAsset,
                         fit: BoxFit.fill,
                         width: 100,
                         height: 100,
@@ -102,7 +84,9 @@ class _UserOverviewState extends State<UserOverview> {
                         primary: Color.fromRGBO(0, 194, 155, 1),
                         textStyle:
                             TextStyle(fontSize: 12, color: Colors.white)),
-                    onPressed: getImage,
+                    onPressed: () {
+                      getImage();
+                    },
                   ),
                 ),
               ],

@@ -90,7 +90,11 @@ class _SignupFormState extends State<SignupForm> {
                 children: <Widget>[
                   // Backwards button
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        _previousPage();
+                      });
+                    },
                     child: Image(
                       image: AssetImage('assets/images/BackwardsButton.png'),
                       width: 50,
@@ -134,7 +138,11 @@ class _SignupFormState extends State<SignupForm> {
                   ),
 
                   GestureDetector(
-                    onTap: _nextPage,
+                    onTap: () {
+                      setState(() {
+                        _nextPage();
+                      });
+                    },
                     child: Image(
                       image: AssetImage('assets/images/ForwardsButton.png'),
                       width: 50,

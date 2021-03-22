@@ -50,21 +50,34 @@ class _AccountDetailsState extends State<AccountDetails> {
   bool _validDOB = false;
   bool _validationSuccessful = false;
 
-  bool isValidDOB(String birthDateString) {
+  bool _isValidDOB(String dob) {
     // 00/00/0000 format only
     RegExp regExp = new RegExp("^[0-9]{2}\/[0-9]{2}\/[0-9]{4}\$");
 
-    return regExp.hasMatch(birthDateString);
+    return regExp.hasMatch(dob);
   }
 
-  bool isAdult(String birthDateString) {
+  // Precon - _isValidDOB guarantees successful parsing
+  bool _isValidDay(String dob) {
+    int month = int.parse(dob.substring(0, 2));
+    int day = int.parse(dob.substring(3, 5));
+    int year = int.parse(dob.substring(6, 8));
+
+    // More precise checking for if day of month exists and what years we accept can be done later
+    if (month <= 0 || month < 12) return false;
+    if (day <= 0 || day >= 31) return false;
+    if (year < DateTime.now().year - 100 || year >= DateTime.now().year)
+      return false;
+  }
+
+  bool _isAdult(String dob) {
     String datePattern = "MM/dd/yyyy";
 
     // Current time - at this moment
     DateTime today = DateTime.now();
 
     // Parsed date to check
-    DateTime birthDate = DateFormat(datePattern).parse(birthDateString);
+    DateTime birthDate = DateFormat(datePattern).parse(dob);
 
     // Date to check but moved 18 years ahead
     DateTime adultDate = DateTime(
@@ -85,14 +98,13 @@ class _AccountDetailsState extends State<AccountDetails> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           // Welcome message
           SizedBox(
             height: 40,
           ),
 
-          Text('Account Signup!',
+          Text('Signup for $_appName',
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
 
@@ -182,10 +194,19 @@ class _AccountDetailsState extends State<AccountDetails> {
             width: 250,
             child: TextFormField(
               validator: (value) {
-                if (!isValidDOB(value))
+                _validDOB = false;
+
+                if (!_isValidDOB(value))
                   return 'Invalid Format - Must be mm/dd/yyyy';
-                if (!isAdult(value))
+
+                if (!_isValidDay(value))
+                  return 'That date does not exist or is not acceptable';
+
+                if (!_isAdult(value))
                   return 'You must be at least 18 years old to sign up!';
+
+                _validDOB = true;
+
                 return null;
               },
               decoration: InputDecoration(
@@ -193,6 +214,9 @@ class _AccountDetailsState extends State<AccountDetails> {
                   labelText: 'Enter Your Date of Birth',
                   hintText: 'mm/dd/yyyy'),
               textAlign: TextAlign.center,
+              onChanged: (value) {
+                _validDOB = false;
+              },
             ),
           ),
         ],
