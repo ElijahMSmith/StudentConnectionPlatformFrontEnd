@@ -1,13 +1,11 @@
-- Signup 
-    - Get individual signup widgets centered in signup scaffold
-    - Make bottom bar NOT an action bar (shouldn't raise with keyboard opening on the phone)
-    - Turn arrows into buttons
-        - Try to make an image for all three dot states and fade between them when we swap to a page
-    - Swap pages with buttons
-    - Return data to signup - possible without Navigator and page routing?
-- Content page
-    - Frame with bottom tabs to three other pages
-    - Implement those tab pages
+Current work:
+- Update validation to onUserInteraction and use booleans to determine if data is valid (when validation method succeeds, set true. If validation fails set false. Shouldn't need onChange)
+- DOB validation currently doesn't work, doesn't allow/isn't acceptable for any valid date too
+- Fix bottom app bar so it doesn't overlap with shit (should stay at the bottom when keyboard input shows up)
+- Try to fix list view to either put them closer together and/or make the width match the parent and height fill the rest
+- Move data to signup class and make sure all our data is valid if we want to submit
+    - If not valid, alert dialog which page is wrong and the issue
+    - If all valid, prepare for DB submission
 
 
 

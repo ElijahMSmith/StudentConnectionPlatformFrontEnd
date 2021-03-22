@@ -1,42 +1,33 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'dart:convert';
 import 'dart:async';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
 String _appName;
+
 List<String> _allInterests = [
   "Hobbies and interests list not loaded. Sorry!"
 ]; //Remove default if load successful in method below
 
-int loadCount = 0;
+List<String> _allInterestsComparable = [
+  //All lower case
+];
+
+Future<String> loadInterests() async {
+  return await rootBundle.loadString('assets/textFiles/hobbies_interests.txt');
+}
 
 void loadHobbiesAndInterests() async {
-  print("Running");
-
-  final file = File('assets/hobbies_interests.txt');
-  Stream<String> lines = file
-      .openRead()
-      .transform(utf8.decoder) // Decode bytes to UTF-8.
-      .transform(LineSplitter()); // Convert stream to individual lines.
-  try {
-    await for (var line in lines) {
-      _allInterests.add(line);
-    }
-    print('File is now closed.');
-  } catch (e) {
-    print('Error: $e');
-  }
-
-  _allInterests.removeAt(0);
-
-  loadCount++;
+  loadInterests().then((String result) => {
+        _allInterests = result.split("\n"),
+        _allInterestsComparable = result.toLowerCase().split("\n"),
+      });
 }
 
 class UserDetails extends StatefulWidget {
   UserDetails(String appName) {
     _appName = appName;
     loadHobbiesAndInterests();
-    print("Constructor");
   }
 
   @override
@@ -60,15 +51,39 @@ class _UserDetailsState extends State<UserDetails> {
   String _school;
   String _major;
   String _job;
-  List<String> _personalInterests = [];
+  List<String> _addedInterests = [];
+  String test = "";
+
+  GlobalKey<AutoCompleteTextFieldState<String>> _textFieldKey = new GlobalKey();
+  SimpleAutoCompleteTextField _textField;
+  String currentText = "";
+
+  _UserDetailsState() {
+    _textField = SimpleAutoCompleteTextField(
+      key: _textFieldKey,
+      decoration: InputDecoration(
+          filled: true,
+          hintText: 'Pick 5-10 of your favorite interests/hobbies.'),
+      suggestions: _allInterests,
+      clearOnSubmit: true,
+      textSubmitted: (text) => setState(() {
+        if (_addedInterests.length >= 10) return;
+        if (_addedInterests.contains(text)) return;
+
+        int find = _allInterestsComparable.indexOf(text.toLowerCase());
+        if (find == -1) return;
+
+        _addedInterests.add(_allInterests[find]);
+      }),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    print("Builder");
     return Scaffold(
       body: Form(
         key: _formKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        autovalidateMode: AutovalidateMode.always,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -83,101 +98,125 @@ class _UserDetailsState extends State<UserDetails> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
             SizedBox(height: 10),
-            Container(
-              width: 400,
-              height: 100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    width: 190,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Container(
                     height: 100,
                     child: TextFormField(
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
                         return null;
                       },
-                      textAlign: TextAlign.start,
+                      textAlign: TextAlign.center,
                       maxLines: 1,
-                      maxLength: 25,
+                      maxLength: 30,
                       decoration:
                           InputDecoration(filled: true, hintText: 'City'),
                     ),
                   ),
-                  SizedBox(width: 20),
-                  Container(
-                    width: 190,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Container(
                     height: 100,
                     child: TextFormField(
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
                         return null;
                       },
-                      textAlign: TextAlign.start,
+                      textAlign: TextAlign.center,
                       maxLines: 1,
-                      maxLength: 25,
+                      maxLength: 30,
                       decoration:
                           InputDecoration(filled: true, hintText: 'Country'),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            SizedBox(height: 25),
 
             // School and major
-            Text('University Information',
+            Text('Where do you go to school?',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
             SizedBox(height: 10),
-            Container(
-              width: 400,
-              height: 100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    width: 190,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Container(
                     height: 100,
                     child: TextFormField(
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
                         return null;
                       },
-                      textAlign: TextAlign.start,
+                      textAlign: TextAlign.center,
                       maxLines: 1,
-                      maxLength: 25,
+                      maxLength: 30,
                       decoration: InputDecoration(
                           filled: true, hintText: 'University Name'),
                     ),
                   ),
-                  SizedBox(width: 20),
-                  Container(
-                    width: 190,
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  child: Container(
                     height: 100,
                     child: TextFormField(
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
                         return null;
                       },
-                      textAlign: TextAlign.start,
+                      textAlign: TextAlign.center,
                       maxLines: 1,
-                      maxLength: 25,
+                      maxLength: 30,
                       decoration: InputDecoration(
                           filled: true, hintText: 'Field of Study'),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
 
-            SizedBox(height: 25),
-
-            // School and major
-            Text('List size = ${_allInterests.length}, loadCount = $loadCount',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10)),
             // Interests and Hobbies
+            // School and major
+            Text('What interests you?',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Row(children: [
+                  Expanded(
+                    child: Container(
+                      height: 50,
+                      child: _textField,
+                    ),
+                  ),
+                ]),
+                Scrollbar(
+                  isAlwaysShown: true,
+                  child: Container(
+                      width: 300,
+                      height: 200,
+                      child: ListView.builder(
+                        itemCount: _addedInterests.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(
+                              '${_addedInterests[index]}',
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        },
+                      )),
+                )
+              ],
+            ),
           ],
         ),
       ),

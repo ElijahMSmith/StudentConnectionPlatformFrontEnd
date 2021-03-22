@@ -7,7 +7,6 @@ Air sports
 Airbrushing
 Aircraft spotting
 Airsoft
-Airsoft
 Amateur astronomy
 Amateur geology
 Amateur radio
@@ -20,12 +19,10 @@ Antiquities
 Aquascaping
 Archaeology
 Archery
-Archery
 Art
 Art collecting
 Association football
 Astrology
-Astronomy
 Astronomy
 Audiophile
 Australian rules football
@@ -39,14 +36,10 @@ Babysitting
 Backgammon
 Backpacking
 Badminton
-Badminton
 Baking
 Base jumping
 Baseball
-Baseball
 Basketball
-Basketball
-Baton twirling
 Baton twirling
 Beach volleyball
 Beachcombing
@@ -59,7 +52,6 @@ Billiards
 Binge-watching
 Biology
 Birdwatching
-Birdwatching
 Blacksmithing
 Blogging
 Board sports
@@ -69,7 +61,6 @@ Bonsai
 Book collecting
 Book discussion clubs
 Book restoration
-Bowling
 Bowling
 Boxing
 Brazilian jiu-jitsu
@@ -93,15 +84,14 @@ Car riding
 Car tuning
 Card games
 Cardistry
-Cartophily (card collecting)
+Cartophily
 Caving
 Ceramics
 Chatting
-Checkers (draughts)
+Checkers
 Cheerleading
 Cheesemaking
 Chemistry
-Chess
 Chess
 City trip
 Cleaning
@@ -140,7 +130,6 @@ Cryptography
 Cue sports
 Curling
 Cycling
-Cycling
 DJing
 Dance
 Dancing
@@ -148,7 +137,7 @@ Dandyism
 Darts
 Debate
 Decorating
-Deltiology (postcard collecting)
+Deltiology
 Die-cast toy
 Digital arts
 Digital hoarding
@@ -199,8 +188,6 @@ Fingerpainting
 Fingerprint collecting
 Fishfarming
 Fishing
-Fishing
-Fishkeeping
 Fishkeeping
 Fitness
 Flag football
@@ -220,11 +207,10 @@ Freestyle football
 Frisbee
 Fruit picking
 Furniture building
-Fusilately (phonecard collecting)
-Gaming (tabletop games, role-playing games, Electronic games)
+Fusilately
+Gaming
 Gardening
 Genealogy
-Geocaching
 Geocaching
 Geography
 Ghost hunting
@@ -241,14 +227,11 @@ Groundhopping
 Guerrilla gardening
 Gunsmithing
 Gymnastics
-Gymnastics
 Hacking
-Handball
 Handball
 Hardware
 Herbalism
 Herp keeping
-Herping
 Herping
 High-power rocketry
 Hiking
@@ -259,7 +242,6 @@ Home improvement
 Homebrewing
 Hooping
 Horseback riding
-Horseback riding
 Horsemanship
 Horseshoes
 Houseplant care
@@ -269,10 +251,7 @@ Hunting
 Hydroponics
 Ice hockey
 Ice skating
-Ice skating
 Iceboat racing
-Indoors
-Indoors
 Indoors
 Inline skating
 Insect collecting
@@ -306,7 +285,6 @@ Kung fu
 LARPing
 Lace making
 Lacrosse
-Lacrosse
 Lapidary
 Laser tag
 Learning
@@ -322,12 +300,9 @@ Lock picking
 Lomography
 Long-distance running
 Longboarding
-Longboarding
-Longboarding
-Lotology (lottery ticket collecting)
+Lotology
 Machining
 Macrame
-Magic
 Magic
 Magnet fishing
 Mahjong
@@ -335,16 +310,13 @@ Makeup
 Marbles
 Marching band
 Martial arts
-Martial arts
 Massaging
 Mathematics
-Mazes (indoor/outdoor)
+Mazes
 Mechanics
 Medical science
 Meditation
-Meditation
 Memory training
-Metal detecting
 Metal detecting
 Metalworking
 Meteorology
@@ -374,10 +346,7 @@ Noodling
 Nordic skating
 Observation hobbies
 Orienteering
-Orienteering
 Origami
-Outdoors
-Outdoors
 Outdoors
 Outdoors and Sports
 Paintball
@@ -391,16 +360,14 @@ Pet
 Pet adoption & fostering
 Pet sitting
 Philately
-Philately
 Phillumeny
 Philosophy
-Photography
 Photography
 Physics
 Pickleball
 Picnicking
 Pilates
-Pin (lapel)
+Pin
 Planning
 Plastic art
 Playing musical instruments
@@ -408,7 +375,6 @@ Podcast hosting
 Poetry
 Poi
 Poker
-Pole dancing
 Pole dancing
 Polo
 Pool
@@ -436,9 +402,6 @@ Racquetball
 Radio-controlled car racing
 Radio-controlled model collecting
 Radio-controlled model playing
-Radio-controlled model playing
-Radio-controlled model playing
-Radio-controlled model playing
 Rafting
 Rail transport modeling
 Rail transport modelling
@@ -447,14 +410,12 @@ Railway studies
 Rappelling
 Rapping
 Reading
-Reading
 Recipe creation
 Record collecting
 Refinishing
 Reiki
 Renaissance fair
 Renovating
-Research
 Research
 Reviewing Gadgets
 Road biking
@@ -478,7 +439,6 @@ Scouting
 Scrapbooking
 Scuba diving
 Sculling or rowing
-Sculling or rowing
 Sculpting
 Scutelliphily
 Sea glass collecting
@@ -494,9 +454,7 @@ Shortwave listening
 Shuffleboard
 Singing
 Skateboarding
-Skateboarding
 Sketching
-Skiing
 Skiing
 Skimboarding
 Skipping rope
@@ -504,7 +462,6 @@ Skydiving
 Slacklining
 Sled dog racing
 Sledding
-Slot car
 Slot car
 Slot car racing
 Snorkeling
@@ -524,7 +481,6 @@ Sports science
 Spreadsheets
 Squash
 Stamp collecting
-Stamp collecting
 Stand-up comedy
 Stone collecting
 Stone skipping
@@ -535,12 +491,9 @@ Stuffed toy collecting
 Sudoku
 Sun bathing
 Surfing
-Surfing
 Survivalism
 Swimming
-Swimming
 Table football
-Table tennis
 Table tennis
 Table tennis playing
 Taekwondo
@@ -555,7 +508,6 @@ Tea bag collecting
 Teaching
 Telling jokes
 Tennis
-Tennis
 Tennis polo
 Tether car
 Thrifting
@@ -563,7 +515,6 @@ Thru-hiking
 Ticket collecting
 Topiary
 Tour skating
-Tourism
 Tourism
 Trade fair visiting
 Transit map collecting
@@ -574,7 +525,6 @@ Ultimate frisbee
 Upcycling
 Urban exploration
 VR Gaming
-VR Gaming
 Vacation
 Vegetable farming
 Vehicle restoration
@@ -582,13 +532,11 @@ Video editing
 Video game collecting
 Video game developing
 Video gaming
-Video gaming
 Video making
 Videography
 Vintage cars
 Vintage clothing
 Vinyl Records
-Volleyball
 Volleyball
 Volunteering
 Walking

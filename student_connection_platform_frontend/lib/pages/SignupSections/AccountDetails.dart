@@ -113,30 +113,27 @@ class _AccountDetailsState extends State<AccountDetails> {
           ),
 
           // Email input field
-          Container(
-            width: 250,
-            child: TextFormField(
-              autofocus: true,
-              textInputAction: TextInputAction.next,
-              maxLines: 1,
-              validator: (value) {
-                if (value.isEmpty)
-                  return 'Please enter an email for this account.';
+          TextFormField(
+            autofocus: true,
+            textInputAction: TextInputAction.next,
+            maxLines: 1,
+            validator: (value) {
+              if (value.isEmpty)
+                return 'Please enter an email for this account.';
 
-                // TODO: Also validate database doesn't have this email in it already
-                return null;
-              },
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'Account email',
-                //hintText: ''
-              ),
-              onChanged: (value) {
-                _email = value;
-                _validationSuccessful = false;
-              },
-              textAlign: TextAlign.center,
+              // TODO: Also validate database doesn't have this email in it already
+              return null;
+            },
+            decoration: InputDecoration(
+              filled: true,
+              labelText: 'Account email',
+              //hintText: ''
             ),
+            onChanged: (value) {
+              _email = value;
+              _validationSuccessful = false;
+            },
+            textAlign: TextAlign.center,
           ),
 
           SizedBox(
@@ -144,24 +141,21 @@ class _AccountDetailsState extends State<AccountDetails> {
           ),
 
           // Password field
-          Container(
-            width: 250,
-            child: TextFormField(
-              validator: (value) {
-                //TODO: Validate password against TBD criteria
-                if (value.isEmpty) return 'Please enter a password';
-                return null;
-              },
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'Choose a password',
-              ),
-              onChanged: (value) {
-                _password = value;
-                _validationSuccessful = false;
-              },
-              textAlign: TextAlign.center,
+          TextFormField(
+            validator: (value) {
+              //TODO: Validate password against TBD criteria
+              if (value.isEmpty) return 'Please enter a password';
+              return null;
+            },
+            decoration: InputDecoration(
+              filled: true,
+              labelText: 'Choose a password',
             ),
+            onChanged: (value) {
+              _password = value;
+              _validationSuccessful = false;
+            },
+            textAlign: TextAlign.center,
           ),
 
           SizedBox(
@@ -169,55 +163,48 @@ class _AccountDetailsState extends State<AccountDetails> {
           ),
 
           // Password confirmation field
-          Container(
-            width: 250,
-            child: TextFormField(
-              validator: (value) {
-                if (value != _password) return 'Passwords don\'t match!';
-                return null;
-              },
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'Confirm your password',
-                //hintText: ''
-              ),
-              textAlign: TextAlign.center,
+          TextFormField(
+            validator: (value) {
+              if (value != _password) return 'Passwords don\'t match!';
+              return null;
+            },
+            decoration: InputDecoration(
+              filled: true,
+              labelText: 'Confirm your password',
+              //hintText: ''
             ),
+            textAlign: TextAlign.center,
           ),
 
           SizedBox(
             height: 25,
           ),
 
-          // Date of birth field
-          Container(
-            width: 250,
-            child: TextFormField(
-              validator: (value) {
-                _validDOB = false;
+          TextFormField(
+            validator: (value) {
+              _validDOB = false;
 
-                if (!_isValidDOB(value))
-                  return 'Invalid Format - Must be mm/dd/yyyy';
+              if (!_isValidDOB(value))
+                return 'Invalid Format - Must be mm/dd/yyyy';
 
-                if (!_isValidDay(value))
-                  return 'That date does not exist or is not acceptable';
+              if (!_isValidDay(value))
+                return 'That date does not exist or is not acceptable';
 
-                if (!_isAdult(value))
-                  return 'You must be at least 18 years old to sign up!';
+              if (!_isAdult(value))
+                return 'You must be at least 18 years old to sign up!';
 
-                _validDOB = true;
+              _validDOB = true;
 
-                return null;
-              },
-              decoration: InputDecoration(
-                  filled: true,
-                  labelText: 'Enter Your Date of Birth',
-                  hintText: 'mm/dd/yyyy'),
-              textAlign: TextAlign.center,
-              onChanged: (value) {
-                _validDOB = false;
-              },
-            ),
+              return null;
+            },
+            decoration: InputDecoration(
+                filled: true,
+                labelText: 'Enter Your Date of Birth',
+                hintText: 'mm/dd/yyyy'),
+            textAlign: TextAlign.center,
+            onChanged: (value) {
+              _validDOB = false;
+            },
           ),
         ],
       ),
