@@ -8,10 +8,10 @@ class AboutPage extends StatelessWidget
   {
     return Scaffold(
       body: SafeArea(
-              child: Container(
+              child: Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget> [
-
                     Container(
                       child: SelectableText(
                         'Add creators here'
@@ -28,13 +28,11 @@ class AboutPage extends StatelessWidget
                         'Add Mission statement here'
                       )
                     ),
-
                     Container(
                       child: SelectableText(
                         'Add Overview of functionality here'
                       )
                     ),
-
                     Container(
                       child: SelectableText(
                         'Add Github repo link if we go open source here'
@@ -42,7 +40,7 @@ class AboutPage extends StatelessWidget
                     ),
                   ],
                 ),
-        ),
+              ),
       ),
     );
   }

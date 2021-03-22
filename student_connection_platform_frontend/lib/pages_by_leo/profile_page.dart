@@ -1,6 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:student_connection_platform_frontend/pages_by_leo/match_maker.dart';
-import '../constants.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget
 {
@@ -24,14 +24,6 @@ class _ProfilePageState extends State<ProfilePage>
     'and leverage such skills to contribute in the software idustry.'
   ];
 
-  // navigate to the page based on the index selected
-  // one approach is to use a switch statement on the index selected
-  void _onItemTapped(int bottomNavButtonIndex)
-  {
-    _selectedIndex = bottomNavButtonIndex;
-    setState(() {});
-  }
-
   /// initialize the buffer.
   /// Note that this method
   /// clears out any contents
@@ -46,66 +38,212 @@ class _ProfilePageState extends State<ProfilePage>
     b.writeAll(l);
   }
 
-  SingleChildScrollView bioSection({
+  Container bioSection({
     Widget body = const Text('bio text'),
     EdgeInsetsGeometry padding = const EdgeInsets.all(16.0),
   })
   {
-    return SingleChildScrollView(
+    return Container(
       child: Padding(padding: padding, child: body),
     );
   }
 
-  int _selectedIndex = 0;
-  StringBuffer aboutMeBuffer;
+  StringBuffer aboutMeBuffer = StringBuffer();
 
   @override
   void initState()
   {
-    // TODO: implement initState
     super.initState();
-    aboutMeBuffer = StringBuffer();
     fillBufferFromList(aboutMeBuffer, aboutMe);
   }
 
   @override
   Widget build(BuildContext context)
   {
+    PickedFile imageFile;
+    // image picker instance
+    final ImagePicker picker = ImagePicker();
+
+    void takePhoto(ImageSource source) async
+    {
+      // gets users taken photo
+      // this has to be awaited because we don't know when the user will capture
+      // the photo
+      final pickedFile = await picker.getImage(source: source);
+
+      setState(() {
+        imageFile = pickedFile;
+      });
+    }
+
+    TextFormField textfield({@required IconData icon, @required String label, @required String helper, int maxLines=1})
+    {
+      return TextFormField(
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.teal,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.green,
+              width: 2,
+            ),
+          ),
+          prefixIcon: Icon(
+            icon,
+            color: Colors.green
+          ),
+          labelText: label,
+          helperText: helper,
+          // hintText: 'John Doe',
+        ),
+      );
+    }
+
+
+    // will be triggered as a bottomSheet once the profile image is tapped
+    Container bottomSheet()
+    {
+      return Container(
+        height: 100,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 20
+        ),
+        child: Column(
+          children: [
+            Text(
+              'Choose profile photo',
+              style: TextStyle(fontSize: 20)
+            ),
+            SizedBox(height:20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              FlatButton.icon(
+              onPressed: ()
+              {
+                // taken from the camera
+                takePhoto(ImageSource.camera);
+              },
+              icon: Icon(Icons.camera),
+              label: Text('Camera'),),
+
+              FlatButton.icon(
+              onPressed: ()
+              {
+                // taken from the camera gallery
+                takePhoto(ImageSource.gallery);
+              },
+              icon: Icon(Icons.image),
+              label: Text('Gallery'),)
+            ],),
+
+          ],
+        ),
+      );
+    }
+
+    Stack imageProfile()
+    {
+      return Stack(
+        children: [
+          CircleAvatar(
+            backgroundImage: imageFile == null
+            ? AssetImage('assets/baby_yoda.jpg')
+            : FileImage(File(imageFile.path)),
+            radius: 40),
+          Positioned(
+            bottom: 0.0,
+            right: 25.0,
+            child: InkWell(
+                    onTap: ()
+                    {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (builder) => bottomSheet());
+                    },
+                    child: Icon(
+                      Icons.camera_alt,
+                      color: Colors.grey,
+                      size: 28.0
+          ),
+            )),
+        ],
+      );
+    }
+
+
+
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              // for picture and text
-              Padding(
-                padding: const EdgeInsets.fromLTRB(50, 8, 8, 8),
-                child: Row(
+        child: SingleChildScrollView(
+                  child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                // for picture and text
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(50, 8, 8, 8),
+                  child: Row(
+                    children: [
+                      imageProfile(),
+
+                      SizedBox(width: 30),
+                      RaisedButton(
+                        onPressed: ()
+                        {
+
+                        },
+                        child: Text('Preview Profile'))
+                    ],
+                  ),
+                ),
+
+                textfield(icon: Icons.person, label: 'Name', helper: 'Name can\'t be empty'),
+                SizedBox(height: 30),
+                textfield(icon: Icons.person, label: 'Date of Birth', helper: 'mm/dd/yyyy'),
+                SizedBox(height: 30),
+                textfield(icon: Icons.work, label: 'Profession', helper: 'Software developer'),
+                SizedBox(height: 30),
+                textfield(icon: Icons.school, label: 'Major', helper: 'computer science'),
+                SizedBox(height: 30),
+                textfield(icon: Icons.book, label: 'About', helper: 'About me', maxLines: 5),
+                SizedBox(height: 30),
+
+                // bio text
+                // Container(
+                //     child: bioSection(
+                //         body: SelectableText(aboutMeBuffer.toString())
+                //   )
+                // ),
+                // log out button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    CircleAvatar(
-                        backgroundImage: AssetImage('assets/baby_yoda.jpg'),
-                        radius: 40),
-                    SizedBox(width: 30),
-                    Text('User\'s settings')
+                    RaisedButton.icon(
+                      onPressed: () {},
+                      icon: Icon(Icons.settings),
+                      label: Text('Settings'),
+                    ),
+                    RaisedButton(
+                      onPressed: () => print('log out'),
+                      child: Text('Log out'),
+                    ),
                   ],
                 ),
-              ),
-
-              // bio text
-              Container(
-                  child: bioSection(
-                      body: SelectableText(aboutMeBuffer.toString())
-                )
-              ),
-              // log out button
-              RaisedButton(
-                onPressed: () => print('log out'),
-                child: Text('Log out'),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+

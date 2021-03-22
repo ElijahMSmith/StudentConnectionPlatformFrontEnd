@@ -6,6 +6,7 @@ import 'package:student_connection_platform_frontend/pages_by_leo/post_page.dart
 import 'pages/signin.dart';
 import 'pages/signup.dart';
 import 'pages/content_frame.dart';
+import 'pages_by_leo/about.dart';
 import 'pages_by_leo/profile_page.dart';
 
 
@@ -39,6 +40,7 @@ class AppHome extends StatelessWidget
         // todo I think the default page should be the match maker,
         // we could potentially have the user decide but we'll see
         home: NavigationHelperWidget(),
+        // home: AboutPage(),
         // initialRoute: ProfilePage.routeId,
         // routes:
         // {
