@@ -1,38 +1,35 @@
-import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/AccountDetails.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/UserOverview.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/UserDetails.dart';
+import 'package:student_connection_platform_frontend/account.dart';
+import 'package:flutter/material.dart';
 
-// Once finished on signup:
-// Navigator.pop(context) - pop the current page off the Navigator stack
-// Navigator.pushNamed(context, '/ContentFrame');
-
-// Allow passing back of info from each individual sigup page
-// This signup.dart should add one page to stack individually and get back based on which button pressed (forwards, backwards)
-// https://flutter.dev/docs/cookbook/navigation/returning-data
-
-String _appName;
+// Since it's still highly variable, minimize the places we'll have to change it
+String appName;
+// Stores all the information about the new account we're creating
+Account _newAccount;
 
 class SignupForm extends StatefulWidget {
-  SignupForm(String appName) {
-    _appName = appName;
+  SignupForm(String name) {
+    appName = name;
+    _newAccount = new Account();
   }
 
   @override
-  _SignupFormState createState() => _SignupFormState();
+  SignupFormState createState() => SignupFormState();
 }
 
-class _SignupFormState extends State<SignupForm> {
-  // Create widgets for each page - write accessors to getting their data
-  // Make a current page tracker count - display a different page depending on which widget is pressed
-  // When button is pressed, validate if current page is complete. If so, can more forwards. Can always move back.
-  // Each page keeps its data when transitioning pages. Eventually make this transition an animation.
+class SignupFormState extends State<SignupForm> {
+  // Holds references to the account details, user overview, and user details page widgets
+  List<Widget> _pages;
 
-  List<Widget> _pages = [
-    AccountDetails(_appName),
-    UserOverview(_appName),
-    UserDetails(_appName)
-  ];
+  SignupFormState() {
+    _pages = [
+      AccountDetails(_newAccount),
+      UserOverview(_newAccount),
+      UserDetails(_newAccount)
+    ];
+  }
 
   // 0 - account details, 1 - user overview, 2 - user details
   int _currentPage = 0;
@@ -43,12 +40,16 @@ class _SignupFormState extends State<SignupForm> {
       new AssetImage('assets/images/FilledDot.png');
 
   bool _submitAccount() {
-    // TODO - at this point all widgets should have valid account information
-    // Just a question of how to access it here.
+    // TODO - Account should be valid if we're allowing this method to be called
     return true;
   }
 
   void _nextPage() {
+    //TODO: Validate current page is filled with valid information
+    //If not, open a dialog saying what's wrong
+    //If so, move to next page
+    //Moving to content frame should also submit account (not finished yet)
+
     if (_currentPage == 2) {
       if (_submitAccount()) {
         Navigator.pop(context);
@@ -75,10 +76,6 @@ class _SignupFormState extends State<SignupForm> {
       body: Column(
         children: <Widget>[
           Expanded(
-            // Try this out:
-            // https://discord.com/channels/420324994703163402/421445334716121091/821898700015927366
-            // https://bloclibrary.dev/
-
             child: _pages[_currentPage],
           ),
           Padding(

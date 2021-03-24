@@ -1,12 +1,13 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:student_connection_platform_frontend/account.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/material.dart';
+import 'dart:io';
 
-String _appName;
+Account _newAccount;
 
 class UserOverview extends StatefulWidget {
-  UserOverview(String appName) {
-    _appName = appName;
+  UserOverview(Account account) {
+    _newAccount = account;
   }
 
   @override
@@ -15,38 +16,68 @@ class UserOverview extends StatefulWidget {
 
 class _UserOverviewState extends State<UserOverview> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  String _username = "";
-  bool _takenUsername = false;
-
-  String _bio = "";
-  File _profilePicturePath;
   AssetImage _choosePictureAsset =
       AssetImage('assets/images/choosePicture.png');
-  FileImage _profileImage;
-
-  // Works on mobile. On web it opens the prompt, but doesn't actually load the selected image
-  // Not building for web yet, so I'm not going to work on fixing that yet.
   final picker = ImagePicker();
 
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+  Future getImage(ImageSource source) async {
+    final pickedFile = await picker.getImage(source: source);
 
     setState(() {
       if (pickedFile != null) {
-        _profilePicturePath = File(pickedFile.path);
-        _profileImage = FileImage(_profilePicturePath);
+        _newAccount.profilePicture = File(pickedFile.path);
       } else {
         print('No image selected.');
       }
     });
   }
 
+  // will be triggered as a bottomSheet once the profile image is tapped
+  Container bottomSheet() {
+    return Container(
+      height: 100,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        children: [
+          Text('Choose profile photo', style: TextStyle(fontSize: 20)),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 5,
+                child: FlatButton.icon(
+                  onPressed: () {
+                    // taken from the camera
+                    getImage(ImageSource.camera);
+                  },
+                  icon: Icon(Icons.camera),
+                  label: Text('Camera'),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: FlatButton.icon(
+                  onPressed: () {
+                    // taken from the camera gallery
+                    getImage(ImageSource.gallery);
+                  },
+                  icon: Icon(Icons.image),
+                  label: Text('Gallery'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //Username, profile picture, short bio
-
       body: Form(
         key: _formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -69,7 +100,9 @@ class _UserOverviewState extends State<UserOverview> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
                       child: Image(
-                        image: _profileImage ?? _choosePictureAsset,
+                        image: _newAccount.profilePicture != null
+                            ? FileImage(_newAccount.profilePicture)
+                            : _choosePictureAsset,
                         fit: BoxFit.fill,
                         width: 100,
                         height: 100,
@@ -85,7 +118,9 @@ class _UserOverviewState extends State<UserOverview> {
                         textStyle:
                             TextStyle(fontSize: 12, color: Colors.white)),
                     onPressed: () {
-                      getImage();
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (builder) => bottomSheet());
                     },
                   ),
                 ),
@@ -105,6 +140,7 @@ class _UserOverviewState extends State<UserOverview> {
                     height: 10,
                   ),
                   TextFormField(
+                    initialValue: _newAccount.username,
                     validator: (value) {
                       if (value.isEmpty || value.length < 3)
                         return 'Usernames must be at least 3 characters';
@@ -121,7 +157,7 @@ class _UserOverviewState extends State<UserOverview> {
                         filled: true,
                         hintText: 'This doesn\'t have to be your real name.'),
                     onChanged: (value) {
-                      _username = value;
+                      _newAccount.username = value;
                     },
                   ),
                 ],
@@ -141,6 +177,7 @@ class _UserOverviewState extends State<UserOverview> {
                     height: 10,
                   ),
                   TextFormField(
+                    initialValue: _newAccount.bio,
                     validator: (value) {
                       if (value.isEmpty || value.length < 40)
                         return 'Please include at least 40 characters in your bio.';
@@ -157,7 +194,7 @@ class _UserOverviewState extends State<UserOverview> {
                         hintText:
                             'Write anything you want! What makes you who you are?'),
                     onChanged: (value) {
-                      _bio = value;
+                      _newAccount.bio = value;
                     },
                   ),
                 ],

@@ -1,9 +1,10 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:student_connection_platform_frontend/account.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
-String _appName;
+Account _newAccount;
 
 List<String> _allInterests = [
   "Hobbies and interests list not loaded. Sorry!"
@@ -25,8 +26,8 @@ void loadHobbiesAndInterests() async {
 }
 
 class UserDetails extends StatefulWidget {
-  UserDetails(String appName) {
-    _appName = appName;
+  UserDetails(Account account) {
+    _newAccount = account;
     loadHobbiesAndInterests();
   }
 
@@ -34,25 +35,8 @@ class UserDetails extends StatefulWidget {
   _UserDetailsState createState() => _UserDetailsState();
 }
 
-/*
-Still need:
-- City and country
-- School and major
-- Current job
-- Interests (hobbies_interests.txt - sorted alphabetically)
-    - https://pub.dev/packages/autocomplete_textfield
-*/
-
 class _UserDetailsState extends State<UserDetails> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  String _city;
-  String _country;
-  String _school;
-  String _major;
-  String _job;
-  List<String> _addedInterests = [];
-  String test = "";
 
   GlobalKey<AutoCompleteTextFieldState<String>> _textFieldKey = new GlobalKey();
   SimpleAutoCompleteTextField _textField;
@@ -67,13 +51,13 @@ class _UserDetailsState extends State<UserDetails> {
       suggestions: _allInterests,
       clearOnSubmit: true,
       textSubmitted: (text) => setState(() {
-        if (_addedInterests.length >= 10) return;
-        if (_addedInterests.contains(text)) return;
+        if (_newAccount.interests.length >= 10) return;
+        if (_newAccount.interests.contains(text)) return;
 
         int find = _allInterestsComparable.indexOf(text.toLowerCase());
         if (find == -1) return;
 
-        _addedInterests.add(_allInterests[find]);
+        _newAccount.interests.add(_allInterests[find]);
       }),
     );
   }
@@ -105,6 +89,7 @@ class _UserDetailsState extends State<UserDetails> {
                   child: Container(
                     height: 100,
                     child: TextFormField(
+                      initialValue: _newAccount.city,
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
                         return null;
@@ -114,6 +99,9 @@ class _UserDetailsState extends State<UserDetails> {
                       maxLength: 30,
                       decoration:
                           InputDecoration(filled: true, hintText: 'City'),
+                      onChanged: (value) {
+                        _newAccount.city = value;
+                      },
                     ),
                   ),
                 ),
@@ -122,6 +110,7 @@ class _UserDetailsState extends State<UserDetails> {
                   child: Container(
                     height: 100,
                     child: TextFormField(
+                      initialValue: _newAccount.country,
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
                         return null;
@@ -131,6 +120,9 @@ class _UserDetailsState extends State<UserDetails> {
                       maxLength: 30,
                       decoration:
                           InputDecoration(filled: true, hintText: 'Country'),
+                      onChanged: (value) {
+                        _newAccount.country = value;
+                      },
                     ),
                   ),
                 ),
@@ -149,6 +141,7 @@ class _UserDetailsState extends State<UserDetails> {
                   child: Container(
                     height: 100,
                     child: TextFormField(
+                      initialValue: _newAccount.school,
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
                         return null;
@@ -158,6 +151,9 @@ class _UserDetailsState extends State<UserDetails> {
                       maxLength: 30,
                       decoration: InputDecoration(
                           filled: true, hintText: 'University Name'),
+                      onChanged: (value) {
+                        _newAccount.school = value;
+                      },
                     ),
                   ),
                 ),
@@ -166,6 +162,7 @@ class _UserDetailsState extends State<UserDetails> {
                   child: Container(
                     height: 100,
                     child: TextFormField(
+                      initialValue: _newAccount.major,
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
                         return null;
@@ -175,6 +172,9 @@ class _UserDetailsState extends State<UserDetails> {
                       maxLength: 30,
                       decoration: InputDecoration(
                           filled: true, hintText: 'Field of Study'),
+                      onChanged: (value) {
+                        _newAccount.major = value;
+                      },
                     ),
                   ),
                 ),
@@ -204,11 +204,11 @@ class _UserDetailsState extends State<UserDetails> {
                       width: 300,
                       height: 200,
                       child: ListView.builder(
-                        itemCount: _addedInterests.length,
+                        itemCount: _newAccount.interests.length,
                         itemBuilder: (context, index) {
                           return ListTile(
                             title: Text(
-                              '${_addedInterests[index]}',
+                              '${_newAccount.interests[index]}',
                               textAlign: TextAlign.center,
                             ),
                           );

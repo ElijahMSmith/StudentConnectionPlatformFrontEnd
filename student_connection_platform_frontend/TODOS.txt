@@ -1,11 +1,14 @@
 Current work:
-- Update validation to onUserInteraction and use booleans to determine if data is valid (when validation method succeeds, set true. If validation fails set false. Shouldn't need onChange)
-- DOB validation currently doesn't work, doesn't allow/isn't acceptable for any valid date too
+- Fix DOB validator
+- Update form validation to onUserInteraction
+- Make full page validation through account class
+    - Remove page validated booleans from widgets
+    - Make each form field validator flip a boolean if validation succeeds
+    - Make it false on failed validation (or on change?)
+
+
 - Fix bottom app bar so it doesn't overlap with shit (should stay at the bottom when keyboard input shows up)
 - Try to fix list view to either put them closer together and/or make the width match the parent and height fill the rest
-- Move data to signup class and make sure all our data is valid if we want to submit
-    - If not valid, alert dialog which page is wrong and the issue
-    - If all valid, prepare for DB submission
 
 
 
