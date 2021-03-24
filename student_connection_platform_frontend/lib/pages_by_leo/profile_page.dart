@@ -1,15 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/preview_profile.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatefulWidget
+{
   static const String routeId = 'profile_page';
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+{
   final aboutMe = [
     'Greetings! I am currently a Computer Science graduate student attending ',
     'The University of Central Florida. My productive spare-time ',
@@ -26,21 +29,14 @@ class _ProfilePageState extends State<ProfilePage> {
   /// Note that this method
   /// clears out any contents
   /// previously inside.
-  void fillBufferFromList(StringBuffer b, List<String> l) {
-    if (b.isNotEmpty) {
+  void fillBufferFromList(StringBuffer b, List<String> l)
+  {
+    if (b.isNotEmpty)
+    {
       b.clear();
     }
 
     b.writeAll(l);
-  }
-
-  Container bioSection({
-    Widget body = const Text('bio text'),
-    EdgeInsetsGeometry padding = const EdgeInsets.all(16.0),
-  }) {
-    return Container(
-      child: Padding(padding: padding, child: body),
-    );
   }
 
   StringBuffer aboutMeBuffer = StringBuffer();
@@ -48,32 +44,62 @@ class _ProfilePageState extends State<ProfilePage> {
   PickedFile imageFile;
   // image picker instance
   final ImagePicker picker = ImagePicker();
+  List<TextEditingController> controllers;
 
-  void takePhoto(ImageSource source) async {
+  void takePhoto(ImageSource source) async
+  {
     // gets users taken photo
     // this has to be awaited because we don't know when the user will capture
     // the photo
     final pickedFile = await picker.getImage(source: source);
 
-    setState(() {
+    setState(()
+    {
       imageFile = pickedFile;
     });
   }
 
   @override
-  void initState() {
+  void initState()
+  {
     super.initState();
     fillBufferFromList(aboutMeBuffer, aboutMe);
+
+    // list comprehension for dart language
+    // if you've used python, you probably are
+    // very familiar with this
+    // 5 separate text editing controllers, one for each text field
+    controllers = [for (int i = 0; i < 5; ++i) TextEditingController()];
+    // controllers.forEach((element) {print(element);});
+
+    setState(() {});
   }
 
   @override
-  Widget build(BuildContext context) {
-    TextFormField textfield(
+  void dispose()
+  {
+    super.dispose();
+
+    // clean up
+    controllers.forEach((controller) => controller.dispose());
+  }
+
+  @override
+  Widget build(BuildContext context)
+  {
+
+    // TODO validate each input field
+    // before saving and allowing the user
+    // to have it in the profile
+    Widget textfield(
         {@required IconData icon,
         @required String label,
         @required String helper,
-        int maxLines = 1}) {
+        int maxLines = 1,
+        TextEditingController controller})
+        {
       return TextFormField(
+        controller: controller,
         maxLines: maxLines,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -96,7 +122,8 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     // will be triggered as a bottomSheet once the profile image is tapped
-    Container bottomSheet() {
+    Widget bottomSheet()
+    {
       return Container(
         height: 100,
         width: MediaQuery.of(context).size.width,
@@ -109,7 +136,8 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FlatButton.icon(
-                  onPressed: () {
+                  onPressed: ()
+                  {
                     // taken from the camera
                     takePhoto(ImageSource.camera);
                   },
@@ -117,7 +145,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   label: Text('Camera'),
                 ),
                 FlatButton.icon(
-                  onPressed: () {
+                  onPressed: ()
+                  {
                     // taken from the camera gallery
                     takePhoto(ImageSource.gallery);
                   },
@@ -131,7 +160,8 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     }
 
-    Stack imageProfile() {
+    Widget imageProfile()
+    {
       return Stack(
         children: [
           CircleAvatar(
@@ -143,7 +173,8 @@ class _ProfilePageState extends State<ProfilePage> {
               bottom: 0.0,
               right: 25.0,
               child: InkWell(
-                onTap: () {
+                onTap: ()
+                {
                   showModalBottomSheet(
                       context: context, builder: (builder) => bottomSheet());
                 },
@@ -169,7 +200,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       imageProfile(),
                       SizedBox(width: 30),
                       RaisedButton(
-                          onPressed: () {}, child: Text('Preview Profile'))
+                          onPressed: ()
+                          {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                            PreviewProfile(
+                              contents: [for (int i = 0; i < 5; ++i) controllers[i].text],
+                              image: imageFile == null
+                              ? AssetImage('assets/baby_yoda.jpg')
+                              : FileImage(File(imageFile.path),),),),);
+                          },
+                          child: Text('Preview Profile'))
                     ],
                   ),
                 ),
@@ -177,47 +217,58 @@ class _ProfilePageState extends State<ProfilePage> {
                 textfield(
                     icon: Icons.person,
                     label: 'Name',
-                    helper: 'Name can\'t be empty'),
+                    helper: 'Name can\'t be empty',
+                    controller: controllers[0]),
                 SizedBox(height: 30),
                 textfield(
                     icon: Icons.person,
                     label: 'Date of Birth',
-                    helper: 'mm/dd/yyyy'),
+                    helper: 'mm/dd/yyyy',
+                    controller: controllers[1]),
                 SizedBox(height: 30),
                 textfield(
                     icon: Icons.work,
                     label: 'Profession',
-                    helper: 'Software developer'),
+                    helper: 'Software developer',
+                    controller: controllers[2]),
                 SizedBox(height: 30),
                 textfield(
                     icon: Icons.school,
                     label: 'Major',
-                    helper: 'computer science'),
+                    helper: 'computer science',
+                    controller: controllers[3]),
                 SizedBox(height: 30),
                 textfield(
                     icon: Icons.book,
                     label: 'About',
                     helper: 'About me',
+                    controller: controllers[4],
                     maxLines: 5),
                 SizedBox(height: 30),
-
-                // bio text
-                // Container(
-                //     child: bioSection(
-                //         body: SelectableText(aboutMeBuffer.toString())
-                //   )
-                // ),
+                RaisedButton.icon(
+                      onPressed: ()
+                      {
+                        controllers.forEach((element) => print(element?.text));
+                      },
+                      icon: Icon(Icons.save),
+                      label: Text('Save'),
+                ),
+                SizedBox(height: 30),
                 // log out button
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     RaisedButton.icon(
-                      onPressed: () {},
+                      onPressed: ()
+                      {
+                        // todo settings page
+                      },
                       icon: Icon(Icons.settings),
                       label: Text('Settings'),
                     ),
                     RaisedButton(
                       onPressed: () => print('log out'),
+
                       child: Text('Log out'),
                     ),
                   ],
