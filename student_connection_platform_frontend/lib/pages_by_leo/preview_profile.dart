@@ -44,8 +44,12 @@ class PreviewProfile extends StatelessWidget
             backgroundImage: image,
             radius: 50,
           ),
+
+          // todo
+          // should pass in a string here from when the user creates a username
+          // upon registration
           Text(
-            'Username goes here',
+            'Username_goes_here',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

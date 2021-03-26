@@ -39,12 +39,13 @@ class _ProfilePageState extends State<ProfilePage>
     b.writeAll(l);
   }
 
-  StringBuffer aboutMeBuffer = StringBuffer();
-
   PickedFile imageFile;
   // image picker instance
   final ImagePicker picker = ImagePicker();
   List<TextEditingController> controllers;
+  String nameError;
+  var formKey = GlobalKey<FormState>();
+
 
   void takePhoto(ImageSource source) async
   {
@@ -59,11 +60,33 @@ class _ProfilePageState extends State<ProfilePage>
     });
   }
 
+  void datePicker() async
+  {
+    var date = await showDatePicker(
+      context: context,
+      initialDate:DateTime.now(),
+      firstDate:DateTime(1900),
+      lastDate: DateTime(2100));
+      controllers[1].text = date.toString().substring(0,10);
+  }
+
+  String validator(String nameField)
+  {
+    if (nameField.isEmpty || nameField == null)
+    {
+      nameError = 'Please enter your name';
+      return nameError;
+    }
+    nameError = null;
+    setState(() {});
+    return nameError;
+  }
+
   @override
   void initState()
   {
     super.initState();
-    fillBufferFromList(aboutMeBuffer, aboutMe);
+    // fillBufferFromList(aboutMeBuffer, aboutMe);
 
     // list comprehension for dart language
     // if you've used python, you probably are
@@ -87,19 +110,26 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context)
   {
-
-    // TODO validate each input field
     // before saving and allowing the user
     // to have it in the profile
     Widget textfield(
         {@required IconData icon,
         @required String label,
         @required String helper,
+        String errorText,
         int maxLines = 1,
-        TextEditingController controller})
-        {
+        bool showCursor = false,
+        bool readOnly = false,
+        TextEditingController controller,
+        Function datePicker,
+        Function validator,})
+    {
       return TextFormField(
         controller: controller,
+        showCursor: showCursor,
+        readOnly: readOnly,
+        validator: validator,
+        onTap: datePicker,
         maxLines: maxLines,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -117,6 +147,7 @@ class _ProfilePageState extends State<ProfilePage>
           labelText: label,
           helperText: helper,
           // hintText: 'John Doe',
+          errorText: errorText,
         ),
       );
     }
@@ -189,19 +220,30 @@ class _ProfilePageState extends State<ProfilePage>
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                // for picture and text
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(50, 8, 8, 8),
-                  child: Row(
-                    children: [
-                      imageProfile(),
-                      SizedBox(width: 30),
-                      RaisedButton(
+            child: Form(
+                key: formKey,
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // for picture and text
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(50, 8, 8, 8),
+                    child: Row(
+                      children: [
+                        imageProfile(),
+                        SizedBox(width: 30),
+                        ElevatedButton(
                           onPressed: ()
                           {
+                            // validate name input before continuing
+                            if (!formKey.currentState.validate())
+                            {
+                              print('Please make sure all fields are valid before previewing');
+                              return;
+                            }
+
+                            setState(() {});
+
                             Navigator.push(context, MaterialPageRoute(builder: (context) =>
                             PreviewProfile(
                               contents: [for (int i = 0; i < 5; ++i) controllers[i].text],
@@ -210,70 +252,76 @@ class _ProfilePageState extends State<ProfilePage>
                               : FileImage(File(imageFile.path),),),),);
                           },
                           child: Text('Preview Profile'))
-                    ],
+                      ],
+                    ),
                   ),
-                ),
 
-                textfield(
+                  textfield(
                     icon: Icons.person,
                     label: 'Name',
                     helper: 'Name can\'t be empty',
-                    controller: controllers[0]),
-                SizedBox(height: 30),
-                textfield(
+                    controller: controllers[0],
+                    errorText: nameError,
+                    validator: validator),
+                  SizedBox(height: 30),
+                  textfield(
                     icon: Icons.person,
                     label: 'Date of Birth',
+                    showCursor: true,
+                    readOnly: true,
                     helper: 'mm/dd/yyyy',
-                    controller: controllers[1]),
-                SizedBox(height: 30),
-                textfield(
+                    controller: controllers[1],
+                    datePicker: datePicker),
+                  SizedBox(height: 30),
+                  textfield(
                     icon: Icons.work,
                     label: 'Profession',
                     helper: 'Software developer',
                     controller: controllers[2]),
-                SizedBox(height: 30),
-                textfield(
+                  SizedBox(height: 30),
+                  textfield(
                     icon: Icons.school,
                     label: 'Major',
                     helper: 'computer science',
                     controller: controllers[3]),
-                SizedBox(height: 30),
-                textfield(
+                  SizedBox(height: 30),
+                  textfield(
                     icon: Icons.book,
                     label: 'About',
                     helper: 'About me',
                     controller: controllers[4],
                     maxLines: 5),
-                SizedBox(height: 30),
-                RaisedButton.icon(
-                      onPressed: ()
-                      {
-                        controllers.forEach((element) => print(element?.text));
-                      },
-                      icon: Icon(Icons.save),
-                      label: Text('Save'),
-                ),
-                SizedBox(height: 30),
-                // log out button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    RaisedButton.icon(
-                      onPressed: ()
-                      {
-                        // todo settings page
-                      },
-                      icon: Icon(Icons.settings),
-                      label: Text('Settings'),
-                    ),
-                    RaisedButton(
-                      onPressed: () => print('log out'),
+                  SizedBox(height: 30),
+                  ElevatedButton.icon(
+                    onPressed: ()
+                    {
+                      controllers.forEach((element) => print(element?.text));
+                    },
+                    icon: Icon(Icons.save),
+                    label: Text('Save'),
+                  ),
+                  SizedBox(height: 30),
+                  // log out button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: ()
+                        {
+                          // todo settings page
+                        },
+                        icon: Icon(Icons.settings),
+                        label: Text('Settings'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => print('log out'),
 
-                      child: Text('Log out'),
-                    ),
-                  ],
-                ),
-              ],
+                        child: Text('Log out'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
