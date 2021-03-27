@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_profile.dart';
 
-class ProfilePage extends StatefulWidget
-{
-  static const String routeId = 'profile_page';
+class ProfilePage extends StatefulWidget {
+  static const String routeID = '/ProfilePage';
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage>
-{
+class _ProfilePageState extends State<ProfilePage> {
   final aboutMe = [
     'Greetings! I am currently a Computer Science graduate student attending ',
     'The University of Central Florida. My productive spare-time ',
@@ -29,10 +27,8 @@ class _ProfilePageState extends State<ProfilePage>
   /// Note that this method
   /// clears out any contents
   /// previously inside.
-  void fillBufferFromList(StringBuffer b, List<String> l)
-  {
-    if (b.isNotEmpty)
-    {
+  void fillBufferFromList(StringBuffer b, List<String> l) {
+    if (b.isNotEmpty) {
       b.clear();
     }
 
@@ -46,34 +42,28 @@ class _ProfilePageState extends State<ProfilePage>
   String nameError;
   var formKey = GlobalKey<FormState>();
 
-
-  void takePhoto(ImageSource source) async
-  {
+  void takePhoto(ImageSource source) async {
     // gets users taken photo
     // this has to be awaited because we don't know when the user will capture
     // the photo
     final pickedFile = await picker.getImage(source: source);
 
-    setState(()
-    {
+    setState(() {
       imageFile = pickedFile;
     });
   }
 
-  void datePicker() async
-  {
+  void datePicker() async {
     var date = await showDatePicker(
-      context: context,
-      initialDate:DateTime.now(),
-      firstDate:DateTime(1900),
-      lastDate: DateTime(2100));
-      controllers[1].text = date.toString().substring(0,10);
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100));
+    controllers[1].text = date.toString().substring(0, 10);
   }
 
-  String validator(String nameField)
-  {
-    if (nameField.isEmpty || nameField == null)
-    {
+  String validator(String nameField) {
+    if (nameField.isEmpty || nameField == null) {
       nameError = 'Please enter your name';
       return nameError;
     }
@@ -83,8 +73,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   @override
-  void initState()
-  {
+  void initState() {
     super.initState();
     // fillBufferFromList(aboutMeBuffer, aboutMe);
 
@@ -99,8 +88,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   @override
-  void dispose()
-  {
+  void dispose() {
     super.dispose();
 
     // clean up
@@ -108,22 +96,21 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     // before saving and allowing the user
     // to have it in the profile
-    Widget textfield(
-        {@required IconData icon,
-        @required String label,
-        @required String helper,
-        String errorText,
-        int maxLines = 1,
-        bool showCursor = false,
-        bool readOnly = false,
-        TextEditingController controller,
-        Function datePicker,
-        Function validator,})
-    {
+    Widget textfield({
+      @required IconData icon,
+      @required String label,
+      @required String helper,
+      String errorText,
+      int maxLines = 1,
+      bool showCursor = false,
+      bool readOnly = false,
+      TextEditingController controller,
+      Function datePicker,
+      Function validator,
+    }) {
       return TextFormField(
         controller: controller,
         showCursor: showCursor,
@@ -153,8 +140,7 @@ class _ProfilePageState extends State<ProfilePage>
     }
 
     // will be triggered as a bottomSheet once the profile image is tapped
-    Widget bottomSheet()
-    {
+    Widget bottomSheet() {
       return Container(
         height: 100,
         width: MediaQuery.of(context).size.width,
@@ -167,8 +153,7 @@ class _ProfilePageState extends State<ProfilePage>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FlatButton.icon(
-                  onPressed: ()
-                  {
+                  onPressed: () {
                     // taken from the camera
                     takePhoto(ImageSource.camera);
                   },
@@ -176,8 +161,7 @@ class _ProfilePageState extends State<ProfilePage>
                   label: Text('Camera'),
                 ),
                 FlatButton.icon(
-                  onPressed: ()
-                  {
+                  onPressed: () {
                     // taken from the camera gallery
                     takePhoto(ImageSource.gallery);
                   },
@@ -191,8 +175,7 @@ class _ProfilePageState extends State<ProfilePage>
       );
     }
 
-    Widget imageProfile()
-    {
+    Widget imageProfile() {
       return Stack(
         children: [
           CircleAvatar(
@@ -204,8 +187,7 @@ class _ProfilePageState extends State<ProfilePage>
               bottom: 0.0,
               right: 25.0,
               child: InkWell(
-                onTap: ()
-                {
+                onTap: () {
                   showModalBottomSheet(
                       context: context, builder: (builder) => bottomSheet());
                 },
@@ -221,8 +203,8 @@ class _ProfilePageState extends State<ProfilePage>
         child: SingleChildScrollView(
           child: Container(
             child: Form(
-                key: formKey,
-                child: Column(
+              key: formKey,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   // for picture and text
@@ -233,68 +215,76 @@ class _ProfilePageState extends State<ProfilePage>
                         imageProfile(),
                         SizedBox(width: 30),
                         ElevatedButton(
-                          onPressed: ()
-                          {
-                            // validate name input before continuing
-                            if (!formKey.currentState.validate())
-                            {
-                              print('Please make sure all fields are valid before previewing');
-                              return;
-                            }
+                            onPressed: () {
+                              // validate name input before continuing
+                              if (!formKey.currentState.validate()) {
+                                print(
+                                    'Please make sure all fields are valid before previewing');
+                                return;
+                              }
 
-                            setState(() {});
+                              setState(() {});
 
-                            Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                            PreviewProfile(
-                              contents: [for (int i = 0; i < 5; ++i) controllers[i].text],
-                              image: imageFile == null
-                              ? AssetImage('assets/baby_yoda.jpg')
-                              : FileImage(File(imageFile.path),),),),);
-                          },
-                          child: Text('Preview Profile'))
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PreviewProfile(
+                                    contents: [
+                                      for (int i = 0; i < 5; ++i)
+                                        controllers[i].text
+                                    ],
+                                    image: imageFile == null
+                                        ? AssetImage('assets/baby_yoda.jpg')
+                                        : FileImage(
+                                            File(imageFile.path),
+                                          ),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text('Preview Profile'))
                       ],
                     ),
                   ),
 
                   textfield(
-                    icon: Icons.person,
-                    label: 'Name',
-                    helper: 'Name can\'t be empty',
-                    controller: controllers[0],
-                    errorText: nameError,
-                    validator: validator),
+                      icon: Icons.person,
+                      label: 'Name',
+                      helper: 'Name can\'t be empty',
+                      controller: controllers[0],
+                      errorText: nameError,
+                      validator: validator),
                   SizedBox(height: 30),
                   textfield(
-                    icon: Icons.person,
-                    label: 'Date of Birth',
-                    showCursor: true,
-                    readOnly: true,
-                    helper: 'mm/dd/yyyy',
-                    controller: controllers[1],
-                    datePicker: datePicker),
+                      icon: Icons.person,
+                      label: 'Date of Birth',
+                      showCursor: true,
+                      readOnly: true,
+                      helper: 'mm/dd/yyyy',
+                      controller: controllers[1],
+                      datePicker: datePicker),
                   SizedBox(height: 30),
                   textfield(
-                    icon: Icons.work,
-                    label: 'Profession',
-                    helper: 'Software developer',
-                    controller: controllers[2]),
+                      icon: Icons.work,
+                      label: 'Profession',
+                      helper: 'Software developer',
+                      controller: controllers[2]),
                   SizedBox(height: 30),
                   textfield(
-                    icon: Icons.school,
-                    label: 'Major',
-                    helper: 'computer science',
-                    controller: controllers[3]),
+                      icon: Icons.school,
+                      label: 'Major',
+                      helper: 'computer science',
+                      controller: controllers[3]),
                   SizedBox(height: 30),
                   textfield(
-                    icon: Icons.book,
-                    label: 'About',
-                    helper: 'About me',
-                    controller: controllers[4],
-                    maxLines: 5),
+                      icon: Icons.book,
+                      label: 'About',
+                      helper: 'About me',
+                      controller: controllers[4],
+                      maxLines: 5),
                   SizedBox(height: 30),
                   ElevatedButton.icon(
-                    onPressed: ()
-                    {
+                    onPressed: () {
                       controllers.forEach((element) => print(element?.text));
                     },
                     icon: Icon(Icons.save),
@@ -306,8 +296,7 @@ class _ProfilePageState extends State<ProfilePage>
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton.icon(
-                        onPressed: ()
-                        {
+                        onPressed: () {
                           // todo settings page
                         },
                         icon: Icon(Icons.settings),
@@ -315,7 +304,6 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                       ElevatedButton(
                         onPressed: () => print('log out'),
-
                         child: Text('Log out'),
                       ),
                     ],

@@ -12,12 +12,10 @@ When the click the login button, it will validate those fields against the datab
 
 String _appName;
 
-class SigninForm extends StatefulWidget
-{
-  static const String routeId = 'sign_in_form';
+class SigninForm extends StatefulWidget {
+  static const String routeID = '/Signin';
 
-  SigninForm(String appName)
-  {
+  SigninForm(String appName) {
     _appName = appName;
   }
 
@@ -71,7 +69,7 @@ class _SigninFormState extends State<SigninForm> {
                 Visibility(
                   visible: _validationFailed,
                   child: Text(
-                      'We couldn\'t find a user with that login information',
+                      'We couldn\'t find a user with that login information.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 15, color: Colors.red)),
                 ),
@@ -82,7 +80,6 @@ class _SigninFormState extends State<SigninForm> {
 
                 // Username or email field - will validate against database
                 TextFormField(
-                  autofocus: true,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value.isEmpty)

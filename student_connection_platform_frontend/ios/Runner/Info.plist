@@ -39,6 +39,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Allow access to camera to capture photos</string>
 
+<<<<<<< HEAD
+=======
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Allow access to microphone</string>
+>>>>>>> eli
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

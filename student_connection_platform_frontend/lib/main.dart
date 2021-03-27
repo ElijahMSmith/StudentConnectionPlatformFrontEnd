@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_connection_platform_frontend/constants.dart';
@@ -7,14 +6,9 @@ import 'package:student_connection_platform_frontend/pages_by_leo/match_maker.da
 import 'package:student_connection_platform_frontend/pages_by_leo/post_page.dart';
 import 'pages/signin.dart';
 import 'pages/signup.dart';
-import 'pages/content_frame.dart';
-import 'pages_by_leo/about.dart';
 import 'pages_by_leo/profile_page.dart';
-import 'dart:isolate';
-
 
 final String appName = "NameTBD";
-
 
 // # 5C5 = 1
 // # 5C1 = 5
@@ -41,27 +35,21 @@ final String appName = "NameTBD";
 //   return await compute(choose, 10, 6);
 // }
 
-
-void main()
-{
-
-
+void main() {
   // int i = choose(Args(10, 6));
   // print(i);
   runApp(AppHome());
 }
 
-class AppHome extends StatelessWidget
-{
+class AppHome extends StatelessWidget {
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     // We must have change notifier provider at the top
     // of the tree in order for this line: final users = Provider.of<Users>(context).users;
     // to work.
     return ChangeNotifierProvider.value(
-          value: Users(),
-          child: MaterialApp(
+      value: Users(),
+      child: MaterialApp(
           title: appName,
           theme: ThemeData(
             primarySwatch: Colors.teal,
@@ -69,34 +57,26 @@ class AppHome extends StatelessWidget
           ),
           home: NavigationHelperWidget(),
           // home: AboutPage(),
-          // initialRoute: ProfilePage.routeId,
-          // routes:
-          // {
-          //   // use static strings for the route id as a way to avoid typos
-          //   SigninForm.routeId: (context) => SigninForm(appName),
-          //   SignupForm.routeId: (context) => SignupForm(appName),
-          //   ContentFrame.routeId: (context) => ContentFrame(appName),
-          //   ProfilePage.routeId: (context) => ProfilePage(),
-          // }
-      ),
+          initialRoute: SigninForm.routeID,
+          routes: {
+            //use static strings for the route id as a way to avoid typos
+            SigninForm.routeID: (context) => SigninForm(appName),
+            SignupForm.routeID: (context) => SignupForm(appName),
+            ProfilePage.routeID: (context) => ProfilePage(),
+          }),
     );
   }
 }
 
-
 // this helper widget will help avoid circular dependencies among the other dart files
-class NavigationHelperWidget extends StatefulWidget
-{
+class NavigationHelperWidget extends StatefulWidget {
   @override
   _NavigationHelperWidgetState createState() => _NavigationHelperWidgetState();
 }
 
-class _NavigationHelperWidgetState extends State<NavigationHelperWidget>
-{
-
+class _NavigationHelperWidgetState extends State<NavigationHelperWidget> {
   int _selectedIndex = 0;
-  final List<Widget> pages =
-  [
+  final List<Widget> pages = [
     PostPage(),
     DMChat(),
     MatchMaker(),
@@ -104,26 +84,23 @@ class _NavigationHelperWidgetState extends State<NavigationHelperWidget>
   ];
 
   // navigate to the page based on the index selected
-  void _onItemTapped(int bottomNavButtonIndex)
-  {
+  void _onItemTapped(int bottomNavButtonIndex) {
     _selectedIndex = bottomNavButtonIndex;
     setState(() {});
   }
 
   @override
-  Widget build(BuildContext context)
-  {
-
+  Widget build(BuildContext context) {
     return Scaffold(
-        body: pages[_selectedIndex],
+      body: pages[_selectedIndex],
 
-        // https://api.flutter.dev/flutter/material/BottomNavigationBar-class.html
-        // https://www.youtube.com/watch?v=elLkVWt7gRM&ab_channel=ProgrammingAddict
-        bottomNavigationBar: BottomNavigationBar(
+      // https://api.flutter.dev/flutter/material/BottomNavigationBar-class.html
+      // https://www.youtube.com/watch?v=elLkVWt7gRM&ab_channel=ProgrammingAddict
+      bottomNavigationBar: BottomNavigationBar(
           items: ourBottomNavBar(),
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.black,
           onTap: _onItemTapped),
-      );
+    );
   }
 }
