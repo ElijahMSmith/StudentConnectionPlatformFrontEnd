@@ -39,6 +39,65 @@ class SignupFormState extends State<SignupForm> {
   final AssetImage _fullDotAsset =
       new AssetImage('assets/images/FilledDot.png');
 
+  Future<void> _showFailedSubmissionDialog(bool pageSubmission) async {
+    // Either page submission or account submission (pageSubmission = false)
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return pageSubmission
+            ?
+            //pageSubmission = true
+            AlertDialog(
+              titleTextStyle: ,
+                title: Text("Incomplete Information!"),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          'This page still has information that hasn\'t been completed.\n'),
+                      Text('Make sure to fill out every field of this form!'),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              )
+            :
+
+            //pageSubmission = false
+            AlertDialog(
+                title: Text("Account Submission Failed!"),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          'There was an error submitting your account to the system.\n'),
+                      Text(
+                          'Check that all your account information is valid as specified.\n'),
+                      Text('If this issue persists, try again later.')
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+      },
+    );
+  }
+
   bool _submitAccount() {
     // TODO: Submit to DB
 
@@ -50,13 +109,13 @@ class SignupFormState extends State<SignupForm> {
       if (_newAccount.validAccountDetails()) {
         _currentPage++;
       } else {
-        //TODO: up alert dialog with message something isn't correctly filled in
+        _showFailedSubmissionDialog(true);
       }
     } else if (_currentPage == 1) {
       if (_newAccount.validUserOverview()) {
         _currentPage++;
       } else {
-        //TODO: up alert dialog with message something isn't correctly filled in
+        _showFailedSubmissionDialog(true);
       }
     } else {
       if (_newAccount.validUserDetails()) {
@@ -64,11 +123,10 @@ class SignupFormState extends State<SignupForm> {
           Navigator.pop(context);
           Navigator.pushNamed(context, '/ContentFrame');
         } else {
-          //TODO: Make alert dialog that connection to db (or whatever the issue was) occurred
-          print("Submission Failed!");
+          _showFailedSubmissionDialog(false);
         }
       } else {
-        //TODO: up alert dialog with message something isn't correctly filled in
+        _showFailedSubmissionDialog(true);
       }
     }
   }
