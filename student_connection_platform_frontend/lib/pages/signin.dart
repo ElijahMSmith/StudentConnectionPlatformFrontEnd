@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:student_connection_platform_frontend/pages/signup.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/profile_page.dart';
 
 /*
 
@@ -165,11 +167,14 @@ class _SigninFormState extends State<SigninForm> {
                     onPressed: () {
                       // Checks the input fields are not empty
 
+                      // TODO: Just for now while we don't have account validation, let me into profile page easily
+                      Navigator.pushNamed(context, ProfilePage.routeID);
+
                       var valid = _formKey.currentState.validate();
                       if (!valid) return;
 
                       setState(() {
-                        // For debugging visibility - Remove once we actually do validation
+                        // TODO: For debugging visibility - Remove once we actually do validation
                         _validationFailed = !_validationFailed;
                       });
                     },
@@ -192,7 +197,7 @@ class _SigninFormState extends State<SigninForm> {
                       // Moves to signup page, current page is still on the Navigator stack underneath
                       // Optional page transition sample:
                       // https://github.com/flutter/samples/blob/master/animations/lib/src/basics/02_page_route_builder.dart
-                      Navigator.pushNamed(context, '/Signup');
+                      Navigator.pushNamed(context, SignupForm.routeID);
                     },
                   ),
                 ),

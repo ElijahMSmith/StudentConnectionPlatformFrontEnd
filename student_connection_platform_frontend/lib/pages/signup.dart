@@ -3,6 +3,7 @@ import 'package:student_connection_platform_frontend/pages/SignupSections/UserOv
 import 'package:student_connection_platform_frontend/pages/SignupSections/UserDetails.dart';
 import 'package:student_connection_platform_frontend/account.dart';
 import 'package:flutter/material.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/profile_page.dart';
 
 // Since it's still highly variable, minimize the places we'll have to change it
 String appName;
@@ -122,7 +123,7 @@ class SignupFormState extends State<SignupForm> {
       if (_newAccount.validUserDetails()) {
         if (_submitAccount()) {
           Navigator.pop(context);
-          Navigator.pushNamed(context, '/ProfilePage');
+          Navigator.pushNamed(context, ProfilePage.routeID);
         } else {
           _showFailedSubmissionDialog(false);
         }
