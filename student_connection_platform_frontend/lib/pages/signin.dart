@@ -12,8 +12,12 @@ When the click the login button, it will validate those fields against the datab
 
 String _appName;
 
-class SigninForm extends StatefulWidget {
-  SigninForm(String appName) {
+class SigninForm extends StatefulWidget
+{
+  static const String routeId = 'sign_in_form';
+
+  SigninForm(String appName)
+  {
     _appName = appName;
   }
 

@@ -8,8 +8,11 @@ Defines the frame for holding our three content tabs (which should be individual
 
 String _appName;
 
-class ContentFrame extends StatefulWidget {
-  ContentFrame(String appName) {
+class ContentFrame extends StatefulWidget
+{
+  static const String routeId = 'content_frame';
+  ContentFrame(String appName)
+  {
     _appName = appName;
   }
 
@@ -17,9 +20,11 @@ class ContentFrame extends StatefulWidget {
   _ContentFrameState createState() => _ContentFrameState();
 }
 
-class _ContentFrameState extends State<ContentFrame> {
+class _ContentFrameState extends State<ContentFrame>
+{
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return Scaffold();
   }
 }
