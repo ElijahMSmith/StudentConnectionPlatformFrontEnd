@@ -1,7 +1,8 @@
 Current work:
 
-
-- Front end incorporation
+- Fix the issue with freezing when we go to profile page
+- Any other validation on signup critea
+- Back end incorporation
 
 
 
