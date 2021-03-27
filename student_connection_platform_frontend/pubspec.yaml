@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   image_picker: ^0.7.0
+  image_cropper: ^1.4.0
   intl: ^0.17.0
   autocomplete_textfield: ^1.7.3
   cupertino_icons: ^1.0.2

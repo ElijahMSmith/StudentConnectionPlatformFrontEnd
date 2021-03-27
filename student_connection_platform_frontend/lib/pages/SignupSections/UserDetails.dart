@@ -58,6 +58,11 @@ class _UserDetailsState extends State<UserDetails> {
         if (find == -1) return;
 
         _newAccount.interests.add(_allInterests[find]);
+        if (_newAccount.interests.length >= 5 &&
+            _newAccount.interests.length <= 10)
+          _newAccount.validInterests = true;
+        else
+          _newAccount.validInterests = false;
       }),
     );
   }
@@ -92,6 +97,7 @@ class _UserDetailsState extends State<UserDetails> {
                       initialValue: _newAccount.city,
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
+                        _newAccount.validCity = true;
                         return null;
                       },
                       textAlign: TextAlign.center,
@@ -100,6 +106,7 @@ class _UserDetailsState extends State<UserDetails> {
                       decoration:
                           InputDecoration(filled: true, hintText: 'City'),
                       onChanged: (value) {
+                        _newAccount.validCity = false;
                         _newAccount.city = value;
                       },
                     ),
@@ -113,6 +120,7 @@ class _UserDetailsState extends State<UserDetails> {
                       initialValue: _newAccount.country,
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
+                        _newAccount.validCountry = true;
                         return null;
                       },
                       textAlign: TextAlign.center,
@@ -121,6 +129,7 @@ class _UserDetailsState extends State<UserDetails> {
                       decoration:
                           InputDecoration(filled: true, hintText: 'Country'),
                       onChanged: (value) {
+                        _newAccount.validCity = false;
                         _newAccount.country = value;
                       },
                     ),
@@ -144,6 +153,7 @@ class _UserDetailsState extends State<UserDetails> {
                       initialValue: _newAccount.school,
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
+          _newAccount.validSchool = true;
                         return null;
                       },
                       textAlign: TextAlign.center,
@@ -152,6 +162,7 @@ class _UserDetailsState extends State<UserDetails> {
                       decoration: InputDecoration(
                           filled: true, hintText: 'University Name'),
                       onChanged: (value) {
+          _newAccount.validSchool = false;
                         _newAccount.school = value;
                       },
                     ),
@@ -165,6 +176,7 @@ class _UserDetailsState extends State<UserDetails> {
                       initialValue: _newAccount.major,
                       validator: (value) {
                         if (value.isEmpty) return 'Required';
+          _newAccount.validMajor = true;
                         return null;
                       },
                       textAlign: TextAlign.center,
@@ -173,6 +185,7 @@ class _UserDetailsState extends State<UserDetails> {
                       decoration: InputDecoration(
                           filled: true, hintText: 'Field of Study'),
                       onChanged: (value) {
+          _newAccount.validMajor = false;
                         _newAccount.major = value;
                       },
                     ),

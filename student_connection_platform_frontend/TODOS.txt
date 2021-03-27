@@ -1,14 +1,11 @@
 Current work:
-- Fix DOB validator
-- Update form validation to onUserInteraction
-- Make full page validation through account class
-    - Remove page validated booleans from widgets
-    - Make each form field validator flip a boolean if validation succeeds
-    - Make it false on failed validation (or on change?)
+- Front end incorporation
+
 
 
 - Fix bottom app bar so it doesn't overlap with shit (should stay at the bottom when keyboard input shows up)
 - Try to fix list view to either put them closer together and/or make the width match the parent and height fill the rest
+    - Fix scroll bar not showing?
 
 
 

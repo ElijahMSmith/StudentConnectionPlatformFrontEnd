@@ -1,5 +1,6 @@
 import 'package:student_connection_platform_frontend/account.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -19,17 +20,39 @@ class _UserOverviewState extends State<UserOverview> {
   AssetImage _choosePictureAsset =
       AssetImage('assets/images/choosePicture.png');
   final picker = ImagePicker();
+  PickedFile _imageFile;
 
   Future getImage(ImageSource source) async {
-    final pickedFile = await picker.getImage(source: source);
+    _imageFile = await picker.getImage(source: source);
+    if (_imageFile != null)
+      _cropImage();
+    else
+      _newAccount.validProfilePicture = false;
+  }
 
-    setState(() {
-      if (pickedFile != null) {
-        _newAccount.profilePicture = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+  Future<Null> _cropImage() async {
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: _imageFile.path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      androidUiSettings: AndroidUiSettings(
+          toolbarTitle: 'Cropper',
+          toolbarColor: Color.fromRGBO(0, 194, 155, 1),
+          toolbarWidgetColor: Colors.white,
+          lockAspectRatio: true),
+      iosUiSettings: IOSUiSettings(
+        title: 'Cropper',
+        aspectRatioLockEnabled: true,
+      ),
+    );
+    if (croppedFile != null) {
+      setState(() {
+        _newAccount.profilePicture = croppedFile;
+        _newAccount.validProfilePicture = true;
+      });
+    } else {
+      print('No image selected.');
+      _newAccount.validProfilePicture = false;
+    }
   }
 
   // will be triggered as a bottomSheet once the profile image is tapped
@@ -145,10 +168,8 @@ class _UserOverviewState extends State<UserOverview> {
                       if (value.isEmpty || value.length < 3)
                         return 'Usernames must be at least 3 characters';
 
-                      //Validate against existing usernames, return failure if username already exists
-                      //_takenUsername
-
                       //TODO: Check against database for existing usernames
+                      _newAccount.validUsername = true;
                       return null;
                     },
                     textAlign: TextAlign.start,
@@ -158,6 +179,7 @@ class _UserOverviewState extends State<UserOverview> {
                         hintText: 'This doesn\'t have to be your real name.'),
                     onChanged: (value) {
                       _newAccount.username = value;
+                      _newAccount.validUsername = false;
                     },
                   ),
                 ],
@@ -182,11 +204,11 @@ class _UserOverviewState extends State<UserOverview> {
                       if (value.isEmpty || value.length < 40)
                         return 'Please include at least 40 characters in your bio.';
 
-                      //TODO: Check against database for existing usernames
+                      _newAccount.validBio = true;
                       return null;
                     },
                     textAlign: TextAlign.start,
-                    maxLength: 200,
+                    maxLength: 140,
                     minLines: 5,
                     maxLines: 5,
                     decoration: InputDecoration(
@@ -194,6 +216,7 @@ class _UserOverviewState extends State<UserOverview> {
                         hintText:
                             'Write anything you want! What makes you who you are?'),
                     onChanged: (value) {
+                      _newAccount.validBio = false;
                       _newAccount.bio = value;
                     },
                   ),

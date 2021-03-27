@@ -40,25 +40,36 @@ class SignupFormState extends State<SignupForm> {
       new AssetImage('assets/images/FilledDot.png');
 
   bool _submitAccount() {
-    // TODO - Account should be valid if we're allowing this method to be called
+    // TODO: Submit to DB
+
     return true;
   }
 
   void _nextPage() {
-    //TODO: Validate current page is filled with valid information
-    //If not, open a dialog saying what's wrong
-    //If so, move to next page
-    //Moving to content frame should also submit account (not finished yet)
-
-    if (_currentPage == 2) {
-      if (_submitAccount()) {
-        Navigator.pop(context);
-        Navigator.pushNamed(context, '/ContentFrame');
+    if (_currentPage == 0) {
+      if (_newAccount.validAccountDetails()) {
+        _currentPage++;
       } else {
-        print("Submission Failed!");
+        //TODO: up alert dialog with message something isn't correctly filled in
+      }
+    } else if (_currentPage == 1) {
+      if (_newAccount.validUserOverview()) {
+        _currentPage++;
+      } else {
+        //TODO: up alert dialog with message something isn't correctly filled in
       }
     } else {
-      _currentPage++;
+      if (_newAccount.validUserDetails()) {
+        if (_submitAccount()) {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/ContentFrame');
+        } else {
+          //TODO: Make alert dialog that connection to db (or whatever the issue was) occurred
+          print("Submission Failed!");
+        }
+      } else {
+        //TODO: up alert dialog with message something isn't correctly filled in
+      }
     }
   }
 

@@ -1,25 +1,15 @@
 import 'package:student_connection_platform_frontend/pages/signup.dart';
 import 'package:student_connection_platform_frontend/account.dart';
-import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 Account _newAccount;
-
-// After project submission, use these to validate for fields more carefully
-// For now, just make sure email/username aren't taken
-bool _invalidEmail = false;
-bool _takenEmail = false;
-bool _invalidPassword = false;
-
-// Whether current inputs in text fields are all valid inputs for a new account
-// Resets to false when any form field is changed, must re-submit with button to make true
-bool _validDOB = false;
-
-bool _validationSuccessful = false;
 
 class AccountDetails extends StatefulWidget {
   AccountDetails(Account account) {
     _newAccount = account;
+    initializeDateFormatting();
   }
 
   @override
@@ -40,13 +30,19 @@ class _AccountDetailsState extends State<AccountDetails> {
   bool _isValidDay(String dob) {
     int month = int.parse(dob.substring(0, 2));
     int day = int.parse(dob.substring(3, 5));
-    int year = int.parse(dob.substring(6, 8));
+    int year = int.parse(dob.substring(6, 10));
 
     // More precise checking for if day of month exists and what years we accept can be done later
-    if (month <= 0 || month < 12) return false;
-    if (day <= 0 || day >= 31) return false;
-    if (year < DateTime.now().year - 100 || year >= DateTime.now().year)
+    if (month <= 0 || month > 12) return false;
+    if (day <= 0 || day > 31) return false;
+    if (year < DateTime.now().year - 120 || year > DateTime.now().year)
       return false;
+
+    try {
+      DateFormat("MM/dd/yyyy", 'en').parseStrict(dob);
+    } on FormatException {
+      return false;
+    }
 
     return true;
   }
@@ -67,7 +63,7 @@ class _AccountDetailsState extends State<AccountDetails> {
       birthDate.day,
     );
 
-    _validDOB = adultDate.isBefore(today);
+    bool _validDOB = adultDate.isBefore(today);
     return _validDOB;
   }
 
@@ -102,8 +98,7 @@ class _AccountDetailsState extends State<AccountDetails> {
             validator: (value) {
               if (value.isEmpty)
                 return 'Please enter an email for this account.';
-
-              // TODO: Also validate database doesn't have this email in it already
+              _newAccount.validEmail = true;
               return null;
             },
             decoration: InputDecoration(
@@ -112,7 +107,7 @@ class _AccountDetailsState extends State<AccountDetails> {
             ),
             onChanged: (value) {
               _newAccount.email = value;
-              _validationSuccessful = false;
+              _newAccount.validEmail = false;
             },
             textAlign: TextAlign.center,
           ),
@@ -136,7 +131,7 @@ class _AccountDetailsState extends State<AccountDetails> {
             ),
             onChanged: (value) {
               _newAccount.password = value;
-              _validationSuccessful = false;
+              _newAccount.validPassword = false;
             },
             textAlign: TextAlign.center,
           ),
@@ -147,20 +142,24 @@ class _AccountDetailsState extends State<AccountDetails> {
 
           // Password confirmation field
           TextFormField(
-            initialValue: _newAccount.password,
-            obscureText: true,
-            validator: (value) {
-              if (value != _newAccount.password)
-                return 'Passwords don\'t match!';
-              return null;
-            },
-            decoration: InputDecoration(
-              filled: true,
-              labelText: 'Confirm your password',
-              //hintText: ''
-            ),
-            textAlign: TextAlign.center,
-          ),
+              initialValue: _newAccount.password,
+              obscureText: true,
+              validator: (value) {
+                if (value != _newAccount.password)
+                  return 'Passwords don\'t match!';
+
+                _newAccount.validPassword = true;
+                return null;
+              },
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'Confirm your password',
+                //hintText: ''
+              ),
+              textAlign: TextAlign.center,
+              onChanged: (value) {
+                _newAccount.validPassword = false;
+              }),
 
           SizedBox(
             height: 25,
@@ -169,8 +168,6 @@ class _AccountDetailsState extends State<AccountDetails> {
           TextFormField(
             initialValue: _newAccount.dateOfBirth,
             validator: (value) {
-              _validDOB = false;
-
               if (!_isValidDOB(value))
                 return 'Invalid Format - Must be mm/dd/yyyy';
 
@@ -180,7 +177,7 @@ class _AccountDetailsState extends State<AccountDetails> {
               if (!_isAdult(value))
                 return 'You must be at least 18 years old to sign up!';
 
-              _validDOB = true;
+              _newAccount.validDOB = true;
 
               return null;
             },
@@ -191,7 +188,7 @@ class _AccountDetailsState extends State<AccountDetails> {
             textAlign: TextAlign.center,
             onChanged: (value) {
               _newAccount.dateOfBirth = value;
-              _validDOB = false;
+              _newAccount.validDOB = false;
             },
           ),
         ],
