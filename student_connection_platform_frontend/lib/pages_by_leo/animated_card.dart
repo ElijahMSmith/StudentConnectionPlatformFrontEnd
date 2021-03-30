@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/preview_match_profile.dart';
 import '../constants.dart';
 
 // typedef void DragStart(DragStartDetails dragDetails);
@@ -112,11 +113,18 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
     super.didChangeDependencies();
   }
 
+  List<dynamic> previewInfo = [];
+
   @override
   void initState()
   {
     super.initState();
-
+    previewInfo..add(widget.user.name)
+    ..add(widget.user.dob)
+    ..add(widget.user.profession)
+    ..add(widget.user.major)
+    ..add(widget.user.bio)
+    ..add(widget.user.userName);
   }
 
     @override
@@ -170,6 +178,10 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
               onTap: ()
               {
                 // todo segue to the user's preview page (not yours, but whoever shows up on top of the stack of cards)
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                            PreviewMatchProfile(
+                              contents: previewInfo,
+                              image: AssetImage(widget.user.imgUrl),),),);
 
               },
               child: Container(

@@ -28,8 +28,9 @@ List<BottomNavigationBarItem> ourBottomNavBar()
 class User
 {
   final int id;
-  final String name, intro, imgUrl;
-  User({@required this.id, @required this.name, @required this.intro, @required this.imgUrl});
+  final String name, userName, intro, imgUrl;
+  final String dob, profession, bio, major;
+  User({this.major, this.dob, this.profession, @required this.userName, @required this.bio, @required this.id, @required this.name, @required this.intro, @required this.imgUrl});
 }
 
 // Will be used by the Provider state management package to
@@ -37,10 +38,10 @@ class User
 class Users with ChangeNotifier
 {
   List<User> _users = [
-    User(id: 1, name: "Maul", intro: "My name is Maul !", imgUrl: 'assets/maul.png'),
-    User(id: 2, name: "Obi-wan", intro: "My name is Obi-wan!", imgUrl: 'assets/obiwan.jpg'),
-    User(id: 3, name: "Anakin", intro: "My name is Anakin !", imgUrl: 'assets/anakin.png'),
-    User(id: 4, name: "Baby_Yoda", intro: "My name is Grogu !", imgUrl: 'assets/baby_yoda.jpg'),
+    User(id: 1, userName: 'DarthMaul123', name: "Maul", dob: '', profession: '', major: '', intro: "My name is Maul !", imgUrl: 'assets/maul.png', bio: 'KENOBIII!!!!'),
+    User(id: 2, userName: 'HelloThere123', name: "Obi-wan", dob: '', profession: '', major: '', intro: "My name is Obi-wan!", imgUrl: 'assets/obiwan.jpg', bio: 'The negotiations were short'),
+    User(id: 3, userName: 'TheChosenOne123', name: "Anakin", dob: '', profession: '', major: '', intro: "My name is Anakin !", imgUrl: 'assets/anakin.png', bio: 'This is where the fun begins'),
+    User(id: 4, userName: 'grogu123', name: "Baby_Yoda", dob: '', profession: '', major: '', intro: "My name is Grogu !", imgUrl: 'assets/baby_yoda.jpg', bio: 'goo goo gaga'),
   ];
 
   List<User> _usersStack = [];
