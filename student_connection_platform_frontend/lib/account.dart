@@ -9,6 +9,9 @@ class Account {
   String dateOfBirth = "";
   bool validDOB = false;
 
+  // Only used when pulled, not when account is created
+  String userID;
+
   File profilePicture;
   bool validProfilePicture = false;
   String username = "";
