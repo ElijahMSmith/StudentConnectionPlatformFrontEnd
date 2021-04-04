@@ -57,7 +57,7 @@ class _UserOverviewState extends State<UserOverview> {
     }
   }
 
-  // will be triggered as a bottomSheet once the profile image is tapped
+  // Will be triggered as a bottomSheet once the profile image is tapped
   Container bottomSheet() {
     return Container(
       height: 100,
@@ -97,6 +97,11 @@ class _UserOverviewState extends State<UserOverview> {
         ],
       ),
     );
+  }
+
+  bool _accountWithUsernameExists() {
+    //TODO: Make sure two people don't have the same username already
+    return false;
   }
 
   @override
@@ -169,6 +174,9 @@ class _UserOverviewState extends State<UserOverview> {
                     validator: (value) {
                       if (value.isEmpty || value.length < 3)
                         return 'Usernames must be at least 3 characters';
+
+                      if (_accountWithUsernameExists())
+                        return 'That username is already in use';
 
                       //TODO: Check against database for existing usernames
                       _newAccount.validUsername = true;

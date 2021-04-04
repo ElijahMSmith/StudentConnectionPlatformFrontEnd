@@ -1,7 +1,7 @@
-Current work:
+https://pub.dev/packages/http/install
 
-- Fix the issue with freezing when we go to profile page
-- Any other validation on signup critea
+
+Current work:git 
 - Back end incorporation
 
 
@@ -20,11 +20,12 @@ Collection data signup page:
 - Password
 - Personal bio
 - DOB
-- Interests (List of strings - predefined values?)
-- City and country
+- Interests (3 to 10)
+- City
+- Country
 - School
 - Major
-- Job
+- Profile image (done separately)
 
 
 

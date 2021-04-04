@@ -8,7 +8,7 @@ Account _newAccount;
 
 List<String> _allInterests = [
   "Hobbies and interests list not loaded. Sorry!"
-]; //Remove default if load successful in method below
+]; //Default removed if load successful in method below
 
 List<String> _allInterestsComparable = [
   //All lower case

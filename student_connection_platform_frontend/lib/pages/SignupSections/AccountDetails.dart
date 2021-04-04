@@ -22,9 +22,8 @@ class _AccountDetailsState extends State<AccountDetails> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _isValidDOB(String dob) {
-    // 00/00/0000 format only
+    // ##/##/#### format only
     RegExp regExp = new RegExp("^[0-9]{2}\/[0-9]{2}\/[0-9]{4}\$");
-
     return regExp.hasMatch(dob);
   }
 
@@ -69,6 +68,11 @@ class _AccountDetailsState extends State<AccountDetails> {
     return _validDOB;
   }
 
+  bool _accountWithEmailExists() {
+    //TODO - don't let two accounts have the same email
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +103,18 @@ class _AccountDetailsState extends State<AccountDetails> {
             maxLines: 1,
             validator: (value) {
               if (value.isEmpty)
-                return 'Please enter an email for this account.';
+                return 'Please enter an email for this account';
+
+              RegExp emailRegex =
+                  new RegExp("^[a-zA-Z0-9.]+@[a-zA-Z0-9]+(.[a-zA-Z0-9]+)+\$");
+              if (!emailRegex.hasMatch(value))
+                return "This is not a valid email address";
+
+              if (_accountWithEmailExists())
+                return "This email is already in use";
+
+              // Eventual TODO (elsewhere in the code) - validate the email for this account
+
               _newAccount.validEmail = true;
               return null;
             },
@@ -123,8 +138,26 @@ class _AccountDetailsState extends State<AccountDetails> {
             initialValue: _newAccount.password,
             obscureText: true,
             validator: (value) {
-              //TODO: Validate password against TBD criteria
               if (value.isEmpty) return 'Please enter a password';
+              if (value.length < 7)
+                return 'Passwords must be at least 7 characters';
+
+              RegExp upperRegex = new RegExp("[A-Z]");
+              RegExp lowerRegex = new RegExp("[a-z]");
+              RegExp numberRegex = new RegExp("[0-9]");
+              RegExp symbolRegex = new RegExp("[!@#&*,.?~`]");
+              RegExp invalidSymbolRegex = new RegExp("[^!@#&*,.?~`a-zA-Z0-9]");
+
+              if (!upperRegex.hasMatch(value))
+                return 'Must contain an upper case letter';
+              if (!lowerRegex.hasMatch(value))
+                return 'Must contain a lower case letter';
+              if (!numberRegex.hasMatch(value)) return 'Must contain a number';
+              if (!symbolRegex.hasMatch(value))
+                return 'Must contain a symbol. Valid symbols are: \'!@#&*,.?~`\'';
+              if (invalidSymbolRegex.hasMatch(value))
+                return 'Passwords should only contain symbols \'!@#&*,.?~`\' and alphanumeric characters';
+
               return null;
             },
             decoration: InputDecoration(

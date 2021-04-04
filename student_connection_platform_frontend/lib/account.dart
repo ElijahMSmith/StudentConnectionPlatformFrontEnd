@@ -31,19 +31,14 @@ class Account {
   bool validInterests = false;
 
   bool validAccountDetails() {
-    print("$validEmail && $validPassword && $validDOB");
-    print("$email && $password && $dateOfBirth");
     return validEmail && validPassword && validDOB;
   }
 
   bool validUserOverview() {
-    print("$validProfilePicture && $validUsername && $validBio");
     return validProfilePicture && validUsername && validBio;
   }
 
   bool validUserDetails() {
-    print(
-        "$validCity && $validCountry && $validSchool && $validMajor && $validInterests");
     return validCity &&
         validCountry &&
         validSchool &&

@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/pages/signup.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/profile_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /*
 
@@ -13,6 +16,7 @@ When the click the login button, it will validate those fields against the datab
 */
 
 String _appName;
+SharedPreferences prefs;
 
 class SigninForm extends StatefulWidget {
   static const String routeID = '/Signin';
@@ -29,13 +33,33 @@ class _SigninFormState extends State<SigninForm> {
   final _formKey = GlobalKey<FormState>();
 
   // TODO: Validate against database
-  // Show failure text and clear inputs if validation fails
-  String _usernameOrEmail;
+  bool _storeLoginInfo = false;
+  String _username;
   String _password;
-  bool _storeLoginInfo = false; // TODO: Get/set in local storage
   bool _validationFailed = false;
   // TODO: Time out authentication attempts after x number in y amount of time
   int _loginAttempts = 0;
+
+  _SigninFormState() {
+    _getSharedPrefs();
+  }
+
+  _getSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    _storeLoginInfo = prefs.getBool("storeLoginInfo") ?? false;
+    if (_storeLoginInfo) {
+      setState(() {
+        _username = prefs.getString("usernameOrEmail");
+        _password = prefs.getString("password");
+      });
+    }
+  }
+
+  bool _attemptSignin() {
+    //TODO
+    //
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,17 +108,16 @@ class _SigninFormState extends State<SigninForm> {
                 TextFormField(
                   textInputAction: TextInputAction.next,
                   validator: (value) {
-                    if (value.isEmpty)
-                      return 'Please enter a username or email';
+                    if (value.isEmpty) return 'Please enter your username';
                     return null;
                   },
                   decoration: InputDecoration(
                     filled: true,
-                    labelText: 'Enter your username or email',
+                    labelText: 'Enter your username',
                     //hintText: ''
                   ),
                   onChanged: (value) {
-                    _usernameOrEmail = value;
+                    _username = value;
                   },
                 ),
 
@@ -137,6 +160,7 @@ class _SigninFormState extends State<SigninForm> {
                                 formFieldState.didChange(value);
                                 setState(() {
                                   _storeLoginInfo = value;
+                                  prefs.setBool("storeLoginInfo", value);
                                 });
                               },
                             ),
@@ -174,8 +198,13 @@ class _SigninFormState extends State<SigninForm> {
                       if (!valid) return;
 
                       setState(() {
-                        // TODO: For debugging visibility - Remove once we actually do validation
-                        _validationFailed = !_validationFailed;
+                        prefs.setString("username", _username);
+                        prefs.setString("password", _password);
+
+                        _validationFailed = _attemptSignin();
+                        if (!_validationFailed) {
+                          //TODO: Get the account returned and move to profile page with it
+                        }
                       });
                     },
                   ),
@@ -194,9 +223,6 @@ class _SigninFormState extends State<SigninForm> {
                         textStyle:
                             TextStyle(fontSize: 15, color: Colors.white)),
                     onPressed: () {
-                      // Moves to signup page, current page is still on the Navigator stack underneath
-                      // Optional page transition sample:
-                      // https://github.com/flutter/samples/blob/master/animations/lib/src/basics/02_page_route_builder.dart
                       Navigator.pushNamed(context, SignupForm.routeID);
                     },
                   ),
