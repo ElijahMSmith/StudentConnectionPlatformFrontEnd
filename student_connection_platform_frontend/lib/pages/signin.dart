@@ -57,7 +57,6 @@ class _SigninFormState extends State<SigninForm> {
 
   bool _attemptSignin() {
     //TODO
-    //
     return false;
   }
 

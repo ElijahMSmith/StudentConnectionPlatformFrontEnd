@@ -180,7 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           CircleAvatar(
               backgroundImage: imageFile == null
-                  ? AssetImage('assets/baby_yoda.jpg')
+                  ? AssetImage('assets/images/baby_yoda.jpg')
                   : FileImage(File(imageFile.path)),
               radius: 40),
           Positioned(
@@ -234,7 +234,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         controllers[i].text
                                     ],
                                     image: imageFile == null
-                                        ? AssetImage('assets/baby_yoda.jpg')
+                                        ? AssetImage(
+                                            'assets/images/baby_yoda.jpg')
                                         : FileImage(
                                             File(imageFile.path),
                                           ),

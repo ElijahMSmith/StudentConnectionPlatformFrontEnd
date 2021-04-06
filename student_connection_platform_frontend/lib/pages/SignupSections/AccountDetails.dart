@@ -79,154 +79,159 @@ class _AccountDetailsState extends State<AccountDetails> {
         body: Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          // Welcome message
-          SizedBox(
-            height: 40,
-          ),
-
-          Text('Signup for $appName', // Defined in signup.dart
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
-
-          SizedBox(
-            height: 40,
-          ),
-
-          // Email input field
-          TextFormField(
-            autofocus: true,
-            initialValue: _newAccount.email,
-            textInputAction: TextInputAction.next,
-            maxLines: 1,
-            validator: (value) {
-              if (value.isEmpty)
-                return 'Please enter an email for this account';
-
-              RegExp emailRegex =
-                  new RegExp("^[a-zA-Z0-9.]+@[a-zA-Z0-9]+(.[a-zA-Z0-9]+)+\$");
-              if (!emailRegex.hasMatch(value))
-                return "This is not a valid email address";
-
-              if (_accountWithEmailExists())
-                return "This email is already in use";
-
-              // Eventual TODO (elsewhere in the code) - validate the email for this account
-
-              _newAccount.validEmail = true;
-              return null;
-            },
-            decoration: InputDecoration(
-              filled: true,
-              labelText: 'Account email',
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            // Welcome message
+            SizedBox(
+              height: 40,
             ),
-            onChanged: (value) {
-              _newAccount.email = value;
-              _newAccount.validEmail = false;
-            },
-            textAlign: TextAlign.center,
-          ),
 
-          SizedBox(
-            height: 25,
-          ),
+            Text('Signup for $appName', // Defined in signup.dart
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
 
-          // Password field
-          TextFormField(
-            initialValue: _newAccount.password,
-            obscureText: true,
-            validator: (value) {
-              if (value.isEmpty) return 'Please enter a password';
-              if (value.length < 7)
-                return 'Passwords must be at least 7 characters';
-
-              RegExp upperRegex = new RegExp("[A-Z]");
-              RegExp lowerRegex = new RegExp("[a-z]");
-              RegExp numberRegex = new RegExp("[0-9]");
-              RegExp symbolRegex = new RegExp("[!@#&*,.?~`]");
-              RegExp invalidSymbolRegex = new RegExp("[^!@#&*,.?~`a-zA-Z0-9]");
-
-              if (!upperRegex.hasMatch(value))
-                return 'Must contain an upper case letter';
-              if (!lowerRegex.hasMatch(value))
-                return 'Must contain a lower case letter';
-              if (!numberRegex.hasMatch(value)) return 'Must contain a number';
-              if (!symbolRegex.hasMatch(value))
-                return 'Must contain a symbol. Valid symbols are: \'!@#&*,.?~`\'';
-              if (invalidSymbolRegex.hasMatch(value))
-                return 'Passwords should only contain symbols \'!@#&*,.?~`\' and alphanumeric characters';
-
-              return null;
-            },
-            decoration: InputDecoration(
-              filled: true,
-              labelText: 'Choose a password',
+            SizedBox(
+              height: 40,
             ),
-            onChanged: (value) {
-              _newAccount.password = value;
-              _newAccount.validPassword = false;
-            },
-            textAlign: TextAlign.center,
-          ),
 
-          SizedBox(
-            height: 25,
-          ),
-
-          // Password confirmation field
-          TextFormField(
-              initialValue: _newAccount.password,
-              obscureText: true,
+            // Email input field
+            TextFormField(
+              autofocus: true,
+              initialValue: _newAccount.email,
+              textInputAction: TextInputAction.next,
+              maxLines: 1,
               validator: (value) {
-                if (value != _newAccount.password)
-                  return 'Passwords don\'t match!';
+                if (value.isEmpty)
+                  return 'Please enter an email for this account';
 
-                _newAccount.validPassword = true;
+                RegExp emailRegex =
+                    new RegExp("^[a-zA-Z0-9.]+@[a-zA-Z0-9]+(.[a-zA-Z0-9]+)+\$");
+                if (!emailRegex.hasMatch(value))
+                  return "This is not a valid email address";
+
+                if (_accountWithEmailExists())
+                  return "This email is already in use";
+
+                // Eventual TODO (elsewhere in the code) - validate the email for this account
+
+                _newAccount.validEmail = true;
                 return null;
               },
               decoration: InputDecoration(
                 filled: true,
-                labelText: 'Confirm your password',
-                //hintText: ''
+                labelText: 'Account email',
               ),
+              onChanged: (value) {
+                _newAccount.email = value;
+                _newAccount.validEmail = false;
+              },
+              textAlign: TextAlign.center,
+            ),
+
+            SizedBox(
+              height: 25,
+            ),
+
+            // Password field
+            TextFormField(
+              initialValue: _newAccount.password,
+              obscureText: true,
+              validator: (value) {
+                if (value.isEmpty) return 'Please enter a password';
+                if (value.length < 7)
+                  return 'Passwords must be at least 7 characters';
+
+                RegExp upperRegex = new RegExp("[A-Z]");
+                RegExp lowerRegex = new RegExp("[a-z]");
+                RegExp numberRegex = new RegExp("[0-9]");
+                RegExp symbolRegex = new RegExp("[!@#&*,.?~`]");
+                RegExp invalidSymbolRegex =
+                    new RegExp("[^!@#&*,.?~`a-zA-Z0-9]");
+
+                if (!upperRegex.hasMatch(value))
+                  return 'Must contain an upper case letter';
+                if (!lowerRegex.hasMatch(value))
+                  return 'Must contain a lower case letter';
+                if (!numberRegex.hasMatch(value))
+                  return 'Must contain a number';
+                if (!symbolRegex.hasMatch(value))
+                  return 'Must contain a symbol. Valid symbols are: \'!@#&*,.?~`\'';
+                if (invalidSymbolRegex.hasMatch(value))
+                  return 'Passwords should only contain symbols \'!@#&*,.?~`\' and alphanumeric characters';
+
+                return null;
+              },
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'Choose a password',
+              ),
+              onChanged: (value) {
+                _newAccount.password = value;
+                _newAccount.validPassword = false;
+              },
+              textAlign: TextAlign.center,
+            ),
+
+            SizedBox(
+              height: 25,
+            ),
+
+            // Password confirmation field
+            TextFormField(
+                initialValue: _newAccount.password,
+                obscureText: true,
+                validator: (value) {
+                  if (value != _newAccount.password)
+                    return 'Passwords don\'t match!';
+
+                  _newAccount.validPassword = true;
+                  return null;
+                },
+                decoration: InputDecoration(
+                  filled: true,
+                  labelText: 'Confirm your password',
+                  //hintText: ''
+                ),
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                  _newAccount.validPassword = false;
+                }),
+
+            SizedBox(
+              height: 25,
+            ),
+
+            TextFormField(
+              initialValue: _newAccount.dateOfBirth,
+              validator: (value) {
+                if (!_isValidDOB(value))
+                  return 'Invalid Format - Must be mm/dd/yyyy';
+
+                if (!_isValidDay(value))
+                  return 'That date does not exist or is not acceptable';
+
+                if (!_isAdult(value))
+                  return 'You must be at least 18 years old to sign up!';
+
+                _newAccount.validDOB = true;
+
+                return null;
+              },
+              decoration: InputDecoration(
+                  filled: true,
+                  labelText: 'Enter Your Date of Birth',
+                  hintText: 'mm/dd/yyyy'),
               textAlign: TextAlign.center,
               onChanged: (value) {
-                _newAccount.validPassword = false;
-              }),
-
-          SizedBox(
-            height: 25,
-          ),
-
-          TextFormField(
-            initialValue: _newAccount.dateOfBirth,
-            validator: (value) {
-              if (!_isValidDOB(value))
-                return 'Invalid Format - Must be mm/dd/yyyy';
-
-              if (!_isValidDay(value))
-                return 'That date does not exist or is not acceptable';
-
-              if (!_isAdult(value))
-                return 'You must be at least 18 years old to sign up!';
-
-              _newAccount.validDOB = true;
-
-              return null;
-            },
-            decoration: InputDecoration(
-                filled: true,
-                labelText: 'Enter Your Date of Birth',
-                hintText: 'mm/dd/yyyy'),
-            textAlign: TextAlign.center,
-            onChanged: (value) {
-              _newAccount.dateOfBirth = value;
-              _newAccount.validDOB = false;
-            },
-          ),
-        ],
+                _newAccount.dateOfBirth = value;
+                _newAccount.validDOB = false;
+              },
+            ),
+          ],
+        ),
       ),
     ));
   }

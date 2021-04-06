@@ -144,84 +144,75 @@ class SignupFormState extends State<SignupForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: _pages[_currentPage],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // Backwards button
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _previousPage();
-                      });
-                    },
-                    child: Image(
-                      image: AssetImage('assets/images/BackwardsButton.png'),
-                      width: 50,
-                      height: 50,
-                    ),
-                  ),
-
-                  SizedBox(
-                    width: 25,
-                  ),
-
-                  // Page tracker dots
-                  Image(
-                    image: _currentPage == 0 ? _fullDotAsset : _emptyDotAsset,
-                    width: 25,
-                    height: 25,
-                  ),
-
-                  SizedBox(
-                    width: 15,
-                  ),
-
-                  Image(
-                    image: _currentPage == 1 ? _fullDotAsset : _emptyDotAsset,
-                    width: 25,
-                    height: 25,
-                  ),
-
-                  SizedBox(
-                    width: 15,
-                  ),
-
-                  Image(
-                    image: _currentPage == 2 ? _fullDotAsset : _emptyDotAsset,
-                    width: 25,
-                    height: 25,
-                  ),
-
-                  SizedBox(
-                    width: 25,
-                  ),
-
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _nextPage();
-                      });
-                    },
-                    child: Image(
-                      image: AssetImage('assets/images/ForwardsButton.png'),
-                      width: 50,
-                      height: 50,
-                    ),
-                  ),
-                ],
+      body: _pages[_currentPage],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            // Backwards button
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _previousPage();
+                });
+              },
+              child: Image(
+                image: AssetImage('assets/images/BackwardsButton.png'),
+                width: 50,
+                height: 50,
               ),
             ),
-          ),
-        ],
+
+            SizedBox(
+              width: 25,
+            ),
+
+            // Page tracker dots
+            Image(
+              image: _currentPage == 0 ? _fullDotAsset : _emptyDotAsset,
+              width: 25,
+              height: 25,
+            ),
+
+            SizedBox(
+              width: 15,
+            ),
+
+            Image(
+              image: _currentPage == 1 ? _fullDotAsset : _emptyDotAsset,
+              width: 25,
+              height: 25,
+            ),
+
+            SizedBox(
+              width: 15,
+            ),
+
+            Image(
+              image: _currentPage == 2 ? _fullDotAsset : _emptyDotAsset,
+              width: 25,
+              height: 25,
+            ),
+
+            SizedBox(
+              width: 25,
+            ),
+
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _nextPage();
+                });
+              },
+              child: Image(
+                image: AssetImage('assets/images/ForwardsButton.png'),
+                width: 50,
+                height: 50,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

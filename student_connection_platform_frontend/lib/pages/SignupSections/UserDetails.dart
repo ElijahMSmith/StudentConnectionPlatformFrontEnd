@@ -75,164 +75,167 @@ class _UserDetailsState extends State<UserDetails> {
       body: Form(
         key: _formKey,
         autovalidateMode: AutovalidateMode.always,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 25),
-            Text('Almost Done!',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
-            SizedBox(height: 25),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 25),
+              Text('Almost Done!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+              SizedBox(height: 25),
 
-            // Location
-            Text('Where are you from?',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    child: TextFormField(
-                      initialValue: _newAccount.city,
-                      validator: (value) {
-                        if (value.isEmpty) return 'Required';
-                        _newAccount.validCity = true;
-                        return null;
-                      },
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      maxLength: 30,
-                      decoration:
-                          InputDecoration(filled: true, hintText: 'City'),
-                      onChanged: (value) {
-                        _newAccount.validCity = false;
-                        _newAccount.city = value;
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    child: TextFormField(
-                      initialValue: _newAccount.country,
-                      validator: (value) {
-                        if (value.isEmpty) return 'Required';
-                        _newAccount.validCountry = true;
-                        return null;
-                      },
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      maxLength: 30,
-                      decoration:
-                          InputDecoration(filled: true, hintText: 'Country'),
-                      onChanged: (value) {
-                        _newAccount.validCity = false;
-                        _newAccount.country = value;
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            // School and major
-            Text('Where do you go to school?',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    child: TextFormField(
-                      initialValue: _newAccount.school,
-                      validator: (value) {
-                        if (value.isEmpty) return 'Required';
-                        _newAccount.validSchool = true;
-                        return null;
-                      },
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      maxLength: 30,
-                      decoration: InputDecoration(
-                          filled: true, hintText: 'University Name'),
-                      onChanged: (value) {
-                        _newAccount.validSchool = false;
-                        _newAccount.school = value;
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    child: TextFormField(
-                      initialValue: _newAccount.major,
-                      validator: (value) {
-                        if (value.isEmpty) return 'Required';
-                        _newAccount.validMajor = true;
-                        return null;
-                      },
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      maxLength: 30,
-                      decoration: InputDecoration(
-                          filled: true, hintText: 'Field of Study'),
-                      onChanged: (value) {
-                        _newAccount.validMajor = false;
-                        _newAccount.major = value;
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            // Interests and Hobbies
-            // School and major
-            Text('What interests you?',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Row(children: [
+              // Location
+              Text('Where are you from?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
                   Expanded(
                     child: Container(
-                      height: 50,
-                      child: _textField,
+                      height: 100,
+                      child: TextFormField(
+                        initialValue: _newAccount.city,
+                        validator: (value) {
+                          if (value.isEmpty) return 'Required';
+                          _newAccount.validCity = true;
+                          return null;
+                        },
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        maxLength: 30,
+                        decoration:
+                            InputDecoration(filled: true, hintText: 'City'),
+                        onChanged: (value) {
+                          _newAccount.validCity = false;
+                          _newAccount.city = value;
+                        },
+                      ),
                     ),
                   ),
-                ]),
-                Scrollbar(
-                  isAlwaysShown: true,
-                  child: Container(
-                      width: 300,
-                      height: 200,
-                      child: ListView.builder(
-                        itemCount: _newAccount.interests.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(
-                              '${_newAccount.interests[index]}',
-                              textAlign: TextAlign.center,
-                            ),
-                          );
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Container(
+                      height: 100,
+                      child: TextFormField(
+                        initialValue: _newAccount.country,
+                        validator: (value) {
+                          if (value.isEmpty) return 'Required';
+                          _newAccount.validCountry = true;
+                          return null;
                         },
-                      )),
-                )
-              ],
-            ),
-          ],
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        maxLength: 30,
+                        decoration:
+                            InputDecoration(filled: true, hintText: 'Country'),
+                        onChanged: (value) {
+                          _newAccount.validCity = false;
+                          _newAccount.country = value;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              // School and major
+              Text('Where do you go to school?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      height: 100,
+                      child: TextFormField(
+                        initialValue: _newAccount.school,
+                        validator: (value) {
+                          if (value.isEmpty) return 'Required';
+                          _newAccount.validSchool = true;
+                          return null;
+                        },
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        maxLength: 30,
+                        decoration: InputDecoration(
+                            filled: true, hintText: 'University Name'),
+                        onChanged: (value) {
+                          _newAccount.validSchool = false;
+                          _newAccount.school = value;
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: Container(
+                      height: 100,
+                      child: TextFormField(
+                        initialValue: _newAccount.major,
+                        validator: (value) {
+                          if (value.isEmpty) return 'Required';
+                          _newAccount.validMajor = true;
+                          return null;
+                        },
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        maxLength: 30,
+                        decoration: InputDecoration(
+                            filled: true, hintText: 'Field of Study'),
+                        onChanged: (value) {
+                          _newAccount.validMajor = false;
+                          _newAccount.major = value;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              // Interests and Hobbies
+              // School and major
+              Text('What interests you?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              SizedBox(height: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Row(children: [
+                    Expanded(
+                      child: Container(
+                        height: 50,
+                        child: _textField,
+                      ),
+                    ),
+                  ]),
+                  Scrollbar(
+                    isAlwaysShown: true,
+                    child: Container(
+                        width: 300,
+                        height: 200,
+                        child: ListView.builder(
+                          itemCount: _newAccount.interests.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(
+                                '${_newAccount.interests[index]}',
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          },
+                        )),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

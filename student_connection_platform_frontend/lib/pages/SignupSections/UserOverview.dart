@@ -111,129 +111,133 @@ class _UserOverviewState extends State<UserOverview> {
       body: Form(
         key: _formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 2,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(50))),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image(
+                          image: _newAccount.profilePicture != null
+                              ? FileImage(_newAccount.profilePicture)
+                              : _choosePictureAsset,
+                          fit: BoxFit.fill,
+                          width: 100,
+                          height: 100,
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(50))),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image(
-                        image: _newAccount.profilePicture != null
-                            ? FileImage(_newAccount.profilePicture)
-                            : _choosePictureAsset,
-                        fit: BoxFit.fill,
-                        width: 100,
-                        height: 100,
-                      ),
-                    )),
-                SizedBox(width: 15),
-                ConstrainedBox(
-                  constraints: BoxConstraints.tightFor(width: 200, height: 50),
-                  child: ElevatedButton(
-                    child: Text('Choose Profile Picture'),
-                    style: ElevatedButton.styleFrom(
-                        primary: Color.fromRGBO(0, 194, 155, 1),
-                        textStyle:
-                            TextStyle(fontSize: 12, color: Colors.white)),
-                    onPressed: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (builder) => bottomSheet());
-                    },
+                      )),
+                  SizedBox(width: 15),
+                  ConstrainedBox(
+                    constraints:
+                        BoxConstraints.tightFor(width: 200, height: 50),
+                    child: ElevatedButton(
+                      child: Text('Choose Profile Picture'),
+                      style: ElevatedButton.styleFrom(
+                          primary: Color.fromRGBO(0, 194, 155, 1),
+                          textStyle:
+                              TextStyle(fontSize: 12, color: Colors.white)),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (builder) => bottomSheet());
+                      },
+                    ),
                   ),
+                ],
+              ),
+              SizedBox(height: 25),
+              Container(
+                width: 400,
+                height: 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('  Create Your Username!  ',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 15)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      initialValue: _newAccount.username,
+                      validator: (value) {
+                        if (value.isEmpty || value.length < 3)
+                          return 'Usernames must be at least 3 characters';
+
+                        if (_accountWithUsernameExists())
+                          return 'That username is already in use';
+
+                        //TODO: Check against database for existing usernames
+                        _newAccount.validUsername = true;
+                        return null;
+                      },
+                      textAlign: TextAlign.start,
+                      maxLength: 20,
+                      decoration: InputDecoration(
+                          filled: true,
+                          hintText: 'This doesn\'t have to be your real name.'),
+                      onChanged: (value) {
+                        _newAccount.username = value;
+                        _newAccount.validUsername = false;
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            SizedBox(height: 25),
-            Container(
-              width: 400,
-              height: 100,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('  Create Your Username!  ',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 15)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    initialValue: _newAccount.username,
-                    validator: (value) {
-                      if (value.isEmpty || value.length < 3)
-                        return 'Usernames must be at least 3 characters';
-
-                      if (_accountWithUsernameExists())
-                        return 'That username is already in use';
-
-                      //TODO: Check against database for existing usernames
-                      _newAccount.validUsername = true;
-                      return null;
-                    },
-                    textAlign: TextAlign.start,
-                    maxLength: 20,
-                    decoration: InputDecoration(
-                        filled: true,
-                        hintText: 'This doesn\'t have to be your real name.'),
-                    onChanged: (value) {
-                      _newAccount.username = value;
-                      _newAccount.validUsername = false;
-                    },
-                  ),
-                ],
               ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              width: 400,
-              height: 250,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('  Tell everyone a bit about yourself!  ',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 15)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    initialValue: _newAccount.bio,
-                    validator: (value) {
-                      if (value.isEmpty || value.length < 40)
-                        return 'Please include at least 40 characters in your bio.';
+              SizedBox(height: 20),
+              Container(
+                width: 400,
+                height: 250,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('  Tell everyone a bit about yourself!  ',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 15)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      initialValue: _newAccount.bio,
+                      validator: (value) {
+                        if (value.isEmpty || value.length < 40)
+                          return 'Please include at least 40 characters in your bio.';
 
-                      _newAccount.validBio = true;
-                      return null;
-                    },
-                    textAlign: TextAlign.start,
-                    maxLength: 140,
-                    minLines: 5,
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                        filled: true,
-                        hintText:
-                            'Write anything you want! What makes you who you are?'),
-                    onChanged: (value) {
-                      _newAccount.validBio = false;
-                      _newAccount.bio = value;
-                    },
-                  ),
-                ],
+                        _newAccount.validBio = true;
+                        return null;
+                      },
+                      textAlign: TextAlign.start,
+                      maxLength: 140,
+                      minLines: 5,
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                          filled: true,
+                          hintText:
+                              'Write anything you want! What makes you who you are?'),
+                      onChanged: (value) {
+                        _newAccount.validBio = false;
+                        _newAccount.bio = value;
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

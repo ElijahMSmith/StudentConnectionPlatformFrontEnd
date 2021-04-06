@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
-
-class CardProfile extends StatelessWidget
-{
+class CardProfile extends StatelessWidget {
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     final user = ModalRoute.of(context).settings.arguments as User;
 
     return Scaffold(
@@ -17,11 +14,8 @@ class CardProfile extends StatelessWidget
             width: double.infinity,
             child: Hero(
               tag: user.id,
-              child: Image.asset(
-                'assets/maul.png',
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width
-              ),
+              child: Image.asset('assets/images/maul.png',
+                  fit: BoxFit.cover, width: MediaQuery.of(context).size.width),
             ),
           ),
           SizedBox(
