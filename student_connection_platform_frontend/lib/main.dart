@@ -11,6 +11,7 @@ import 'pages/content_frame.dart';
 import 'pages_by_leo/about.dart';
 import 'pages_by_leo/profile_page.dart';
 import 'dart:isolate';
+import 'package:web_socket_channel/io.dart';
 
 
 final String appName = "NameTBD";
@@ -95,10 +96,13 @@ class _NavigationHelperWidgetState extends State<NavigationHelperWidget>
 {
 
   int _selectedIndex = 0;
+
+
   final List<Widget> pages =
   [
     PostPage(),
-    DMChat(),
+    // Connect to a WebSocket server
+    DMChat(channel: IOWebSocketChannel.connect('wss://echo.websocket.org'),),
     MatchMaker(),
     ProfilePage(),
   ];
