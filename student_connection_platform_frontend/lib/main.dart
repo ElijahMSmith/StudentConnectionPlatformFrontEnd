@@ -11,7 +11,6 @@ import 'pages/content_frame.dart';
 import 'pages_by_leo/about.dart';
 import 'pages_by_leo/profile_page.dart';
 import 'dart:isolate';
-import 'package:web_socket_channel/io.dart';
 
 
 final String appName = "NameTBD";
@@ -45,8 +44,6 @@ final String appName = "NameTBD";
 
 void main()
 {
-
-
   // int i = choose(Args(10, 6));
   // print(i);
   runApp(AppHome());
@@ -102,7 +99,9 @@ class _NavigationHelperWidgetState extends State<NavigationHelperWidget>
   [
     PostPage(),
     // Connect to a WebSocket server
-    DMChat(channel: IOWebSocketChannel.connect('wss://echo.websocket.org'),),
+    // don't pass the websocket channel down this widget. Instead, declare and initialze
+    // it inside
+    DMChat(),
     MatchMaker(),
     ProfilePage(),
   ];

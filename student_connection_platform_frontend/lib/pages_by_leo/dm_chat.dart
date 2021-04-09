@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/foundation.dart';
 import '../constants.dart';
@@ -14,23 +15,22 @@ import '../constants.dart';
 
 class DMChat extends StatefulWidget
 {
-  final String title;
-  final WebSocketChannel channel;
-
-  const DMChat({Key key, this.title, @required this.channel})
-    : super(key: key);
-
   @override
-  _DMChatState createState() => _DMChatState(channel: channel);
+  _DMChatState createState() => _DMChatState();
 }
 
 class _DMChatState extends State<DMChat>
 {
   TextEditingController _controller;
   List<MessagesBubble> messages;
-  final WebSocketChannel channel;
 
-  _DMChatState({this.channel});
+
+  // IMPORTANT!! DO NOT PASS THIS DOWN THE CONSTRUCTOR OF THIS STATEFUL WIDGET.
+  // IT WILL GIVE YOU BUGS WHEN SWITCHING BETWEEN PAGES. IT TOOK ME HOURS TO FINALLY
+  // FIGURE THIS OUT AFTER COUNTLESS TRIAL AND ERRORS!
+  WebSocketChannel channel;
+
+  // _DMChatState({this.channel});
 
     @override
   void initState()
@@ -38,6 +38,7 @@ class _DMChatState extends State<DMChat>
     super.initState();
     _controller = TextEditingController();
     messages = [];
+    channel = IOWebSocketChannel.connect('wss://echo.websocket.org');
   }
 
   @override
