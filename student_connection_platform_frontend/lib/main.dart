@@ -1,20 +1,19 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_connection_platform_frontend/constants.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/dm_chat.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/match_maker.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/post_page.dart';
+import 'pages_by_leo/profile_page.dart';
+import 'package:flutter/foundation.dart';
 import 'pages/signin.dart';
 import 'pages/signup.dart';
 import 'pages/content_frame.dart';
 import 'pages_by_leo/about.dart';
-import 'pages_by_leo/profile_page.dart';
 import 'dart:isolate';
 
 
 final String appName = "NameTBD";
-
 
 // # 5C5 = 1
 // # 5C1 = 5

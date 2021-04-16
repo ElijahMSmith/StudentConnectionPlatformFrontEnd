@@ -3,6 +3,8 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/foundation.dart';
 import '../constants.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 
 
 // https://flutter.dev/docs/cookbook/networking/web-sockets
@@ -23,6 +25,21 @@ class _DMChatState extends State<DMChat>
 {
   TextEditingController _controller;
   List<MessagesBubble> messages;
+  IO.Socket socket;
+  final String ipAddyAndPortNum = 'ws://localhost:3000'; // 192.168.1.84
+
+  void connect()
+  {
+    socket = IO.io(ipAddyAndPortNum, <String, dynamic>{
+      'transports' :['websocket'],
+      'autoConnect' : false,
+    });
+    socket.connect();
+    socket.onConnect((data) => print('connected'));
+    print(socket.connected ? 'connected' : 'not connected');
+
+    socket.emit('/test', 'hello there!');
+  }
 
 
   // IMPORTANT!! DO NOT PASS THIS DOWN THE CONSTRUCTOR OF THIS STATEFUL WIDGET.
@@ -32,10 +49,13 @@ class _DMChatState extends State<DMChat>
 
   // _DMChatState({this.channel});
 
+
+
     @override
   void initState()
   {
     super.initState();
+    connect();
     _controller = TextEditingController();
     messages = [];
     channel = IOWebSocketChannel.connect('wss://echo.websocket.org');

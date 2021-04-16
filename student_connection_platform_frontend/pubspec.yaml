@@ -27,6 +27,7 @@ dependencies:
   image_picker: ^0.6.7+22
   provider: ^5.0.0
   web_socket_channel: ^2.0.0
+  socket_io_client: ^0.9.12
 
 
   # The following adds the Cupertino Icons font to your application.
