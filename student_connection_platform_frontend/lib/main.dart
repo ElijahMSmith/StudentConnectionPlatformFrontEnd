@@ -4,6 +4,7 @@ import 'package:student_connection_platform_frontend/constants.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/dm_chat.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/match_maker.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/post_page.dart';
+import 'pages_by_leo/SelectContact.dart';
 import 'pages_by_leo/profile_page.dart';
 import 'package:flutter/foundation.dart';
 import 'pages/signin.dart';
@@ -100,7 +101,8 @@ class _NavigationHelperWidgetState extends State<NavigationHelperWidget>
     // Connect to a WebSocket server
     // don't pass the websocket channel down this widget. Instead, declare and initialze
     // it inside
-    DMChat(),
+    // DMChat(),
+    SelectContact(),
     MatchMaker(),
     ProfilePage(),
   ];
