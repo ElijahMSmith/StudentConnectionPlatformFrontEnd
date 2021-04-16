@@ -1,9 +1,11 @@
-import 'dart:ffi';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/pages/signup.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 /*
 
@@ -32,11 +34,11 @@ class SigninForm extends StatefulWidget {
 class _SigninFormState extends State<SigninForm> {
   final _formKey = GlobalKey<FormState>();
 
-  // TODO: Validate against database
   bool _storeLoginInfo = false;
   String _username;
   String _password;
   bool _validationFailed = false;
+  bool _otherError = false;
   // TODO: Time out authentication attempts after x number in y amount of time
   int _loginAttempts = 0;
 
@@ -55,9 +57,44 @@ class _SigninFormState extends State<SigninForm> {
     }
   }
 
-  bool _attemptSignin() {
-    //TODO
-    return false;
+  _attemptSignin() async {
+    String bodyJSON = jsonEncode(
+        <String, String>{"username": _username, "password": _password});
+
+    final response = await http.post(
+        Uri.parse("https://t3-dev.rruiz.dev/api/login"),
+        headers: {"Content-Type": "application/json"},
+        body: bodyJSON);
+
+    _validationFailed = false;
+    _otherError = false;
+
+    if (response.statusCode == 200) {
+      // Successful login
+      setState(() {
+        // TODO: GET account and send it to profile page (when Leo has it set up to take the account)
+        // Successful login
+        Fluttertoast.showToast(
+            msg: "Login successful!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.greenAccent,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        Navigator.pushNamed(context, ProfilePage.routeID);
+      });
+    } else if (response.statusCode == 401) {
+      // Failed login
+      setState(() {
+        _validationFailed = true;
+      });
+    } else {
+      // Other error
+      setState(() {
+        _otherError = true;
+      });
+    }
   }
 
   @override
@@ -92,9 +129,11 @@ class _SigninFormState extends State<SigninForm> {
 
                 // Validation error text: Hidden until login attempt fail
                 Visibility(
-                  visible: _validationFailed,
+                  visible: _validationFailed || _otherError,
                   child: Text(
-                      'We couldn\'t find a user with that login information.',
+                      _validationFailed
+                          ? 'We couldn\'t find a user with that login information.'
+                          : 'An error occurred while trying to log you in.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 15, color: Colors.red)),
                 ),
@@ -189,10 +228,6 @@ class _SigninFormState extends State<SigninForm> {
                             TextStyle(fontSize: 15, color: Colors.white)),
                     onPressed: () {
                       // Checks the input fields are not empty
-
-                      // TODO: Just for now while we don't have account validation, let me into profile page easily
-                      Navigator.pushNamed(context, ProfilePage.routeID);
-
                       var valid = _formKey.currentState.validate();
                       if (!valid) return;
 
@@ -200,10 +235,7 @@ class _SigninFormState extends State<SigninForm> {
                         prefs.setString("username", _username);
                         prefs.setString("password", _password);
 
-                        _validationFailed = _attemptSignin();
-                        if (!_validationFailed) {
-                          //TODO: Get the account returned and move to profile page with it
-                        }
+                        _attemptSignin();
                       });
                     },
                   ),

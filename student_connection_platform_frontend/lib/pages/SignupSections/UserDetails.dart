@@ -80,7 +80,7 @@ class _UserDetailsState extends State<UserDetails> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 25),
+              SizedBox(height: 50),
               Text('Almost Done!',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
@@ -216,7 +216,6 @@ class _UserDetailsState extends State<UserDetails> {
                     ),
                   ]),
                   Scrollbar(
-                    isAlwaysShown: true,
                     child: Container(
                         width: 300,
                         height: 200,
@@ -231,7 +230,13 @@ class _UserDetailsState extends State<UserDetails> {
                             );
                           },
                         )),
-                  )
+                  ),
+                  // School and major
+                  SizedBox(height: 10),
+                  Text('The box with your chosen interests scrolls!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontWeight: FontWeight.normal, fontSize: 10)),
                 ],
               ),
             ],

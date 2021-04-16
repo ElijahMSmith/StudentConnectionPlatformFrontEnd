@@ -86,7 +86,7 @@ class _AccountDetailsState extends State<AccountDetails> {
           children: <Widget>[
             // Welcome message
             SizedBox(
-              height: 40,
+              height: 50,
             ),
 
             Text('Signup for $appName', // Defined in signup.dart

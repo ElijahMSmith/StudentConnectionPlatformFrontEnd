@@ -14,8 +14,12 @@ class Account {
 
   File profilePicture;
   bool validProfilePicture = false;
+
+  String name = "";
+  bool validName = false;
   String username = "";
   bool validUsername = false;
+  String job = "";
   String bio = "";
   bool validBio = false;
 
@@ -35,7 +39,7 @@ class Account {
   }
 
   bool validUserOverview() {
-    return validProfilePicture && validUsername && validBio;
+    return validProfilePicture && validName && validUsername && validBio;
   }
 
   bool validUserDetails() {
