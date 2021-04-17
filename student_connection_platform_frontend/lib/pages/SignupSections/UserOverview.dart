@@ -203,16 +203,27 @@ class _UserOverviewState extends State<UserOverview> {
                     TextFormField(
                       initialValue: _newAccount.username,
                       validator: (value) {
-                        if (value.isEmpty || value.length < 3)
-                          return 'Usernames must be at least 3 characters';
+                        _newAccount.validUsername = false;
+                        if (value.length < 7)
+                          return 'Username is too short! Use at least 7 characters';
+
+                        RegExp invalidSymbolRegex =
+                            new RegExp("[^!@#&*,.?~`a-zA-Z0-9]");
+                        if (invalidSymbolRegex.hasMatch(value))
+                          return 'Invalid character used in username! Use \'!@#&*,.?~`\' and alphanumeric characters only';
+
                         _newAccount.validUsername = true;
                         return null;
                       },
                       textAlign: TextAlign.start,
                       maxLength: 20,
                       decoration: InputDecoration(
+                          fillColor: _newAccount.validUsername
+                              ? Color.fromRGBO(58, 181, 119, 1)
+                              : Colors.grey,
                           filled: true,
-                          hintText: 'Usernames don\'t have to be unique!'),
+                          hintText:
+                              'Pick a unique username of at least 7 characters'),
                       onChanged: (value) {
                         _newAccount.username = value;
                         _newAccount.validUsername = false;

@@ -1,3 +1,5 @@
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'dart:io';
 
 class Account {
@@ -33,6 +35,13 @@ class Account {
   bool validMajor = false;
   List<String> interests = [];
   bool validInterests = false;
+
+  List<String> matchIDs = [];
+
+  Future<http.Response> checkUsernameUnique() {
+    return http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/" + username),
+        headers: {"Content-Type": "application/json"});
+  }
 
   bool validAccountDetails() {
     return validEmail && validPassword && validDOB;

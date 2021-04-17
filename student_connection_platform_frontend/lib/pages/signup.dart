@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/profile_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 
 // Since it's still highly variable, minimize the places we'll have to change it
@@ -48,8 +49,9 @@ class SignupFormState extends State<SignupForm> {
   final AssetImage _fullDotAsset =
       new AssetImage('assets/images/FilledDot.png');
 
-  Future<void> _showFailedSubmissionDialog(
-      FailedSubmissionResult result) async {
+  Future<void> _showFailedSubmissionDialog(FailedSubmissionResult result,
+      [bool nonUniqueEmail = false]) async {
+    // Either page submission or account submission (pageSubmission = false)
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -86,12 +88,20 @@ class SignupFormState extends State<SignupForm> {
                 title: Text("Signup request to servers failed!"),
                 content: SingleChildScrollView(
                   child: ListBody(
-                    children: <Widget>[
-                      Text(
-                          'The information submitted to the server to sign up your account is invalid.\n'),
-                      Text(
-                          'If you believe this is a problem on our end, please let us know!'),
-                    ],
+                    children: nonUniqueEmail
+                        ? <Widget>[
+                            // Email used wasn't unique. TODO: Replace once we have an endpoint for checking during first signup page
+                            Text(
+                                'The email you input for this account is already in use.\n'),
+                            Text(
+                                'Use a different email that\'s not already tied to an account!'),
+                          ]
+                        : <Widget>[
+                            Text(
+                                'The information submitted to the server to sign up your account is invalid.\n'),
+                            Text(
+                                'If you believe this is a problem on our end, please let us know!'),
+                          ],
                   ),
                 ),
                 actions: <Widget>[
@@ -135,6 +145,45 @@ class SignupFormState extends State<SignupForm> {
     );
   }
 
+  Future<void> _showUsernameFailError(bool inUseError) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Problem when submitting your username"),
+          content: SingleChildScrollView(
+            child: ListBody(
+                children: inUseError
+                    ?
+                    // Username is already in use
+                    <Widget>[
+                        Text('That username is already in use.\n'),
+                        Text(
+                            'Pick a different username that is unique to you!'),
+                      ]
+                    :
+
+                    // Other error when submitting username for validation
+                    <Widget>[
+                        Text(
+                            'There was an issue checking if your username was unique.\n'),
+                        Text('If this issue persists, let us know!'),
+                      ]),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   _attemptSubmit() async {
     String bodyJSON = jsonEncode(<String, String>{
       "name": _newAccount.name,
@@ -173,19 +222,14 @@ class SignupFormState extends State<SignupForm> {
     } else if (response.statusCode == 400) {
       // Bad request or other error
       print("Error 400 on submission:\n" + response.body);
-      _showFailedSubmissionDialog(FailedSubmissionResult.BAD_REQUEST);
+      _showFailedSubmissionDialog(FailedSubmissionResult.BAD_REQUEST, true);
     } else {
       // Other error
-      print(response.statusCode);
-      print(response.toString());
-      print(response.headers.toString());
-      print(response.body);
       _showFailedSubmissionDialog(FailedSubmissionResult.OTHER_ERROR);
     }
   }
 
   void _nextPage() {
-    print(_currentPage);
     if (_currentPage == 0) {
       if (_newAccount.validAccountDetails()) {
         _currentPage++;
@@ -195,7 +239,25 @@ class SignupFormState extends State<SignupForm> {
       }
     } else if (_currentPage == 1) {
       if (_newAccount.validUserOverview()) {
-        _currentPage++;
+        Fluttertoast.showToast(
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            fontSize: 12.0);
+        _newAccount.checkUsernameUnique().then((response) {
+          if (response.statusCode == 200) {
+            // Username available
+            setState(() {
+              _currentPage++;
+            });
+          } else if (response.statusCode == 500) {
+            // Username unavailable
+            _showUsernameFailError(true);
+          } else {
+            // Other error
+            _showUsernameFailError(false);
+          }
+        });
       } else {
         _showFailedSubmissionDialog(
             FailedSubmissionResult.INCOMPLETE_INFORMATION);
@@ -211,7 +273,6 @@ class SignupFormState extends State<SignupForm> {
   }
 
   void _previousPage() {
-    print(_currentPage);
     if (_currentPage == 0) {
       Navigator.pop(context);
     } else {

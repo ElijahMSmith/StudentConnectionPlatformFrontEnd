@@ -5,6 +5,7 @@ import 'package:student_connection_platform_frontend/pages/signup.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:http/http.dart' as http;
 
 /*
@@ -39,6 +40,7 @@ class _SigninFormState extends State<SigninForm> {
   String _password;
   bool _validationFailed = false;
   bool _otherError = false;
+  bool _showLoginTimeout = false;
   // TODO: Time out authentication attempts after x number in y amount of time
   int _loginAttempts = 0;
 
@@ -58,6 +60,25 @@ class _SigninFormState extends State<SigninForm> {
   }
 
   _attemptSignin() async {
+    if (_loginAttempts >= 5) {
+      //If we've already timed out previously, don't start the timeout again
+      if (_showLoginTimeout) return;
+
+      // Remove any current error messages and show timeout message instead
+      _otherError = false;
+      _validationFailed = false;
+      _showLoginTimeout = true;
+
+      // After one minute, let them try again
+      Future.delayed(const Duration(milliseconds: 60000), () {
+        setState(() {
+          _showLoginTimeout = false;
+          _loginAttempts = 0;
+        });
+      });
+      return;
+    }
+
     String bodyJSON = jsonEncode(
         <String, String>{"username": _username, "password": _password});
 
@@ -71,6 +92,18 @@ class _SigninFormState extends State<SigninForm> {
 
     if (response.statusCode == 200) {
       // Successful login
+
+      Map<String, dynamic> _responseBody =
+          json.decode(response.body); // _InternalLinkedHashMap
+
+      //TODO: All three of these are strings, what do I do with the JWT?
+      print(_responseBody["token"]);
+      print(_responseBody["token"].runtimeType);
+      print(_responseBody["username"]);
+      print(_responseBody["username"].runtimeType);
+      print(_responseBody["name"]);
+      print(_responseBody["name"].runtimeType);
+
       setState(() {
         // TODO: GET account and send it to profile page (when Leo has it set up to take the account)
         // Successful login
@@ -79,11 +112,12 @@ class _SigninFormState extends State<SigninForm> {
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
-            backgroundColor: Colors.greenAccent,
             textColor: Colors.white,
             fontSize: 16.0);
         Navigator.pushNamed(context, ProfilePage.routeID);
       });
+
+      return;
     } else if (response.statusCode == 401) {
       // Failed login
       setState(() {
@@ -95,6 +129,8 @@ class _SigninFormState extends State<SigninForm> {
         _otherError = true;
       });
     }
+
+    _loginAttempts++;
   }
 
   @override
@@ -138,9 +174,20 @@ class _SigninFormState extends State<SigninForm> {
                       style: TextStyle(fontSize: 15, color: Colors.red)),
                 ),
 
+                // Login timeout error text: Hidden until login attempts time out
+                Visibility(
+                  visible: _showLoginTimeout,
+                  child: Text(
+                      'You\'re doing that too much.\nPlease wait 60s and try again.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15, color: Colors.red)),
+                ),
+
                 // Adds extra padding below error message when it shows
                 Visibility(
-                    visible: _validationFailed, child: SizedBox(height: 10)),
+                    visible:
+                        _validationFailed || _otherError || _showLoginTimeout,
+                    child: SizedBox(height: 10)),
 
                 // Username or email field - will validate against database
                 TextFormField(
