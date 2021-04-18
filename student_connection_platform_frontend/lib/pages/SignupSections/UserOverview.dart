@@ -99,11 +99,6 @@ class _UserOverviewState extends State<UserOverview> {
     );
   }
 
-  bool _accountWithUsernameExists() {
-    //TODO: Make sure two people don't have the same username already
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +111,7 @@ class _UserOverviewState extends State<UserOverview> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 30),
+              SizedBox(height: 50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -159,7 +154,40 @@ class _UserOverviewState extends State<UserOverview> {
                   ),
                 ],
               ),
-              SizedBox(height: 25),
+              SizedBox(height: 20),
+              Container(
+                width: 400,
+                height: 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('  What\'s your name?  ',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 15)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      initialValue: _newAccount.job,
+                      validator: (value) {
+                        if (value.length == 0) return 'This cannot be blank!';
+                        _newAccount.validName = true;
+                        return null; //Anything here is valid
+                      },
+                      textAlign: TextAlign.start,
+                      maxLength: 40,
+                      decoration: InputDecoration(
+                          filled: true,
+                          hintText: 'First and/or last name is acceptable.'),
+                      onChanged: (value) {
+                        _newAccount.name = value;
+                        _newAccount.validName = false;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 5),
               Container(
                 width: 400,
                 height: 100,
@@ -175,30 +203,67 @@ class _UserOverviewState extends State<UserOverview> {
                     TextFormField(
                       initialValue: _newAccount.username,
                       validator: (value) {
-                        if (value.isEmpty || value.length < 3)
-                          return 'Usernames must be at least 3 characters';
+                        _newAccount.validUsername = false;
+                        if (value.length < 7)
+                          return 'Username is too short! Use at least 7 characters';
 
-                        if (_accountWithUsernameExists())
-                          return 'That username is already in use';
+                        RegExp invalidSymbolRegex =
+                            new RegExp("[^!@#&*,.?~`a-zA-Z0-9]");
+                        if (invalidSymbolRegex.hasMatch(value))
+                          return 'Invalid character used in username! Use \'!@#&*,.?~`\' and alphanumeric characters only';
 
-                        //TODO: Check against database for existing usernames
                         _newAccount.validUsername = true;
                         return null;
                       },
                       textAlign: TextAlign.start,
                       maxLength: 20,
                       decoration: InputDecoration(
+                          fillColor: _newAccount.validUsername
+                              ? Color.fromRGBO(58, 181, 119, 1)
+                              : Color.fromRGBO(240, 240, 240, 1),
                           filled: true,
-                          hintText: 'This doesn\'t have to be your real name.'),
+                          hintText:
+                              'Pick a unique username of at least 7 characters'),
                       onChanged: (value) {
                         _newAccount.username = value;
                         _newAccount.validUsername = false;
+                        _newAccount.usernameChecked = false;
                       },
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 5),
+              Container(
+                width: 400,
+                height: 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('  Do you have a job currently?  ',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 15)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      initialValue: _newAccount.job,
+                      validator: (value) {
+                        return null; //Anything here is valid
+                      },
+                      textAlign: TextAlign.start,
+                      maxLength: 30,
+                      decoration: InputDecoration(
+                          filled: true,
+                          hintText: 'Put your job title here if you have one.'),
+                      onChanged: (value) {
+                        _newAccount.job = value;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 5),
               Container(
                 width: 400,
                 height: 250,
@@ -211,27 +276,29 @@ class _UserOverviewState extends State<UserOverview> {
                     SizedBox(
                       height: 10,
                     ),
-                    TextFormField(
-                      initialValue: _newAccount.bio,
-                      validator: (value) {
-                        if (value.isEmpty || value.length < 40)
-                          return 'Please include at least 40 characters in your bio.';
+                    Expanded(
+                      child: TextFormField(
+                        initialValue: _newAccount.bio,
+                        validator: (value) {
+                          if (value.isEmpty || value.length < 40)
+                            return 'Please include at least 40 characters in your bio.';
 
-                        _newAccount.validBio = true;
-                        return null;
-                      },
-                      textAlign: TextAlign.start,
-                      maxLength: 140,
-                      minLines: 5,
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                          filled: true,
-                          hintText:
-                              'Write anything you want! What makes you who you are?'),
-                      onChanged: (value) {
-                        _newAccount.validBio = false;
-                        _newAccount.bio = value;
-                      },
+                          _newAccount.validBio = true;
+                          return null;
+                        },
+                        textAlign: TextAlign.start,
+                        maxLength: 140,
+                        minLines: 5,
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                            filled: true,
+                            hintText:
+                                'Write anything you want! What makes you who you are?'),
+                        onChanged: (value) {
+                          _newAccount.validBio = false;
+                          _newAccount.bio = value;
+                        },
+                      ),
                     ),
                   ],
                 ),

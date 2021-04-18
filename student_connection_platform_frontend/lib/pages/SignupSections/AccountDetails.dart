@@ -69,7 +69,7 @@ class _AccountDetailsState extends State<AccountDetails> {
   }
 
   bool _accountWithEmailExists() {
-    //TODO - don't let two accounts have the same email
+    //TODO later date - don't let two accounts have the same email
     return false;
   }
 
@@ -86,7 +86,7 @@ class _AccountDetailsState extends State<AccountDetails> {
           children: <Widget>[
             // Welcome message
             SizedBox(
-              height: 40,
+              height: 50,
             ),
 
             Text('Signup for $appName', // Defined in signup.dart

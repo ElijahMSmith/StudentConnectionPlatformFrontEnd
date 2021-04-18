@@ -1,9 +1,19 @@
-https://pub.dev/packages/http/install
+TODOS:
+- Change account email check to nextPage function once we have an endpoint for it
+- How does matches in response body work? Is it an array of JSON objects for the other people they matched with, or just IDs to then GET?
+	- Will have to answer as we make additional matches
 
-- Fix bottom app bar so it doesn't overlap with shit (should stay at the bottom when keyboard input shows up)
-- Try to fix list view to either put them closer together and/or make the width match the parent and height fill the rest
-    - Fix scroll bar not showing?
 
+- MERGE TO MAIN AND START MERGING WITH LEO'S STUFF
+
+
+Matching:
+- Get all users for matching (initially, can filter client side if we have any time left)
+- When they do swipe right, set a put request to update them in the server (adding new user to their matches)
+
+
+- Note: When testing singup form, if you reload with changes during the process, the account being edited will be emptied, although the data in the form will not since nothing is being rebuilt there.
+	- Form will say it's not filled out when you try to advance. Just restart the app and try again. No problem during normal testing conditions.
 
 
 
