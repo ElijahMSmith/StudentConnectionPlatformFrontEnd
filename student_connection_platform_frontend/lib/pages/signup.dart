@@ -22,7 +22,7 @@ class SignupForm extends StatefulWidget {
 
   SignupForm(String name) {
     appName = name;
-    _newAccount = new Account();
+    _newAccount = new Account.empty();
   }
 
   @override
@@ -207,8 +207,9 @@ class SignupFormState extends State<SignupForm> {
 
     if (response.statusCode == 200) {
       // Successful signup
+
       Fluttertoast.showToast(
-          msg: "Signed up successfully!",
+          msg: "Signed up successfully! You may now log in.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -216,9 +217,19 @@ class SignupFormState extends State<SignupForm> {
           textColor: Colors.white,
           fontSize: 16.0);
 
+      // Clear user's password for safety
+      _newAccount.password = "";
+
       setState(() {
-        // TODO: Send account to profile page (when Leo has it set up to take the account)
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        _newAccount.userID = responseBody["id"];
       });
+
+      Navigator.pop(context);
+
+      // TODO: Send account to profile page (when Leo has it set up to take the account)
+      // At that point, remove need to log in after this signup finishes
+
     } else if (response.statusCode == 400) {
       // Bad request or other error
       print("Error 400 on submission:\n" + response.body);
@@ -239,7 +250,13 @@ class SignupFormState extends State<SignupForm> {
       }
     } else if (_currentPage == 1) {
       if (_newAccount.validUserOverview()) {
+        if (_newAccount.usernameChecked == true) {
+          _currentPage++;
+          return;
+        }
+
         Fluttertoast.showToast(
+            msg: "Checking username availability...",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -247,8 +264,17 @@ class SignupFormState extends State<SignupForm> {
         _newAccount.checkUsernameUnique().then((response) {
           if (response.statusCode == 200) {
             // Username available
+            Fluttertoast.showToast(
+                msg: "Username Available",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: Colors.greenAccent,
+                textColor: Colors.white,
+                timeInSecForIosWeb: 1,
+                fontSize: 12.0);
             setState(() {
               _currentPage++;
+              _newAccount.usernameChecked = true;
             });
           } else if (response.statusCode == 500) {
             // Username unavailable

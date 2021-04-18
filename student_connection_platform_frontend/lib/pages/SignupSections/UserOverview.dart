@@ -220,13 +220,14 @@ class _UserOverviewState extends State<UserOverview> {
                       decoration: InputDecoration(
                           fillColor: _newAccount.validUsername
                               ? Color.fromRGBO(58, 181, 119, 1)
-                              : Colors.grey,
+                              : Color.fromRGBO(240, 240, 240, 1),
                           filled: true,
                           hintText:
                               'Pick a unique username of at least 7 characters'),
                       onChanged: (value) {
                         _newAccount.username = value;
                         _newAccount.validUsername = false;
+                        _newAccount.usernameChecked = false;
                       },
                     ),
                   ],

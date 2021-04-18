@@ -1,8 +1,10 @@
 TODOS:
 - Change account email check to nextPage function once we have an endpoint for it
-- Get userID from signup
-- Translate login response body into account with GET
 - How does matches in response body work? Is it an array of JSON objects for the other people they matched with, or just IDs to then GET?
+	- Will have to answer as we make additional matches
+
+
+- MERGE TO MAIN AND START MERGING WITH LEO'S STUFF
 
 
 Matching:

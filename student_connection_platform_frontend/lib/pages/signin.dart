@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:student_connection_platform_frontend/account.dart';
 import 'package:student_connection_platform_frontend/pages/signup.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,7 +42,6 @@ class _SigninFormState extends State<SigninForm> {
   bool _validationFailed = false;
   bool _otherError = false;
   bool _showLoginTimeout = false;
-  // TODO: Time out authentication attempts after x number in y amount of time
   int _loginAttempts = 0;
 
   _SigninFormState() {
@@ -93,29 +93,22 @@ class _SigninFormState extends State<SigninForm> {
     if (response.statusCode == 200) {
       // Successful login
 
-      Map<String, dynamic> _responseBody =
-          json.decode(response.body); // _InternalLinkedHashMap
+      Account user = new Account.fromRequest(response.body);
+      // TODO: Send it to profile page (when Leo has it set up to take the account)
 
-      //TODO: All three of these are strings, what do I do with the JWT?
-      print(_responseBody["token"]);
-      print(_responseBody["token"].runtimeType);
-      print(_responseBody["username"]);
-      print(_responseBody["username"].runtimeType);
-      print(_responseBody["name"]);
-      print(_responseBody["name"].runtimeType);
+      // Also TODO: What do I do with the JWT (_responseBody["token"])?
 
-      setState(() {
-        // TODO: GET account and send it to profile page (when Leo has it set up to take the account)
-        // Successful login
-        Fluttertoast.showToast(
-            msg: "Login successful!",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        Navigator.pushNamed(context, ProfilePage.routeID);
-      });
+      // Successful login
+      Fluttertoast.showToast(
+          msg: "Login successful!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          textColor: Colors.white,
+          backgroundColor: Colors.greenAccent,
+          fontSize: 16.0);
+
+      Navigator.pushNamed(context, ProfilePage.routeID);
 
       return;
     } else if (response.statusCode == 401) {
