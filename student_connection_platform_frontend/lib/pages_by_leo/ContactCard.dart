@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import 'models/ChatModel.dart';
 
 class ContactCard extends StatelessWidget {
@@ -15,16 +13,22 @@ class ContactCard extends StatelessWidget {
         height: 53,
         child: Stack(
           children: [
-            CircleAvatar(
-              radius: 23,
-              child: SvgPicture.asset(
-                "assets/person.svg",
-                color: Colors.black,
-                height: 30,
-                width: 30,
-              ),
-              backgroundColor: Colors.blueGrey[200],
-            ),
+            Container(
+                width: 45,
+                height: 45,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(50))),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image(
+                    image: AssetImage("assets/images/emptyProfileImage.png"),
+                    fit: BoxFit.fill,
+                  ),
+                )),
             contact.select
                 ? Positioned(
                     bottom: 4,

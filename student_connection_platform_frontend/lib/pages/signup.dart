@@ -1,18 +1,21 @@
+import 'package:student_connection_platform_frontend/navigator.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/AccountDetails.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/UserOverview.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/UserDetails.dart';
 import 'package:student_connection_platform_frontend/account.dart';
 import 'package:flutter/material.dart';
-import 'package:student_connection_platform_frontend/pages_by_leo/profile_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
+import '../main.dart';
+import '../navigator.dart';
 
 // Since it's still highly variable, minimize the places we'll have to change it
 String appName;
 // Stores all the information about the new account we're creating
 Account _newAccount;
+// Reference to app page controller
+AppHome _homeController;
 
 // Failed submission reasons
 enum FailedSubmissionResult { INCOMPLETE_INFORMATION, BAD_REQUEST, OTHER_ERROR }
@@ -20,7 +23,7 @@ enum FailedSubmissionResult { INCOMPLETE_INFORMATION, BAD_REQUEST, OTHER_ERROR }
 class SignupForm extends StatefulWidget {
   static String routeID = "/Signup";
 
-  SignupForm(String name) {
+  SignupForm(String name, AppHome homeController) {
     appName = name;
     _newAccount = new Account.empty();
   }
@@ -209,7 +212,7 @@ class SignupFormState extends State<SignupForm> {
       // Successful signup
 
       Fluttertoast.showToast(
-          msg: "Signed up successfully! You may now log in.",
+          msg: "Signed up successfully!",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -225,11 +228,9 @@ class SignupFormState extends State<SignupForm> {
         _newAccount.userID = responseBody["id"];
       });
 
-      Navigator.pop(context);
+      _homeController.updateAccount(_newAccount);
 
-      // TODO: Send account to profile page (when Leo has it set up to take the account)
-      // At that point, remove need to log in after this signup finishes
-
+      Navigator.pushReplacementNamed(context, NavigationHelperWidget.routeID);
     } else if (response.statusCode == 400) {
       // Bad request or other error
       print("Error 400 on submission:\n" + response.body);

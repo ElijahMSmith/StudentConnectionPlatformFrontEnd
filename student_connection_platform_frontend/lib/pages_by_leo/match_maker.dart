@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
 import 'animated_card.dart';
+import '../account.dart';
+
+Account _userAccount;
 
 class MatchMaker extends StatelessWidget // should be cardstack.dart
 {
   static const String routeId = 'match_maker';
+
+  MatchMaker(Account userAccount) {
+    _userAccount = userAccount;
+  }
 
   @override
   Widget build(BuildContext context)
