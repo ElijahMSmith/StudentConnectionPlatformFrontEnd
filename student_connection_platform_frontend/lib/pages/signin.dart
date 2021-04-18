@@ -1,32 +1,26 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/account.dart';
+import 'package:student_connection_platform_frontend/navigator.dart';
 import 'package:student_connection_platform_frontend/pages/signup.dart';
-import 'package:student_connection_platform_frontend/pages_by_leo/profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:http/http.dart' as http;
+import '../main.dart';
 
-/*
-
-Defines the layout for the sign in page of the app
-Users can input an email or username to the first blank and a password to the second
-When the click the login button, it will validate those fields against the database
-  If the credentials don't work, clear the fields and show the hidden text saying it was invalid
-  If the credentials DO work, do whatever other login information is necessary and move to content page
-
-*/
-
+// Reference to the name of the app, when we decide on one
 String _appName;
+// Local device storage
 SharedPreferences prefs;
+// Reference to the page controller
+AppHome _homeController;
 
 class SigninForm extends StatefulWidget {
   static const String routeID = '/Signin';
 
-  SigninForm(String appName) {
+  SigninForm(String appName, AppHome homeController) {
     _appName = appName;
+    _homeController = homeController;
   }
 
   @override
@@ -90,13 +84,14 @@ class _SigninFormState extends State<SigninForm> {
     _validationFailed = false;
     _otherError = false;
 
+    print(response.body);
+
     if (response.statusCode == 200) {
       // Successful login
 
       Account user = new Account.fromRequest(response.body);
-      // TODO: Send it to profile page (when Leo has it set up to take the account)
 
-      // Also TODO: What do I do with the JWT (_responseBody["token"])?
+      // TODO: What do I do with the JWT (_responseBody["token"])?
 
       // Successful login
       Fluttertoast.showToast(
@@ -108,7 +103,9 @@ class _SigninFormState extends State<SigninForm> {
           backgroundColor: Colors.greenAccent,
           fontSize: 16.0);
 
-      Navigator.pushNamed(context, ProfilePage.routeID);
+      _homeController.updateAccount(user);
+
+      Navigator.pushNamed(context, NavigationHelperWidget.routeID);
 
       return;
     } else if (response.statusCode == 401) {
