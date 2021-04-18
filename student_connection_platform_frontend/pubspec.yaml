@@ -15,6 +15,14 @@ dependencies:
   intl: ^0.17.0
   autocomplete_textfield: ^1.7.3
   provider: ^5.0.0
+  web_socket_channel: ^2.0.0
+  socket_io_client: ^0.9.12
+  flutter_svg: ^0.19.3
+  uuid: ^3.0.4
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   http: ^0.13.1
   shared_preferences: ^2.0.5
