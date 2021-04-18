@@ -9,7 +9,6 @@ import 'pages_by_leo/profile_page.dart';
 import 'package:flutter/foundation.dart';
 import 'pages/signin.dart';
 import 'pages/signup.dart';
-import 'pages/content_frame.dart';
 import 'pages_by_leo/about.dart';
 import 'dart:isolate';
 
