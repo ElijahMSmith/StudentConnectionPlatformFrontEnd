@@ -44,6 +44,7 @@ class _UserDetailsState extends State<UserDetails> {
   SimpleAutoCompleteTextField _textField;
   String currentText = "";
 
+  // TODO eventually: Delete button for interests selected
   _UserDetailsState() {
     _textField = SimpleAutoCompleteTextField(
       key: _textFieldKey,

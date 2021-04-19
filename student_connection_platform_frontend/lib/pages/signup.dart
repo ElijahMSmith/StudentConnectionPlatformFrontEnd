@@ -26,6 +26,7 @@ class SignupForm extends StatefulWidget {
   SignupForm(String name, AppHome homeController) {
     appName = name;
     _newAccount = new Account.empty();
+    _homeController = homeController;
   }
 
   @override

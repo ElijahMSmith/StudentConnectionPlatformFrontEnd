@@ -95,6 +95,6 @@ class Account {
   String toString() {
     return "Email: $email\nUsername: $username\nName: $name\nID: $userID\n" +
         "DOB: $dateOfBirth\nJob: $job\nCity: $city\nCountry $country\n" +
-        "Major: $major\nSchool: $school\nInterests: ${interests.toString()}\nMatches: $matchIDs";
+        "Major: $major\nSchool: $school\nInterests: $interests\nMatches: $matchIDs";
   }
 }
