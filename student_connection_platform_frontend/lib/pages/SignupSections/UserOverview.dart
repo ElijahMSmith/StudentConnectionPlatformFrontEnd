@@ -140,7 +140,7 @@ class _UserOverviewState extends State<UserOverview> {
                     constraints:
                         BoxConstraints.tightFor(width: 200, height: 50),
                     child: ElevatedButton(
-                      child: Text('Choose Profile Picture'),
+                      child: Text('Choose Profile Photo'),
                       style: ElevatedButton.styleFrom(
                           primary: Color.fromRGBO(0, 194, 155, 1),
                           textStyle:

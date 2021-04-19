@@ -2,9 +2,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_profile.dart';
+import '../account.dart';
+
+Account _userAccount;
 
 class ProfilePage extends StatefulWidget {
   static const String routeID = '/ProfilePage';
+
+  ProfilePage(Account userAccount) {
+    _userAccount = userAccount;
+  }
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
