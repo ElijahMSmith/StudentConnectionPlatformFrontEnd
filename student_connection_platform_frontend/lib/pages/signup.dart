@@ -189,6 +189,9 @@ class SignupFormState extends State<SignupForm> {
   }
 
   _attemptSubmit() async {
+    print(jsonEncode(_newAccount.interests).runtimeType);
+    print(jsonEncode(_newAccount.interests).toString());
+
     String bodyJSON = jsonEncode(<String, String>{
       "name": _newAccount.name,
       "username": _newAccount.username,

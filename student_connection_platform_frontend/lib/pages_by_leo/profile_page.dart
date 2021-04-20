@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_profile.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../account.dart';
 
 Account _userAccount;
@@ -10,6 +11,9 @@ class ProfilePage extends StatefulWidget {
   static const String routeID = '/ProfilePage';
 
   ProfilePage(Account userAccount) {
+    print("Profile page initialized with account: \n------------------\n" +
+        userAccount.toString() +
+        "\n----------------------\n");
     _userAccount = userAccount;
   }
 
@@ -18,18 +22,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final aboutMe = [
-    'Greetings! I am currently a Computer Science graduate student attending ',
-    'The University of Central Florida. My productive spare-time ',
-    'hobbies include full-stack development on web, mobile, and game applications. ',
-    'I am fascinated by what machine learning can do for the society; ',
-    'as a result, I am trying to get a more in-depth understanding of the application of machine learning, ',
-    'and such a desire has motivated me to continue my education in graduate school. ',
-    'Eventually, I would have a better understanding of the machine learning algorithms '
-        'behind the scenes as I incorporate such applications & concepts into my personal projects, ',
-    'and leverage such skills to contribute in the software idustry.'
-  ];
-
   /// initialize the buffer.
   /// Note that this method
   /// clears out any contents
@@ -47,6 +39,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final ImagePicker picker = ImagePicker();
   List<TextEditingController> controllers;
   String nameError;
+  String majorError;
+  String bioError;
   var formKey = GlobalKey<FormState>();
 
   void takePhoto(ImageSource source) async {
@@ -60,23 +54,34 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  void datePicker() async {
-    var date = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2100));
-    controllers[1].text = date.toString().substring(0, 10);
-  }
-
-  String validator(String nameField) {
+  String nameValidator(String nameField) {
     if (nameField.isEmpty || nameField == null) {
-      nameError = 'Please enter your name';
+      nameError = 'Your name cannot be empty';
       return nameError;
     }
     nameError = null;
     setState(() {});
     return nameError;
+  }
+
+  String majorValidator(String majorField) {
+    if (majorField.isEmpty || majorField == null) {
+      majorError = 'Your major cannot be empty';
+      return majorError;
+    }
+    majorError = null;
+    setState(() {});
+    return majorError;
+  }
+
+  String bioValidator(String bioField) {
+    if (bioField.isEmpty || bioField == null || bioField.length < 40) {
+      bioError = 'Your bio must be at least 40 characters!';
+      return bioError;
+    }
+    bioError = null;
+    setState(() {});
+    return bioError;
   }
 
   @override
@@ -90,6 +95,12 @@ class _ProfilePageState extends State<ProfilePage> {
     // 5 separate text editing controllers, one for each text field
     controllers = [for (int i = 0; i < 5; ++i) TextEditingController()];
     // controllers.forEach((element) {print(element);});
+
+    controllers[0].text = _userAccount.name;
+    controllers[1].text = _userAccount.username;
+    controllers[2].text = _userAccount.job;
+    controllers[3].text = _userAccount.major;
+    controllers[4].text = _userAccount.bio;
 
     setState(() {});
   }
@@ -106,18 +117,17 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     // before saving and allowing the user
     // to have it in the profile
-    Widget textfield({
-      @required IconData icon,
-      @required String label,
-      @required String helper,
-      String errorText,
-      int maxLines = 1,
-      bool showCursor = false,
-      bool readOnly = false,
-      TextEditingController controller,
-      Function datePicker,
-      Function validator,
-    }) {
+    Widget textfield(
+        {@required IconData icon,
+        @required String label,
+        @required String helper,
+        String errorText,
+        int maxLines = 1,
+        bool showCursor = false,
+        bool readOnly = false,
+        TextEditingController controller,
+        Function datePicker,
+        Function validator}) {
       return TextFormField(
         controller: controller,
         showCursor: showCursor,
@@ -187,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           CircleAvatar(
               backgroundImage: imageFile == null
-                  ? AssetImage('assets/images/baby_yoda.jpg')
+                  ? AssetImage('assets/images/choosePicture.png')
                   : FileImage(File(imageFile.path)),
               radius: 40),
           Positioned(
@@ -241,11 +251,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                         controllers[i].text
                                     ],
                                     image: imageFile == null
-                                        ? AssetImage(
-                                            'assets/images/baby_yoda.jpg')
+                                        ? _userAccount.defaultPicture
                                         : FileImage(
                                             File(imageFile.path),
                                           ),
+                                    userAccount: _userAccount,
                                   ),
                                 ),
                               );
@@ -261,39 +271,74 @@ class _ProfilePageState extends State<ProfilePage> {
                       helper: 'Name can\'t be empty',
                       controller: controllers[0],
                       errorText: nameError,
-                      validator: validator),
+                      validator: nameValidator),
                   SizedBox(height: 30),
                   textfield(
-                      icon: Icons.person,
-                      label: 'Date of Birth',
-                      showCursor: true,
+                      icon: Icons.person_outline,
+                      label: 'Username',
+                      helper: 'This is not changeable',
                       readOnly: true,
-                      helper: 'mm/dd/yyyy',
-                      controller: controllers[1],
-                      datePicker: datePicker),
+                      controller: controllers[1]),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.work,
                       label: 'Profession',
-                      helper: 'Software developer',
+                      helper: 'Leave this blank if you don\'t have one',
                       controller: controllers[2]),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.school,
                       label: 'Major',
-                      helper: 'computer science',
+                      helper: 'Required',
+                      validator: majorValidator,
                       controller: controllers[3]),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.book,
-                      label: 'About',
-                      helper: 'About me',
+                      label: 'Personal Bio',
+                      helper: 'A summary of you that others will read',
+                      validator: bioValidator,
                       controller: controllers[4],
                       maxLines: 5),
                   SizedBox(height: 30),
                   ElevatedButton.icon(
                     onPressed: () {
                       controllers.forEach((element) => print(element?.text));
+                      _userAccount.name = controllers[0].text;
+
+                      // Username (controllers[1]) doesn't change
+
+                      _userAccount.job = controllers[2].text;
+                      _userAccount.major = controllers[3].text;
+                      _userAccount.bio = controllers[4].text;
+
+                      // TODO: Other fields for other profile sections
+
+                      // RESUBMIT ACCOUNT WITH CHANGES TO SERVER
+                      _userAccount.submitAccountChanges().then((response) {
+                        print(response.body.toString());
+                        if (response.statusCode == 200) {
+                          // Username available
+                          Fluttertoast.showToast(
+                              msg: "Your updated profile has been saved!",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Colors.greenAccent,
+                              textColor: Colors.white,
+                              timeInSecForIosWeb: 2,
+                              fontSize: 12.0);
+                        } else {
+                          // Other error
+                          Fluttertoast.showToast(
+                              msg: "Couldn't save changes, try again later!",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Colors.redAccent,
+                              textColor: Colors.white,
+                              timeInSecForIosWeb: 2,
+                              fontSize: 12.0);
+                        }
+                      });
                     },
                     icon: Icon(Icons.save),
                     label: Text('Save'),
@@ -311,7 +356,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         label: Text('Settings'),
                       ),
                       ElevatedButton(
-                        onPressed: () => print('log out'),
+                        onPressed: () => {
+                          Navigator.pop(
+                              context) // Returns to login page (theoretically, TODO testing)
+                        },
                         child: Text('Log out'),
                       ),
                     ],
