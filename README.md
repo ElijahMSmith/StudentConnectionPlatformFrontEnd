@@ -6,17 +6,17 @@ Our application provides matchmaking and direct messaging systems to allow stude
 
 This project is still very much a WIP.
 
-###A generalized list of what we've already accomplished:
+### A generalized list of what we've already accomplished:
 - Fully functional login and signup processes
 - User-initiated partial and full matchmaking with other users
 - Profile information previews and the ability to update personal information
 
-###Current focuses:
+### Current focuses:
 - Instant messaging DMs using websockets
 - Profile images tied to accounts on the server
 - More specific matchmaking and more user information on dispaly during matchmaking
 
-###Long-term plans:
+### Long-term plans:
 - Enhanced social aspect through posts and reply threads
 - Improved stylization
 - Performance improvements
