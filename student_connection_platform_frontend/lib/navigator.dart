@@ -13,9 +13,6 @@ class NavigationHelperWidget extends StatefulWidget {
   static const String routeID = "/UserContent";
 
   NavigationHelperWidget(Account userAccount) {
-    print("Opened account in NavigationHelperWidget:\n------------\n" +
-        userAccount.toString() +
-        "\n-----------------\n");
     _userAccount = userAccount;
   }
 

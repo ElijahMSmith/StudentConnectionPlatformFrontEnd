@@ -11,9 +11,6 @@ class ProfilePage extends StatefulWidget {
   static const String routeID = '/ProfilePage';
 
   ProfilePage(Account userAccount) {
-    print("Profile page initialized with account: \n------------------\n" +
-        userAccount.toString() +
-        "\n----------------------\n");
     _userAccount = userAccount;
   }
 
@@ -38,7 +35,6 @@ class _ProfilePageState extends State<ProfilePage> {
   // image picker instance
   final ImagePicker picker = ImagePicker();
   List<TextEditingController> controllers;
-  String nameError;
   String majorError;
   String bioError;
   var formKey = GlobalKey<FormState>();
@@ -52,16 +48,6 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       imageFile = pickedFile;
     });
-  }
-
-  String nameValidator(String nameField) {
-    if (nameField.isEmpty || nameField == null) {
-      nameError = 'Your name cannot be empty';
-      return nameError;
-    }
-    nameError = null;
-    setState(() {});
-    return nameError;
   }
 
   String majorValidator(String majorField) {
@@ -268,10 +254,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   textfield(
                       icon: Icons.person,
                       label: 'Name',
-                      helper: 'Name can\'t be empty',
+                      helper: 'This is not changeable',
                       controller: controllers[0],
-                      errorText: nameError,
-                      validator: nameValidator),
+                      readOnly: true),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.person_outline,
