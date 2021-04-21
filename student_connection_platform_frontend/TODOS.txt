@@ -2,6 +2,11 @@ TODOS:
 
 - Matchmaking
 
+- CHECK IN WITH LEO IF THERE'S ANYTHING I CAN HELP WITH OR CLARIFY
+
+- IF TIME TOMORROW: EXTRA FIELDS IN PREVIEWS
+
+
 - Should have DMs page show partial matches as pending and full matches as normal
 	- Can tell based on the stored account for that match and if they have the user's ID in their userID in THEIR list
 
@@ -12,8 +17,6 @@ Matching:
 
 - Note: When testing singup form, if you reload with changes during the process, the account being edited will be emptied, although the data in the form will not since nothing is being rebuilt there.
 	- Form will say it's not filled out when you try to advance. Just restart the app and try again. No problem during normal testing conditions.
-
-
 
 
 Collection data signup page:
