@@ -1,10 +1,9 @@
 import 'dart:convert';
-
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
-class Account {
+class Account
+{
   // Validation and setting values handled by forms, so leaving these public
   String email = "";
   bool validEmail = false;

@@ -2,11 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_profile.dart';
-import '../account.dart';
+import 'models/account.dart';
 
 Account _userAccount;
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatefulWidget
+{
   static const String routeID = '/ProfilePage';
 
   ProfilePage(Account userAccount) {
@@ -17,19 +18,8 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  final aboutMe = [
-    'Greetings! I am currently a Computer Science graduate student attending ',
-    'The University of Central Florida. My productive spare-time ',
-    'hobbies include full-stack development on web, mobile, and game applications. ',
-    'I am fascinated by what machine learning can do for the society; ',
-    'as a result, I am trying to get a more in-depth understanding of the application of machine learning, ',
-    'and such a desire has motivated me to continue my education in graduate school. ',
-    'Eventually, I would have a better understanding of the machine learning algorithms '
-        'behind the scenes as I incorporate such applications & concepts into my personal projects, ',
-    'and leverage such skills to contribute in the software idustry.'
-  ];
-
+class _ProfilePageState extends State<ProfilePage>
+{
   /// initialize the buffer.
   /// Note that this method
   /// clears out any contents
@@ -82,7 +72,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    // fillBufferFromList(aboutMeBuffer, aboutMe);
 
     // list comprehension for dart language
     // if you've used python, you probably are
@@ -117,7 +106,12 @@ class _ProfilePageState extends State<ProfilePage> {
       TextEditingController controller,
       Function datePicker,
       Function validator,
-    }) {
+      String accountInfo,
+    })
+    {
+
+      controller.text = accountInfo;
+
       return TextFormField(
         controller: controller,
         showCursor: showCursor,
@@ -261,7 +255,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       helper: 'Name can\'t be empty',
                       controller: controllers[0],
                       errorText: nameError,
-                      validator: validator),
+                      validator: validator,
+                      accountInfo: _userAccount.name
+                      ),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.person,
@@ -270,26 +266,30 @@ class _ProfilePageState extends State<ProfilePage> {
                       readOnly: true,
                       helper: 'mm/dd/yyyy',
                       controller: controllers[1],
-                      datePicker: datePicker),
+                      datePicker: datePicker,
+                      accountInfo: _userAccount.dateOfBirth),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.work,
                       label: 'Profession',
                       helper: 'Software developer',
-                      controller: controllers[2]),
+                      controller: controllers[2],
+                      accountInfo: _userAccount.job),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.school,
                       label: 'Major',
                       helper: 'computer science',
-                      controller: controllers[3]),
+                      controller: controllers[3],
+                      accountInfo: _userAccount.major),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.book,
                       label: 'About',
                       helper: 'About me',
                       controller: controllers[4],
-                      maxLines: 5),
+                      maxLines: 5,
+                      accountInfo: _userAccount.bio),
                   SizedBox(height: 30),
                   ElevatedButton.icon(
                     onPressed: () {

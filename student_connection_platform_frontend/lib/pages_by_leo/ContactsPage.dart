@@ -4,20 +4,20 @@ import 'ButtonCard.dart';
 import 'ContactCard.dart';
 import 'models/ChatModel.dart';
 import 'package:uuid/uuid.dart';
-import '../account.dart';
+import 'models/account.dart';
 
 Account _userAccount;
 
-class SelectContact extends StatefulWidget {
-  SelectContact(Account userAccount) {
+class ContactsPage extends StatefulWidget {
+  ContactsPage(Account userAccount) {
     _userAccount = userAccount;
   }
 
   @override
-  _SelectContactState createState() => _SelectContactState();
+  _ContactsPageState createState() => _ContactsPageState();
 }
 
-class _SelectContactState extends State<SelectContact> {
+class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
     List<ChatModel> contacts = [

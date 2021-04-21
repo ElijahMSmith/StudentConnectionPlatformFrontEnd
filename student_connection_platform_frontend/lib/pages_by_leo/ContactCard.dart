@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'models/ChatModel.dart';
 
-class ContactCard extends StatelessWidget {
+class ContactCard extends StatelessWidget
+{
   const ContactCard({Key key, this.contact}) : super(key: key);
   final ChatModel contact;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return ListTile(
       leading: Container(
         width: 50,

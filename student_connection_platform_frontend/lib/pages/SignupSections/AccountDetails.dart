@@ -1,5 +1,5 @@
 import 'package:student_connection_platform_frontend/pages/signup.dart';
-import 'package:student_connection_platform_frontend/account.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/models/account.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';

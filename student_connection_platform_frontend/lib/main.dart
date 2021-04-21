@@ -4,23 +4,27 @@ import 'package:student_connection_platform_frontend/constants.dart';
 import 'navigator.dart';
 import 'pages/signin.dart';
 import 'pages/signup.dart';
-import 'account.dart';
+import 'pages_by_leo/models/account.dart';
 
 final String appName = "NameTBD";
 // Will be updated with filled version when signin or signup finishes
 Account _userAccount = Account.empty();
 
-void main() {
+void main()
+{
   runApp(AppHome());
 }
 
-class AppHome extends StatelessWidget {
-  void updateAccount(Account newAccount) {
+class AppHome extends StatelessWidget
+{
+  void updateAccount(Account newAccount)
+  {
     _userAccount = newAccount;
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     // We must have change notifier provider at the top
     // of the tree in order for this line: final users = Provider.of<Users>(context).users;
     // to work.
@@ -33,7 +37,8 @@ class AppHome extends StatelessWidget {
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           initialRoute: SigninForm.routeID,
-          routes: {
+          routes:
+          {
             //use static strings for the route id as a way to avoid typos
             SigninForm.routeID: (context) => SigninForm(appName, this),
             SignupForm.routeID: (context) => SignupForm(appName, this),

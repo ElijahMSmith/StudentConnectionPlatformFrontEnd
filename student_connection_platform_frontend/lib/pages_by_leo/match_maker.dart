@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
 import 'animated_card.dart';
-import '../account.dart';
+import 'models/account.dart';
 
 Account _userAccount;
 
