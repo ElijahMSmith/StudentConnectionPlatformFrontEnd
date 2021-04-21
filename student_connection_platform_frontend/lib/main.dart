@@ -8,6 +8,8 @@ import 'pages/signup.dart';
 import 'pages_by_leo/models/account.dart';
 
 final String appName = "NameTBD";
+
+
 // Will be updated with filled version when signin or signup finishes
 Account _userAccount = Account.empty();
 

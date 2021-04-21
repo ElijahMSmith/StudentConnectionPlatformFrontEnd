@@ -33,9 +33,9 @@ class _NavigationHelperWidgetState extends State<NavigationHelperWidget>
     // Connect to a WebSocket server
     // don't pass the websocket channel down this widget. Instead, declare and initialze
     // it inside
-    DM(),
+    // DM(),
 
-    // SelectContact(_userAccount),
+    ContactsPage(_userAccount),
     MatchMaker(_userAccount),
     ProfilePage(_userAccount),
   ];

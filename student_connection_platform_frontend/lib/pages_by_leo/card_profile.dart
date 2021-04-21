@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../account.dart';
+import './models/account.dart';
 
 // TODO: Was this suppose to be used for something, but isn't?
 

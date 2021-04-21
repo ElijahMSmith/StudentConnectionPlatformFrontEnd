@@ -1,16 +1,41 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-
-import 'ButtonCard.dart';
 import 'ContactCard.dart';
-import 'models/ChatModel.dart';
-import 'package:uuid/uuid.dart';
 import 'models/account.dart';
+import 'package:http/http.dart' as http;
 
-Account _userAccount;
+Account _activeUser;
+// Map<String, dynamic> matchedUser;
 
 class ContactsPage extends StatefulWidget {
-  ContactsPage(Account userAccount) {
-    _userAccount = userAccount;
+  ContactsPage(Account activeUser) {
+    _activeUser = activeUser;
+    print(_activeUser.matchedUsers);
+
+    // get list of matched user ids from active user. Then make a get request
+    // for each of those user ids to receive the account object
+    // once the list of maps is obtained, we can convert that list into a list of account objects
+    // for the dms list
+
+    // for (String id in _activeUser.matchIDs)
+    // {
+
+    // }
+
+    // http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/"), headers: {
+    //   "Content-Type": "application/json"
+    // }).then((resp) => {
+    //   parsedBody = jsonDecode(resp.body),
+    //   for (int i = 0; i < parsedBody.length; i++)
+    //   {
+    //     // If the id of this particular user is contained in the matches of the active user, ignore it
+    //     // If the active user IS this user, ignore it
+    //     // Otherwise, add it to the card stack
+    //     if (!_activeUser.matchIDs.contains(parsedBody[i]["id"]) &&
+    //         !(_activeUser.userID == parsedBody[i]["id"]))
+    //       allUsers.add(Account.fromUserRequest(parsedBody[i]))
+    //   }
+    // });
   }
 
   @override
@@ -20,21 +45,9 @@ class ContactsPage extends StatefulWidget {
 class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
-    List<ChatModel> contacts = [
-      ChatModel(name: "Dev Stack", id: 0, status: "A full stack developer"),
-      ChatModel(name: "Balram", id: 1, status: "Flutter Developer..........."),
-      ChatModel(name: "Saket", id: 2, status: "Web developer..."),
-      ChatModel(name: "Bhanu Dev", id: 3, status: "App developer...."),
-      ChatModel(name: "Collins", id: 4, status: "React developer.."),
-      ChatModel(name: "Kishor", id: 5, status: "Full Stack Web"),
-      ChatModel(name: "Testing1", id: 6, status: "Example work"),
-      ChatModel(name: "Testing2", id: 7, status: "Sharing is caring"),
-      ChatModel(name: "Divyanshu", id: 8, status: "....."),
-      ChatModel(name: "Helper", id: 9, status: "Love you Mom Dad"),
-      ChatModel(name: "Tester", id: 10, status: "I find the bugs"),
-    ];
-    bool didDelete = false;
+    List<Account> userMatches = _activeUser.matchedUsers;
 
+// dummy03 Dumdum1!
     return Scaffold(
         appBar: AppBar(
           title: Column(
@@ -49,7 +62,7 @@ class _ContactsPageState extends State<ContactsPage> {
                 ),
               ),
               Text(
-                "${contacts.length} contacts",
+                "${userMatches.length} contacts",
                 style: TextStyle(
                   fontSize: 13,
                 ),
@@ -92,10 +105,10 @@ class _ContactsPageState extends State<ContactsPage> {
           ],
         ),
         body: ListView.builder(
-            itemCount: contacts.length,
+            itemCount: userMatches.length,
             itemBuilder: (context, index) {
               return Dismissible(
-                key: ValueKey(contacts[index].id),
+                key: ValueKey(userMatches[index].userID),
                 // onDismissed: (direction)
                 // {
                 //   setState(() {
@@ -172,7 +185,7 @@ class _ContactsPageState extends State<ContactsPage> {
                   color: Colors.red,
                 ),
                 child: ContactCard(
-                  contact: contacts[index],
+                  contact: userMatches[index],
                 ),
               );
             }));

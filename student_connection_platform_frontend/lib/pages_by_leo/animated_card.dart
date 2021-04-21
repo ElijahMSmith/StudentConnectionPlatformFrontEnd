@@ -119,15 +119,17 @@ class _AnimatedCardState extends State<AnimatedCard>
                     print(response.body),
                     matchResponse = jsonDecode(response.body),
                     if (matchResponse["message"] == "User liked!")
-                      {
-                        // First person to accept, add to their matches and show dialog
-                        showMatchMessage(false)
-                      }
+                    {
+                      // First person to accept, add to their matches and show dialog
+                      showMatchMessage(false)
+                    }
                     else
-                      {
-                        // Second person to accept, show full match dialog and add to matches
-                        showMatchMessage(true)
-                      },
+                    {
+                      // Second person to accept, show full match dialog and add to matches
+                      showMatchMessage(true)
+                    },
+
+                    // populate active user
                     widget.activeUser.matchIDs.add(widget.randomUser.userID),
                     widget.activeUser.matchedUsers.add(widget.randomUser),
                     widget.host.removeMatchedUser(widget.randomUser)

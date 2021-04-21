@@ -15,11 +15,13 @@ class MatchMaker extends StatelessWidget // should be cardstack.dart
 {
   static const String routeId = 'match_maker';
 
-  void removeMatchedUser(Account user) {
+  void removeMatchedUser(Account user)
+  {
     allUsers.removeWhere((element) => element.userID == user.userID);
   }
 
-  MatchMaker(Account activeUser) {
+  MatchMaker(Account activeUser)
+  {
     _activeUser = activeUser;
 
     http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/"), headers: {
