@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_connection_platform_frontend/constants.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/matchmaker_stack.dart';
 import 'navigator.dart';
 import 'pages/signin.dart';
 import 'pages/signup.dart';
@@ -29,7 +30,7 @@ class AppHome extends StatelessWidget
     // of the tree in order for this line: final users = Provider.of<Users>(context).users;
     // to work.
     return ChangeNotifierProvider.value(
-      value: UserAccounts(),
+      value: MatchMakerStack(),
       child: MaterialApp(
           title: appName,
           theme: ThemeData(

@@ -192,14 +192,14 @@ class SignupFormState extends State<SignupForm> {
     print(jsonEncode(_newAccount.interests).runtimeType);
     print(jsonEncode(_newAccount.interests).toString());
 
-    String bodyJSON = jsonEncode(<String, String>{
+    String bodyJSON = jsonEncode(<String, dynamic>{
       "name": _newAccount.name,
       "username": _newAccount.username,
       "email": _newAccount.email,
       "dob": _newAccount.dateOfBirth,
       "password": _newAccount.password,
       "bio": _newAccount.bio,
-      "interests": jsonEncode(_newAccount.interests),
+      "interests": _newAccount.interests,
       "school": _newAccount.school,
       "major": _newAccount.major,
       "job": _newAccount.job,
@@ -267,6 +267,7 @@ class SignupFormState extends State<SignupForm> {
             timeInSecForIosWeb: 1,
             fontSize: 12.0);
         _newAccount.checkUsernameUnique().then((response) {
+          print(response.body);
           if (response.statusCode == 200) {
             // Username available
             Fluttertoast.showToast(

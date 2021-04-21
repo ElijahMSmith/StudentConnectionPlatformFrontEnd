@@ -36,7 +36,8 @@ class _ProfilePageState extends State<ProfilePage>
   // image picker instance
   final ImagePicker picker = ImagePicker();
   List<TextEditingController> controllers;
-  String nameError;
+  String majorError;
+  String bioError;
   var formKey = GlobalKey<FormState>();
 
   void takePhoto(ImageSource source) async {
@@ -50,23 +51,24 @@ class _ProfilePageState extends State<ProfilePage>
     });
   }
 
-  void datePicker() async {
-    var date = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2100));
-    controllers[1].text = date.toString().substring(0, 10);
+  String majorValidator(String majorField) {
+    if (majorField.isEmpty || majorField == null) {
+      majorError = 'Your major cannot be empty';
+      return majorError;
+    }
+    majorError = null;
+    setState(() {});
+    return majorError;
   }
 
-  String validator(String nameField) {
-    if (nameField.isEmpty || nameField == null) {
-      nameError = 'Please enter your name';
-      return nameError;
+  String bioValidator(String bioField) {
+    if (bioField.isEmpty || bioField == null || bioField.length < 40) {
+      bioError = 'Your bio must be at least 40 characters!';
+      return bioError;
     }
-    nameError = null;
+    bioError = null;
     setState(() {});
-    return nameError;
+    return bioError;
   }
 
   @override
@@ -104,7 +106,6 @@ class _ProfilePageState extends State<ProfilePage>
       bool showCursor = false,
       bool readOnly = false,
       TextEditingController controller,
-      Function datePicker,
       Function validator,
       String accountInfo,
     })
@@ -117,7 +118,6 @@ class _ProfilePageState extends State<ProfilePage>
         showCursor: showCursor,
         readOnly: readOnly,
         validator: validator,
-        onTap: datePicker,
         maxLines: maxLines,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -255,22 +255,9 @@ class _ProfilePageState extends State<ProfilePage>
                   textfield(
                       icon: Icons.person,
                       label: 'Name',
-                      helper: 'Name can\'t be empty',
+                      helper: 'This is not changeable',
                       controller: controllers[0],
-                      errorText: nameError,
-                      validator: validator,
-                      accountInfo: _userAccount.name
-                      ),
-                  SizedBox(height: 30),
-                  textfield(
-                      icon: Icons.person,
-                      label: 'Date of Birth',
-                      showCursor: true,
-                      readOnly: true,
-                      helper: 'mm/dd/yyyy',
-                      controller: controllers[1],
-                      datePicker: datePicker,
-                      accountInfo: _userAccount.dateOfBirth),
+                      readOnly: true),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.work,

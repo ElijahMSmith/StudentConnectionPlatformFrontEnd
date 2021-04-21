@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import '../constants.dart';
+import '../account.dart';
+
+// TODO: Was this suppose to be used for something, but isn't?
 
 class CardProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context).settings.arguments as User;
+    final user = ModalRoute.of(context).settings.arguments as Account;
 
     return Scaffold(
       body: Column(
@@ -13,7 +15,7 @@ class CardProfile extends StatelessWidget {
             height: 300,
             width: double.infinity,
             child: Hero(
-              tag: user.id,
+              tag: user.userID,
               child: Image.asset('assets/images/maul.png',
                   fit: BoxFit.cover, width: MediaQuery.of(context).size.width),
             ),
@@ -34,7 +36,7 @@ class CardProfile extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              user.intro,
+              user.bio,
               style: TextStyle(fontSize: 20),
             ),
           ),

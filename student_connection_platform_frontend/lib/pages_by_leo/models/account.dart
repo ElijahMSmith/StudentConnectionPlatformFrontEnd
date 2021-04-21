@@ -80,9 +80,7 @@ class Account
   bool validInterests = false;
 
   List<String> matchIDs = [];
-
   List<Account> matchedUsers = [];
-
   Account.empty();
 
   Account.fromLoginRequest(String responseBody) {
@@ -105,8 +103,7 @@ class Account
     country = user["country"] ?? "";
     school = user["school"] ?? "";
     major = user["major"] ?? "";
-    interests =
-        user["interests"] == Null ? [] : user["interests"].cast<String>();
+    interests = user["interests"] == Null ? [] : user["interests"].cast<String>();
     matchIDs = user["matches"] == Null ? [] : user["matches"].cast<String>();
 
     print("Trying to get matches\n");
@@ -114,10 +111,7 @@ class Account
       print("Trying to retrieve match '$id'");
       Account currentMatch = new Account.empty();
 
-      Uri uri = Uri.parse("https://t3-dev.rruiz.dev/api/users/$id");
-      print("Submitting to URI '${uri.toString()}'");
-
-      http.get(uri, headers: {"Content-Type": "application/json"}).then(
+      http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/$id"), headers: {"Content-Type": "application/json"}).then(
           (matchedResponse) => {
                 print(matchedResponse.statusCode),
                 print("Retrieved match account: '${matchedResponse.body}'\n"),
@@ -148,6 +142,26 @@ class Account
     }
   }
 
+  Account.fromUserRequest(Map<String, dynamic> values) {
+    name = values["name"] ?? "";
+    username = values["username"] ?? "";
+    email = values["email"] ?? "";
+    age = values["age"] ?? 18;
+    userID = values["id"] ?? "";
+    job = values["job"] ?? "";
+    bio = values["bio"] ?? "";
+    city = values["city"] ?? "";
+    country = values["country"] ?? "";
+    school = values["school"] ?? "";
+    major = values["major"] ?? "";
+    interests =
+        values["interests"] == Null ? [] : values["interests"].cast<String>();
+    matchIDs =
+        values["matches"] == Null ? [] : values["matches"].cast<String>();
+
+    print("Pulled '$username' from GET");
+  }
+
   Future<http.Response> submitAccountChanges() {
     print("Submitting changed account: \n-------------\n" +
         toString() +
@@ -174,7 +188,9 @@ class Account
   }
 
   Future<http.Response> checkUsernameUnique() {
-    return http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/" + username),
+    print(
+        Uri.parse("https://t3-dev.rruiz.dev/api/users/" + username).toString());
+    return http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/username/" + username),
         headers: {"Content-Type": "application/json"});
   }
 
