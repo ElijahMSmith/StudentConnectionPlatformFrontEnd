@@ -2,13 +2,8 @@ TODOS:
 
 - Matchmaking
 
-- Fix interests devolving into multiple lists/string of list (can confirm it's being pulled from the backend as a list of a list, so it's not fucking up on our end)
-When it first gets submitted, encodeJSON turns the List<String> into:
-I/flutter (19245): String //runtimeType of encoded form
-I/flutter (19245): ["Observation hobbies\r","Paintball\r","Performance\r","Pickleball\r","Ultimate frisbee\r","Jewelry making\r","Kabaddi\r"] //encoded form
-
-- Fix name not being updated on PUT (also a backend problem)
-
+- Should have DMs page show partial matches as pending and full matches as normal
+	- Can tell based on the stored account for that match and if they have the user's ID in their userID in THEIR list
 
 Matching:
 - Get all users for matching (initially, can filter client side if we have any time left)

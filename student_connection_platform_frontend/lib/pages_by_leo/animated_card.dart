@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
-import 'package:student_connection_platform_frontend/pages_by_leo/match_maker.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/matchmaker_stack.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_match_profile.dart';
 import '../account.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'match_maker.dart';
 
 // typedef void DragStart(DragStartDetails dragDetails);
 
@@ -12,9 +16,11 @@ enum SwipeDirection { left, right }
 
 // take in one user for displaying
 class AnimatedCard extends StatefulWidget {
-  final Account user;
+  final Account randomUser;
+  final Account activeUser;
+  final MatchMaker host;
 
-  AnimatedCard(this.user);
+  AnimatedCard(this.randomUser, this.activeUser, this.host);
 
   @override
   _AnimatedCardState createState() => _AnimatedCardState();
@@ -27,6 +33,48 @@ class _AnimatedCardState extends State<AnimatedCard>
   Animation<double> slideRight, rotateRight, slideLeft, rotateLeft;
   SwipeDirection dir;
   double width, startDragDetails;
+
+  Future<void> showMatchMessage(bool fullMatch) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(fullMatch ? "It's a full match!" : "Partially matched!"),
+          content: SingleChildScrollView(
+            child: ListBody(
+                children: fullMatch
+                    ?
+                    // Username is already in use
+                    <Widget>[
+                        Text('You both wanted to match with each other!\n'),
+                        Text(
+                            'Head over to the DMs page to start a conversation, or continue searching for other matches.'),
+                      ]
+                    :
+
+                    // Other error when submitting username for validation
+                    <Widget>[
+                        Text(
+                            'You matched with this user, but they haven\'t matched with you yet!\n'),
+                        Text(
+                            'If they also choose to match with you, they will appear in your DMs next time you visit that page.'),
+                        Text(
+                            'For now, you may continue searching for matches!'),
+                      ]),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   void didChangeDependencies() {
@@ -42,9 +90,61 @@ class _AnimatedCardState extends State<AnimatedCard>
       ..addStatusListener((AnimationStatus status) {
         // print(swipeRightController.value);
         if (status == AnimationStatus.completed) {
-          Provider.of<MatchMakerStack>(context, listen: false).pop();
-          print(
-              Provider.of<MatchMakerStack>(context, listen: false).toString());
+          // User swiped right, meaning they want to match with them
+          // Pop that card off the stack, send partial match to server and get response
+          // If just a partial match, don't change anything. Just show a dialog.
+          // If a full match, add that user's UID/Account to their matches and open DM's page
+          // Show full match dialog
+
+          // TODO: Stack updates properly, but notifyListener() doesn't seem to update the display (SEE TODOS.TXT)
+          Provider.of<MatchMakerStack>(context, listen: false)
+              .pop(widget.randomUser.userID);
+
+          print(Provider.of<MatchMakerStack>(context, listen: false)
+              .usersStack
+              .length);
+
+          Map<String, dynamic> matchResponse = {};
+
+          http.post(
+              Uri.parse(
+                "https://t3-dev.rruiz.dev/api/users/${widget.activeUser.userID}/match/${widget.randomUser.userID}"
+              ),
+              headers: {
+                "Content-Type": "application/json"
+              }).then((response) => {
+                if (response.statusCode == 200)
+                  {
+                    print(response.body),
+                    matchResponse = jsonDecode(response.body),
+                    if (matchResponse["message"] == "User liked!")
+                      {
+                        // First person to accept, add to their matches and show dialog
+                        showMatchMessage(false)
+                      }
+                    else
+                      {
+                        // Second person to accept, show full match dialog and add to matches
+                        showMatchMessage(true)
+                      },
+                    widget.activeUser.matchIDs.add(widget.randomUser.userID),
+                    widget.activeUser.matchedUsers.add(widget.randomUser),
+                    widget.host.removeMatchedUser(widget.randomUser)
+                  }
+                else
+                  {
+                    // There was an error
+                    print(response.body),
+                    Fluttertoast.showToast(
+                        msg: "Couldn't accept match!",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.redAccent,
+                        textColor: Colors.white,
+                        fontSize: 16.0)
+                  }
+              });
         }
       });
 
@@ -54,12 +154,18 @@ class _AnimatedCardState extends State<AnimatedCard>
     )
       // ..forward()
       ..addStatusListener((AnimationStatus status) {
-        // print(swipeRightController.value);
         if (status == AnimationStatus.completed) {
-          // TODO: Perform result of left swiping the card here
-          Provider.of<MatchMakerStack>(context, listen: false).pop();
-          print(
-              Provider.of<MatchMakerStack>(context, listen: false).toString());
+          // User swiped left - not a match, ignore the result.
+          // Just take the user off the stack of cards and move to next one
+
+          // TODO: Stack updates properly, but notifyListener() doesn't seem to update the display (SEE TODOS.TXT)
+          Provider.of<MatchMakerStack>(context, listen: false)
+              .pop(widget.randomUser.userID);
+          print(Provider.of<MatchMakerStack>(context, listen: false)
+              .usersStack
+              .length);
+
+          widget.host.removeMatchedUser(widget.randomUser);
         }
       });
 
@@ -116,12 +222,12 @@ class _AnimatedCardState extends State<AnimatedCard>
     super.initState();
     //TODO: Eventually refactor this to include ALL the user's information
     previewInfo
-      ..add(widget.user.name)
-      ..add(widget.user.age)
-      ..add(widget.user.job)
-      ..add(widget.user.major)
-      ..add(widget.user.bio)
-      ..add(widget.user.username);
+      ..add(widget.randomUser.name)
+      ..add(widget.randomUser.age)
+      ..add(widget.randomUser.job)
+      ..add(widget.randomUser.major)
+      ..add(widget.randomUser.bio)
+      ..add(widget.randomUser.username);
   }
 
   @override
@@ -170,14 +276,14 @@ class _AnimatedCardState extends State<AnimatedCard>
                 MaterialPageRoute(
                   builder: (context) => PreviewMatchProfile(
                     contents: previewInfo,
-                    image: widget.user.profilePicture ??
-                        widget.user.defaultPicture,
+                    image: widget.randomUser.profilePicture ??
+                        widget.randomUser.defaultPicture,
                   ),
                 ),
               );
             },
             child: Container(
-              key: Key(widget.user.userID.toString()),
+              key: Key(widget.randomUser.userID.toString()),
               padding: EdgeInsets.all(8),
               child: Card(
                 shape: RoundedRectangleBorder(
@@ -187,21 +293,28 @@ class _AnimatedCardState extends State<AnimatedCard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 270,
-                      child: Hero(
-                        tag: widget.user.userID,
-                        child: ClipRRect(
-                          child: Image(
-                            image: widget.user.profilePicture != null
-                                ? FileImage(widget.user.profilePicture)
-                                : widget.user.defaultPicture,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 2,
                           ),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15),
+                        ),
+                        child: Hero(
+                          tag: widget.randomUser.userID,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                            child: Image(
+                              image: widget.randomUser.profilePicture != null
+                                  ? FileImage(widget.randomUser.profilePicture)
+                                  : widget.randomUser.defaultPicture,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
                           ),
                         ),
                       ),
@@ -212,7 +325,7 @@ class _AnimatedCardState extends State<AnimatedCard>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        widget.user.name,
+                        widget.randomUser.name,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 30),
                       ),
@@ -223,8 +336,9 @@ class _AnimatedCardState extends State<AnimatedCard>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        widget.user.bio,
+                        widget.randomUser.bio,
                         style: TextStyle(fontSize: 20),
+                        maxLines: 4,
                       ),
                     ),
                   ],
