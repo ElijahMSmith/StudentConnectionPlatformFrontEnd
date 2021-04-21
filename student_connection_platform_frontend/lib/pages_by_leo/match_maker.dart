@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/matchmaker_stack.dart';
 import 'package:http/http.dart' as http;
 import 'animated_card.dart';
-import '../account.dart';
+import 'models/account.dart';
 
 Account _activeUser;
 List<Account> allUsers = []; // TODO later: Fix this as essentially a second stack
@@ -15,13 +15,15 @@ class MatchMaker extends StatelessWidget // should be cardstack.dart
 {
   static const String routeId = 'match_maker';
 
-  void removeMatchedUser(Account user) {
+  void removeMatchedUser(Account user)
+  {
     allUsers.removeWhere((element) => element.userID == user.userID);
   }
 
-  MatchMaker(Account activeUser) {
+  MatchMaker(Account activeUser)
+  {
     _activeUser = activeUser;
-    
+
     http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/"), headers: {
       "Content-Type": "application/json"
     }).then((resp) => {

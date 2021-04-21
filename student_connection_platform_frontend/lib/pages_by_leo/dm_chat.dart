@@ -71,13 +71,6 @@ class _DMChatState extends State<DMChat>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Form(
-              child: TextFormField(
-                controller: _controller,
-                decoration: InputDecoration(labelText: 'Send a message'),
-              ),
-            ),
-
             // Listen for messages from the server.
             StreamBuilder(
               stream: channel.stream,
@@ -96,7 +89,13 @@ class _DMChatState extends State<DMChat>
                     }),
                 );
               },
-            )
+            ),
+            Form(
+              child: TextFormField(
+                controller: _controller,
+                decoration: InputDecoration(labelText: 'Send a message'),
+              ),
+            ),
           ],
         ),
       ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../account.dart';
+import './models/account.dart';
+import 'models/account.dart';
 
-class PreviewProfile extends StatelessWidget {
+class PreviewProfile extends StatelessWidget
+{
   // contents will be from the profile page
   final List<String> contents;
   final ImageProvider image;

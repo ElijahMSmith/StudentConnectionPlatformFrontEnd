@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'models/ChatModel.dart';
+import 'models/account.dart';
 
-class ContactCard extends StatelessWidget {
+class ContactCard extends StatelessWidget
+{
+  final Account contact;
   const ContactCard({Key key, this.contact}) : super(key: key);
-  final ChatModel contact;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return ListTile(
       leading: Container(
         width: 50,
@@ -29,8 +31,7 @@ class ContactCard extends StatelessWidget {
                     fit: BoxFit.fill,
                   ),
                 )),
-            contact.select
-                ? Positioned(
+                Positioned(
                     bottom: 4,
                     right: 5,
                     child: CircleAvatar(
@@ -43,7 +44,6 @@ class ContactCard extends StatelessWidget {
                       ),
                     ),
                   )
-                : Container(),
           ],
         ),
       ),
@@ -54,12 +54,12 @@ class ContactCard extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      subtitle: Text(
-        contact.status,
-        style: TextStyle(
-          fontSize: 13,
-        ),
-      ),
+      // subtitle: Text(
+      //   contact.status,
+      //   style: TextStyle(
+      //     fontSize: 13,
+      //   ),
+      // ),
     );
   }
 }

@@ -1,9 +1,44 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
-class Account {
+class UserAccounts with ChangeNotifier
+{
+    List<Account> _users = [
+  ];
+
+  List<Account> _usersStack = [];
+
+  List<Account> get users
+  {
+    return [..._users];
+  }
+
+  List<Account> get usersStack
+  {
+    return [..._usersStack];
+  }
+
+  void loadUsersStack()
+  {
+    _usersStack = [..._users];
+    notifyListeners();
+  }
+
+  void deleteFromStack(String id)
+  {
+    _users.removeWhere((user) => user.userID == id);
+    notifyListeners();
+  }
+}
+
+
+
+
+
+class Account
+{
   // Validation and setting values handled by forms, so leaving these public
   String email = "";
   bool validEmail = false;

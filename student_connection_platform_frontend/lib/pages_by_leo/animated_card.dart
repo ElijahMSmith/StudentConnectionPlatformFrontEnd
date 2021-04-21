@@ -5,10 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/matchmaker_stack.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_match_profile.dart';
-import '../account.dart';
+// import '../account.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'match_maker.dart';
+import 'models/account.dart';
 
 // typedef void DragStart(DragStartDetails dragDetails);
 
@@ -118,15 +119,17 @@ class _AnimatedCardState extends State<AnimatedCard>
                     print(response.body),
                     matchResponse = jsonDecode(response.body),
                     if (matchResponse["message"] == "User liked!")
-                      {
-                        // First person to accept, add to their matches and show dialog
-                        showMatchMessage(false)
-                      }
+                    {
+                      // First person to accept, add to their matches and show dialog
+                      showMatchMessage(false)
+                    }
                     else
-                      {
-                        // Second person to accept, show full match dialog and add to matches
-                        showMatchMessage(true)
-                      },
+                    {
+                      // Second person to accept, show full match dialog and add to matches
+                      showMatchMessage(true)
+                    },
+
+                    // populate active user
                     widget.activeUser.matchIDs.add(widget.randomUser.userID),
                     widget.activeUser.matchedUsers.add(widget.randomUser),
                     widget.host.removeMatchedUser(widget.randomUser)

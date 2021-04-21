@@ -1,5 +1,5 @@
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
-import 'package:student_connection_platform_frontend/account.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/models/account.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'dart:async';

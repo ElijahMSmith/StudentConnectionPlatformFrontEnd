@@ -2,7 +2,7 @@ import 'package:student_connection_platform_frontend/navigator.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/AccountDetails.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/UserOverview.dart';
 import 'package:student_connection_platform_frontend/pages/SignupSections/UserDetails.dart';
-import 'package:student_connection_platform_frontend/account.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/models/account.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;

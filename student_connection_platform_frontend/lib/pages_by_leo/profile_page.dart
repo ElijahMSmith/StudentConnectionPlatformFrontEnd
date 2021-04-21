@@ -2,12 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_profile.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../account.dart';
+import 'models/account.dart';
 
 Account _userAccount;
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatefulWidget
+{
   static const String routeID = '/ProfilePage';
 
   ProfilePage(Account userAccount) {
@@ -18,7 +18,8 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+{
   /// initialize the buffer.
   /// Note that this method
   /// clears out any contents
@@ -73,7 +74,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    // fillBufferFromList(aboutMeBuffer, aboutMe);
 
     // list comprehension for dart language
     // if you've used python, you probably are
@@ -81,12 +81,6 @@ class _ProfilePageState extends State<ProfilePage> {
     // 5 separate text editing controllers, one for each text field
     controllers = [for (int i = 0; i < 5; ++i) TextEditingController()];
     // controllers.forEach((element) {print(element);});
-
-    controllers[0].text = _userAccount.name;
-    controllers[1].text = _userAccount.username;
-    controllers[2].text = _userAccount.job;
-    controllers[3].text = _userAccount.major;
-    controllers[4].text = _userAccount.bio;
 
     setState(() {});
   }
@@ -103,23 +97,27 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     // before saving and allowing the user
     // to have it in the profile
-    Widget textfield(
-        {@required IconData icon,
-        @required String label,
-        @required String helper,
-        String errorText,
-        int maxLines = 1,
-        bool showCursor = false,
-        bool readOnly = false,
-        TextEditingController controller,
-        Function datePicker,
-        Function validator}) {
+    Widget textfield({
+      @required IconData icon,
+      @required String label,
+      @required String helper,
+      String errorText,
+      int maxLines = 1,
+      bool showCursor = false,
+      bool readOnly = false,
+      TextEditingController controller,
+      Function validator,
+      String accountInfo,
+    })
+    {
+
+      controller.text = accountInfo;
+
       return TextFormField(
         controller: controller,
         showCursor: showCursor,
         readOnly: readOnly,
         validator: validator,
-        onTap: datePicker,
         maxLines: maxLines,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -183,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           CircleAvatar(
               backgroundImage: imageFile == null
-                  ? AssetImage('assets/images/choosePicture.png')
+                  ? AssetImage('assets/images/baby_yoda.jpg')
                   : FileImage(File(imageFile.path)),
               radius: 40),
           Positioned(
@@ -218,9 +216,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         imageProfile(),
                         SizedBox(width: 30),
                         ElevatedButton(
-                            onPressed: () {
+                            onPressed: ()
+                            {
                               // validate name input before continuing
-                              if (!formKey.currentState.validate()) {
+                              if (!formKey.currentState.validate())
+                              {
                                 print(
                                     'Please make sure all fields are valid before previewing');
                                 return;
@@ -232,16 +232,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PreviewProfile(
+                                    userAccount: _userAccount,
                                     contents: [
                                       for (int i = 0; i < 5; ++i)
                                         controllers[i].text
                                     ],
                                     image: imageFile == null
-                                        ? _userAccount.defaultPicture
+                                        ? AssetImage(
+                                            'assets/images/baby_yoda.jpg')
                                         : FileImage(
                                             File(imageFile.path),
                                           ),
-                                    userAccount: _userAccount,
                                   ),
                                 ),
                               );
@@ -259,71 +260,30 @@ class _ProfilePageState extends State<ProfilePage> {
                       readOnly: true),
                   SizedBox(height: 30),
                   textfield(
-                      icon: Icons.person_outline,
-                      label: 'Username',
-                      helper: 'This is not changeable',
-                      readOnly: true,
-                      controller: controllers[1]),
-                  SizedBox(height: 30),
-                  textfield(
                       icon: Icons.work,
                       label: 'Profession',
-                      helper: 'Leave this blank if you don\'t have one',
-                      controller: controllers[2]),
+                      helper: 'Software developer',
+                      controller: controllers[2],
+                      accountInfo: _userAccount.job),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.school,
                       label: 'Major',
-                      helper: 'Required',
-                      validator: majorValidator,
-                      controller: controllers[3]),
+                      helper: 'computer science',
+                      controller: controllers[3],
+                      accountInfo: _userAccount.major),
                   SizedBox(height: 30),
                   textfield(
                       icon: Icons.book,
-                      label: 'Personal Bio',
-                      helper: 'A summary of you that others will read',
-                      validator: bioValidator,
+                      label: 'About',
+                      helper: 'About me',
                       controller: controllers[4],
-                      maxLines: 5),
+                      maxLines: 5,
+                      accountInfo: _userAccount.bio),
                   SizedBox(height: 30),
                   ElevatedButton.icon(
                     onPressed: () {
                       controllers.forEach((element) => print(element?.text));
-                      _userAccount.name = controllers[0].text;
-
-                      // Username (controllers[1]) doesn't change
-
-                      _userAccount.job = controllers[2].text;
-                      _userAccount.major = controllers[3].text;
-                      _userAccount.bio = controllers[4].text;
-
-                      // TODO: Other fields for other profile sections
-
-                      // RESUBMIT ACCOUNT WITH CHANGES TO SERVER
-                      _userAccount.submitAccountChanges().then((response) {
-                        print(response.body.toString());
-                        if (response.statusCode == 200) {
-                          // Username available
-                          Fluttertoast.showToast(
-                              msg: "Your updated profile has been saved!",
-                              toastLength: Toast.LENGTH_LONG,
-                              gravity: ToastGravity.CENTER,
-                              backgroundColor: Colors.greenAccent,
-                              textColor: Colors.white,
-                              timeInSecForIosWeb: 2,
-                              fontSize: 12.0);
-                        } else {
-                          // Other error
-                          Fluttertoast.showToast(
-                              msg: "Couldn't save changes, try again later!",
-                              toastLength: Toast.LENGTH_LONG,
-                              gravity: ToastGravity.CENTER,
-                              backgroundColor: Colors.redAccent,
-                              textColor: Colors.white,
-                              timeInSecForIosWeb: 2,
-                              fontSize: 12.0);
-                        }
-                      });
                     },
                     icon: Icon(Icons.save),
                     label: Text('Save'),
@@ -341,10 +301,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         label: Text('Settings'),
                       ),
                       ElevatedButton(
-                        onPressed: () => {
-                          Navigator.pop(
-                              context) // Returns to login page (theoretically, TODO testing)
-                        },
+                        onPressed: () => print('log out'),
                         child: Text('Log out'),
                       ),
                     ],
