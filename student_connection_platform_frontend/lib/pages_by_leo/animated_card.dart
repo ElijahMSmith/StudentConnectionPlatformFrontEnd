@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_match_profile.dart';
 import '../constants.dart';
+import 'models/account.dart';
 
 // typedef void DragStart(DragStartDetails dragDetails);
 
@@ -11,7 +12,7 @@ enum SwipeDirection { left, right }
 // take in one user for displaying
 class AnimatedCard extends StatefulWidget
 {
-  final User user;
+  final Account user;
 
   AnimatedCard(this.user);
 
@@ -45,9 +46,9 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
         // print(swipeRightController.value);
         if (status == AnimationStatus.completed)
         {
-          Provider.of<Users>(context, listen: false)
-            .deleteFromStack(widget.user.id);
-          print(Provider.of<Users>(context, listen: false).users.toString());
+          Provider.of<UserAccounts>(context, listen: false)
+            .deleteFromStack(widget.user.userID);
+          print(Provider.of<UserAccounts>(context, listen: false).users.toString());
         }
     });
 
@@ -61,9 +62,9 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
         // print(swipeRightController.value);
         if (status == AnimationStatus.completed)
         {
-          Provider.of<Users>(context, listen: false)
-            .deleteFromStack(widget.user.id);
-          print(Provider.of<Users>(context, listen: false).users.toString());
+          Provider.of<UserAccounts>(context, listen: false)
+            .deleteFromStack(widget.user.userID);
+          print(Provider.of<UserAccounts>(context, listen: false).users.toString());
         }
     });
 
@@ -120,11 +121,11 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
   {
     super.initState();
     previewInfo..add(widget.user.name)
-    ..add(widget.user.dob)
-    ..add(widget.user.profession)
+    ..add(widget.user.dateOfBirth)
+    ..add(widget.user.job)
     ..add(widget.user.major)
     ..add(widget.user.bio)
-    ..add(widget.user.userName);
+    ..add(widget.user.username);
   }
 
     @override
@@ -181,11 +182,11 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
                             PreviewMatchProfile(
                               contents: previewInfo,
-                              image: AssetImage(widget.user.imgUrl),),),);
+                              image: AssetImage(widget.user.profilePicture.path),),),);
 
               },
               child: Container(
-                key: Key(widget.user.id.toString()),
+                key: Key(widget.user.userID),
                 padding: EdgeInsets.all(8),
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -198,10 +199,10 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                       Container(
                         height: 270,
                         child: Hero(
-                          tag: widget.user.id,
+                          tag: widget.user.userID,
                           child: ClipRRect(
                             child: Image.asset(
-                              widget.user.imgUrl,
+                              widget.user.profilePicture.path,
                               fit: BoxFit.cover,
                               width: double.infinity,
                             ),
@@ -229,7 +230,7 @@ class _AnimatedCardState extends State<AnimatedCard> with TickerProviderStateMix
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          widget.user.intro,
+                          widget.user.bio,
                           style: TextStyle(fontSize: 20),
                         ),
                       ),

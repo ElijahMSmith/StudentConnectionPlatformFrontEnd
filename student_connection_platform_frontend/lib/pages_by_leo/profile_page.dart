@@ -216,9 +216,11 @@ class _ProfilePageState extends State<ProfilePage>
                         imageProfile(),
                         SizedBox(width: 30),
                         ElevatedButton(
-                            onPressed: () {
+                            onPressed: ()
+                            {
                               // validate name input before continuing
-                              if (!formKey.currentState.validate()) {
+                              if (!formKey.currentState.validate())
+                              {
                                 print(
                                     'Please make sure all fields are valid before previewing');
                                 return;
@@ -230,6 +232,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PreviewProfile(
+                                    userAccount: _userAccount,
                                     contents: [
                                       for (int i = 0; i < 5; ++i)
                                         controllers[i].text

@@ -29,7 +29,7 @@ class AppHome extends StatelessWidget
     // of the tree in order for this line: final users = Provider.of<Users>(context).users;
     // to work.
     return ChangeNotifierProvider.value(
-      value: Users(),
+      value: UserAccounts(),
       child: MaterialApp(
           title: appName,
           theme: ThemeData(

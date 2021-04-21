@@ -11,7 +11,8 @@ class MatchMaker extends StatelessWidget // should be cardstack.dart
 {
   static const String routeId = 'match_maker';
 
-  MatchMaker(Account userAccount) {
+  MatchMaker(Account userAccount)
+  {
     _userAccount = userAccount;
   }
 
@@ -19,7 +20,7 @@ class MatchMaker extends StatelessWidget // should be cardstack.dart
   Widget build(BuildContext context)
   {
     // provider instantiation
-    final users = Provider.of<Users>(context).users;
+    final users = Provider.of<UserAccounts>(context).users;
 
     // Center(child: Container(child: Text('blank')));
     return users.isEmpty
