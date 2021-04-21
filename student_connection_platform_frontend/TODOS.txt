@@ -1,7 +1,5 @@
 TODOS:
 
-- Fix GET by id not working
-
 - Matchmaking
 
 - Fix interests devolving into multiple lists/string of list (can confirm it's being pulled from the backend as a list of a list, so it's not fucking up on our end)

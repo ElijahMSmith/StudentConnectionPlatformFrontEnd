@@ -25,7 +25,7 @@ class PreviewMatchProfile extends StatelessWidget
                   Divider(thickness: 0.8,),
                   previewBody('Major', contents[3]),
                   Divider(thickness: 0.8,),
-                  previewBody('About', contents[4]),
+                  previewBody('Bio', contents[4]),
                 ],
               ),
       ),
