@@ -26,6 +26,7 @@ class SignupForm extends StatefulWidget {
   SignupForm(String name, AppHome homeController) {
     appName = name;
     _newAccount = new Account.empty();
+    _homeController = homeController;
   }
 
   @override
@@ -188,6 +189,9 @@ class SignupFormState extends State<SignupForm> {
   }
 
   _attemptSubmit() async {
+    print(jsonEncode(_newAccount.interests).runtimeType);
+    print(jsonEncode(_newAccount.interests).toString());
+
     String bodyJSON = jsonEncode(<String, String>{
       "name": _newAccount.name,
       "username": _newAccount.username,

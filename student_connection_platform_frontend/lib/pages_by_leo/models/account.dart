@@ -19,6 +19,7 @@ class Account
   String userID;
 
   File profilePicture;
+  AssetImage defaultPicture = AssetImage("assets/images/emptyProfileImage.png");
   bool validProfilePicture = false;
 
   String name = "";
@@ -43,17 +44,22 @@ class Account
   List<String> interests = [];
   bool validInterests = false;
 
-  List<dynamic> matchIDs = [];
+  List<String> matchIDs = [];
+
+  List<Account> matchedUsers = [];
 
   Account.empty();
 
-  Account.fromRequest(String responseBody) {
-    final values = jsonDecode(responseBody);
+  Account.fromLoginRequest(String responseBody) {
+    print("Login received\n");
+    Map<String, dynamic> values = jsonDecode(responseBody);
 
     name = values["name"] ?? "";
     username = values["username"] ?? "";
 
     final user = values["user"];
+    print(user["interests"].runtimeType);
+    print(user["interests"].toString());
 
     email = user["email"] ?? "";
     age = user["age"] ?? 18;
@@ -66,7 +72,70 @@ class Account
     major = user["major"] ?? "";
     interests =
         user["interests"] == Null ? [] : user["interests"].cast<String>();
-    matchIDs = user["matches"] ?? [];
+    matchIDs = user["matches"] == Null ? [] : user["matches"].cast<String>();
+
+    print("Trying to get matches\n");
+    for (String id in matchIDs) {
+      print("Trying to retrieve match '$id'");
+      Account currentMatch = new Account.empty();
+
+      Uri uri = Uri.parse("https://t3-dev.rruiz.dev/api/users/$id");
+      print("Submitting to URI '${uri.toString()}'");
+
+      http.get(uri, headers: {"Content-Type": "application/json"}).then(
+          (matchedResponse) => {
+                print(matchedResponse.statusCode),
+                print("Retrieved match account: '${matchedResponse.body}'\n"),
+                values = jsonDecode(matchedResponse.body),
+
+                currentMatch.name = values["name"] ?? "",
+                currentMatch.username = values["username"] ?? "",
+                currentMatch.email = values["email"] ?? "",
+                currentMatch.age = values["age"] ?? 18,
+                currentMatch.userID = values["id"] ?? "",
+                currentMatch.job = values["job"] ?? "",
+                currentMatch.bio = values["bio"] ?? "",
+                currentMatch.city = values["city"] ?? "",
+                currentMatch.country = values["country"] ?? "",
+                currentMatch.school = values["school"] ?? "",
+                currentMatch.major = values["major"] ?? "",
+
+                currentMatch.interests = values["interests"] == Null
+                    ? []
+                    : values["interests"].cast<String>(),
+                // We don't currently care about THEIR matches. Might change with a future feature
+                currentMatch.matchIDs = values["matches"] == Null
+                    ? []
+                    : values["matches"].cast<String>(),
+
+                matchedUsers.add(currentMatch)
+              });
+    }
+  }
+
+  Future<http.Response> submitAccountChanges() {
+    print("Submitting changed account: \n-------------\n" +
+        toString() +
+        "\n--------------\n");
+
+    String bodyJSON = jsonEncode(<String, dynamic>{
+      "interests": jsonEncode(interests),
+      "matches": jsonEncode(matchIDs),
+      "name": name,
+      "username": username,
+      "email": email,
+      "age": age,
+      "password": password,
+      "bio": bio,
+      "school": school,
+      "major": major,
+      "job": job,
+      "country": country,
+      "city": city
+    });
+
+    return http.put(Uri.parse("https://t3-dev.rruiz.dev/api/users/" + userID),
+        headers: {"Content-Type": "application/json"}, body: bodyJSON);
   }
 
   Future<http.Response> checkUsernameUnique() {
@@ -92,8 +161,8 @@ class Account
 
   @override
   String toString() {
-    return "Email: $email\nUsername: $username\nName: $name\nID: $userID\n" +
+    return "Email: $email\nUsername: $username\nName: $name\nBio: $bio\nID: $userID\n" +
         "DOB: $dateOfBirth\nJob: $job\nCity: $city\nCountry $country\n" +
-        "Major: $major\nSchool: $school\nInterests: ${interests.toString()}\nMatches: $matchIDs";
+        "Major: $major\nSchool: $school\nInterests: '${interests.toString()}'\nMatches: '${matchIDs.toString()}'";
   }
 }

@@ -48,6 +48,7 @@ class _SigninFormState extends State<SigninForm>
   _getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     _storeLoginInfo = prefs.getBool("storeLoginInfo") ?? false;
+    print("SP loaded store as $_storeLoginInfo\n");
     if (_storeLoginInfo) {
       setState(() {
         _username = prefs.getString("usernameOrEmail");
@@ -92,7 +93,7 @@ class _SigninFormState extends State<SigninForm>
     if (response.statusCode == 200) {
       // Successful login
 
-      Account user = new Account.fromRequest(response.body);
+      Account user = new Account.fromLoginRequest(response.body);
 
       // TODO: What do I do with the JWT (_responseBody["token"])?
 

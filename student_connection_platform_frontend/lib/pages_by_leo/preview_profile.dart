@@ -1,40 +1,51 @@
 import 'package:flutter/material.dart';
+import '../account.dart';
 
-class PreviewProfile extends StatelessWidget
-{
+class PreviewProfile extends StatelessWidget {
   // contents will be from the profile page
   final List<String> contents;
   final ImageProvider image;
+  final Account userAccount;
 
-  PreviewProfile({@required this.contents, @required this.image});
+  PreviewProfile(
+      {@required this.contents,
+      @required this.image,
+      @required this.userAccount});
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-              child: ListView(
-                children: [
-                  previewHeader(image),
-                  Divider(thickness: 0.8,),
-                  previewBody('Name', contents[0]),
-                  Divider(thickness: 0.8,),
-                  previewBody('Date of Birth', contents[1]),
-                  Divider(thickness: 0.8,),
-                  previewBody('Profession', contents[2]),
-                  Divider(thickness: 0.8,),
-                  previewBody('Major', contents[3]),
-                  Divider(thickness: 0.8,),
-                  previewBody('About', contents[4]),
-                ],
-              ),
+        child: ListView(
+          children: [
+            previewHeader(image),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('Name', contents[0]),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('Username', contents[1]),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('Profession', contents[2]),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('Major', contents[3]),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('Bio', contents[4]),
+          ],
+        ),
       ),
     );
   }
 
-
-  Widget previewHeader(ImageProvider image)
-  {
+  Widget previewHeader(ImageProvider image) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: Column(
@@ -44,12 +55,8 @@ class PreviewProfile extends StatelessWidget
             backgroundImage: image,
             radius: 50,
           ),
-
-          // todo
-          // should pass in a string here from when the user creates a username
-          // upon registration
           Text(
-            'Username_goes_here',
+            userAccount.username,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -60,8 +67,7 @@ class PreviewProfile extends StatelessWidget
     );
   }
 
-  Widget previewBody(String label, String value)
-  {
+  Widget previewBody(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: Column(
@@ -81,7 +87,3 @@ class PreviewProfile extends StatelessWidget
     );
   }
 }
-
-
-
-
