@@ -5,8 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/matchmaker_stack.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_match_profile.dart';
-// import '../account.dart';
-import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'match_maker.dart';
 import 'models/account.dart';
@@ -35,8 +33,15 @@ class _AnimatedCardState extends State<AnimatedCard>
   SwipeDirection dir;
   double width, startDragDetails;
 
+  void removeCardOnceFinished() {
+    Provider.of<MatchMakerStack>(context, listen: false)
+        .pop(widget.randomUser.userID);
+
+    widget.host.removeMatchedUser(widget.randomUser);
+  }
+
   Future<void> showMatchMessage(bool fullMatch) async {
-    return showDialog<void>(
+    return await showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -89,7 +94,6 @@ class _AnimatedCardState extends State<AnimatedCard>
     )
       // ..forward()
       ..addStatusListener((AnimationStatus status) {
-        // print(swipeRightController.value);
         if (status == AnimationStatus.completed) {
           // User swiped right, meaning they want to match with them
           // Pop that card off the stack, send partial match to server and get response
@@ -97,57 +101,46 @@ class _AnimatedCardState extends State<AnimatedCard>
           // If a full match, add that user's UID/Account to their matches and open DM's page
           // Show full match dialog
 
-          // TODO: Stack updates properly, but notifyListener() doesn't seem to update the display (SEE TODOS.TXT)
-          Provider.of<MatchMakerStack>(context, listen: false)
-              .pop(widget.randomUser.userID);
-
-          print(Provider.of<MatchMakerStack>(context, listen: false)
-              .usersStack
-              .length);
-
           Map<String, dynamic> matchResponse = {};
 
-          http.post(
-              Uri.parse(
-                "https://t3-dev.rruiz.dev/api/users/${widget.activeUser.userID}/match/${widget.randomUser.userID}"
-              ),
-              headers: {
-                "Content-Type": "application/json"
-              }).then((response) => {
-                if (response.statusCode == 200)
-                  {
-                    print(response.body),
-                    matchResponse = jsonDecode(response.body),
-                    if (matchResponse["message"] == "User liked!")
-                    {
-                      // First person to accept, add to their matches and show dialog
-                      showMatchMessage(false)
-                    }
-                    else
-                    {
-                      // Second person to accept, show full match dialog and add to matches
-                      showMatchMessage(true)
-                    },
+          widget.activeUser
+              .createMatchWith(widget.randomUser)
+              .then((response) => {
+                    if (response.statusCode == 200)
+                      {
+                        print(response.body),
+                        matchResponse = jsonDecode(response.body),
+                        if (matchResponse["message"] == "User liked!")
+                          {
+                            // First person to accept, add to their matches and show dialog
+                            showMatchMessage(false)
+                          }
+                        else
+                          {
+                            // Second person to accept, show full match dialog and add to matches
+                            showMatchMessage(true)
+                          },
 
-                    // populate active user
-                    widget.activeUser.matchIDs.add(widget.randomUser.userID),
-                    widget.activeUser.matchedUsers.add(widget.randomUser),
-                    widget.host.removeMatchedUser(widget.randomUser)
-                  }
-                else
-                  {
-                    // There was an error
-                    print(response.body),
-                    Fluttertoast.showToast(
-                        msg: "Couldn't accept match!",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.redAccent,
-                        textColor: Colors.white,
-                        fontSize: 16.0)
-                  }
-              });
+                        // populate active user
+                        widget.activeUser.matchIDs
+                            .add(widget.randomUser.userID),
+                        widget.activeUser.matchedUsers.add(widget.randomUser),
+                        removeCardOnceFinished()
+                      }
+                    else
+                      {
+                        // There was an error
+                        print(response.body),
+                        Fluttertoast.showToast(
+                            msg: "Couldn't accept match!",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.redAccent,
+                            textColor: Colors.white,
+                            fontSize: 16.0)
+                      }
+                  });
         }
       });
 
@@ -160,13 +153,8 @@ class _AnimatedCardState extends State<AnimatedCard>
         if (status == AnimationStatus.completed) {
           // User swiped left - not a match, ignore the result.
           // Just take the user off the stack of cards and move to next one
-
-          // TODO: Stack updates properly, but notifyListener() doesn't seem to update the display (SEE TODOS.TXT)
           Provider.of<MatchMakerStack>(context, listen: false)
               .pop(widget.randomUser.userID);
-          print(Provider.of<MatchMakerStack>(context, listen: false)
-              .usersStack
-              .length);
 
           widget.host.removeMatchedUser(widget.randomUser);
         }
@@ -226,11 +214,11 @@ class _AnimatedCardState extends State<AnimatedCard>
     //TODO: Eventually refactor this to include ALL the user's information
     previewInfo
       ..add(widget.randomUser.name)
+      ..add(widget.randomUser.username)
       ..add(widget.randomUser.age)
       ..add(widget.randomUser.job)
       ..add(widget.randomUser.major)
-      ..add(widget.randomUser.bio)
-      ..add(widget.randomUser.username);
+      ..add(widget.randomUser.bio);
   }
 
   @override

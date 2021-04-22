@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import './models/account.dart';
 
-class MatchMakerStack with ChangeNotifier
-{
+class MatchMakerStack with ChangeNotifier {
   List<Account> _usersStack = [];
 
   List<Account> get usersStack {
@@ -14,16 +13,8 @@ class MatchMakerStack with ChangeNotifier
   }
 
   void pop(String cardUserID) {
-    print("Initially ${_usersStack.length}");
-    for (int i = 0; i < _usersStack.length; i++) {
-      if (_usersStack[i].userID == cardUserID) {
-        print("Removing at $i");
-        _usersStack.removeAt(i);
-        i--;
-      }
-    }
+    _usersStack.removeWhere((element) => element.userID == cardUserID);
     notifyListeners();
-    print("Finally ${_usersStack.length}");
   }
 
   void push(Account a) {

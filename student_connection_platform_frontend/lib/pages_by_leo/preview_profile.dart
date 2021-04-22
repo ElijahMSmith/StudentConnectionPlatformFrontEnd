@@ -32,7 +32,7 @@ class PreviewProfile extends StatelessWidget
             Divider(
               thickness: 0.8,
             ),
-            previewBody('Profession', contents[2]),
+            previewBody('Age', contents[2]),
             Divider(
               thickness: 0.8,
             ),
@@ -40,7 +40,27 @@ class PreviewProfile extends StatelessWidget
             Divider(
               thickness: 0.8,
             ),
-            previewBody('Bio', contents[4]),
+            previewBody('School', contents[4]),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('Bio', contents[5]),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('Profession', contents[6]),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('City', contents[7]),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('Country', contents[8]),
+            Divider(
+              thickness: 0.8,
+            ),
+            // TODO: Find another way to display interests here
           ],
         ),
       ),

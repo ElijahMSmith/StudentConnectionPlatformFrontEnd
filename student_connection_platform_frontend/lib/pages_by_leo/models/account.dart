@@ -91,8 +91,6 @@ class Account
     username = values["username"] ?? "";
 
     final user = values["user"];
-    print(user["interests"].runtimeType);
-    print(user["interests"].toString());
 
     email = user["email"] ?? "";
     age = user["age"] ?? 18;
@@ -163,9 +161,6 @@ class Account
   }
 
   Future<http.Response> submitAccountChanges() {
-    print("Submitting changed account: \n-------------\n" +
-        toString() +
-        "\n--------------\n");
 
     String bodyJSON = jsonEncode(<String, dynamic>{
       "interests": jsonEncode(interests),
@@ -188,10 +183,15 @@ class Account
   }
 
   Future<http.Response> checkUsernameUnique() {
-    print(
-        Uri.parse("https://t3-dev.rruiz.dev/api/users/" + username).toString());
     return http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/username/" + username),
         headers: {"Content-Type": "application/json"});
+  }
+
+  Future<http.Response> createMatchWith(Account otherUser) async {
+    return await http.post(
+              Uri.parse(
+                  "https://t3-dev.rruiz.dev/api/users/$userID/match/${otherUser.userID}"),
+              headers: {"Content-Type": "application/json"});
   }
 
   bool validAccountDetails() {

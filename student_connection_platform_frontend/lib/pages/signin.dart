@@ -15,12 +15,10 @@ SharedPreferences prefs;
 // Reference to the page controller
 AppHome _homeController;
 
-class SigninForm extends StatefulWidget
-{
+class SigninForm extends StatefulWidget {
   static const String routeID = '/Signin';
 
-  SigninForm(String appName, AppHome homeController)
-  {
+  SigninForm(String appName, AppHome homeController) {
     _appName = appName;
     _homeController = homeController;
   }
@@ -29,8 +27,7 @@ class SigninForm extends StatefulWidget
   _SigninFormState createState() => _SigninFormState();
 }
 
-class _SigninFormState extends State<SigninForm>
-{
+class _SigninFormState extends State<SigninForm> {
   final _formKey = GlobalKey<FormState>();
 
   bool _storeLoginInfo = false;
@@ -218,6 +215,7 @@ class _SigninFormState extends State<SigninForm>
                   onChanged: (value) {
                     _password = value;
                   },
+                  obscureText: true,
                 ),
 
                 SizedBox(

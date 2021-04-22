@@ -21,19 +21,23 @@ class PreviewMatchProfile extends StatelessWidget {
             Divider(
               thickness: 0.8,
             ),
-            previewBody('Age', contents[1].toString()),
+            previewBody('Username', contents[1]),
             Divider(
               thickness: 0.8,
             ),
-            previewBody('Profession', contents[2]),
+            previewBody('Age', contents[2].toString()),
             Divider(
               thickness: 0.8,
             ),
-            previewBody('Major', contents[3]),
+            previewBody('Profession', contents[3]),
             Divider(
               thickness: 0.8,
             ),
-            previewBody('Bio', contents[4]),
+            previewBody('Major', contents[4]),
+            Divider(
+              thickness: 0.8,
+            ),
+            previewBody('Bio', contents[5]),
           ],
         ),
       ),
