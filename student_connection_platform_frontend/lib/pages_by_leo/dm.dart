@@ -7,6 +7,8 @@ import 'package:flutter/foundation.dart';
 import '../constants.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import 'models/account.dart';
+
 // https://flutter.dev/docs/cookbook/networking/web-sockets
 /*
   -Connect to a WebSocket server.
@@ -15,15 +17,21 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
   -Close the WebSocket connection.
 */
 
+// this widget will hold the direct message boilerplate for each match in your matchlist
 class DM extends StatefulWidget {
+  // information at your disposal from both your own account and that of the user you are
+  // direct messaging
+  final Account activeUser, otherUser;
+  DM({this.activeUser, this.otherUser});
+
   @override
   _DMState createState() => _DMState();
 }
 
 class _DMState extends State<DM> {
   TextEditingController controller;
-  IO.Socket socket;
   final String ipAddyAndPortNum = 'ws://localhost:3000'; // 192.168.1.84
+  IO.Socket socket;
 
   void connect() {
     socket = IO.io(ipAddyAndPortNum, <String, dynamic>{
@@ -35,6 +43,14 @@ class _DMState extends State<DM> {
     print(socket.connected);
 
     socket.emit('/test', 'hello there!');
+  }
+
+  // message to send to the other person by you
+  // sourceId: who's sending the message
+  // targetId: who's receiving the message
+  void sendMessage(String message, String sourceId, String targetId) {
+    socket.emit('message',
+        {'message': message, 'sourceId': sourceId, 'targetId': targetId});
   }
 
   @override
@@ -146,6 +162,7 @@ class _DMState extends State<DM> {
                               borderRadius: BorderRadius.circular(25),
                             ),
                             child: TextFormField(
+                              controller: controller,
                               maxLines: 5,
                               minLines: 1,
                               textAlignVertical: TextAlignVertical.center,
@@ -171,7 +188,14 @@ class _DMState extends State<DM> {
                           child: CircleAvatar(
                             radius: 25,
                             child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                // get account object that holds the id of the user
+                                sendMessage(
+                                    controller.text,
+                                    widget.activeUser.userID,
+                                    widget.otherUser.userID);
+                                controller.clear();
+                              },
                               icon: Icon(Icons.send),
                             ),
                           ),

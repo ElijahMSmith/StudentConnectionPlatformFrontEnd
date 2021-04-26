@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'ContactCard.dart';
 import 'models/account.dart';
 import 'package:http/http.dart' as http;
+import 'dm.dart';
 
 Account _activeUser;
 // Map<String, dynamic> matchedUser;
@@ -122,7 +123,7 @@ class _ContactsPageState extends State<ContactsPage> {
                       return AlertDialog(
                         title: const Text("Delete Confirmation"),
                         content: const Text(
-                            "Are you sure you want to delete this item?"),
+                            "Are you sure you want to unmatch this person?"),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(false),
@@ -184,8 +185,16 @@ class _ContactsPageState extends State<ContactsPage> {
                 background: Container(
                   color: Colors.red,
                 ),
-                child: ContactCard(
-                  contact: userMatches[index],
+                child: InkWell(
+                  onTap: ()
+                  {
+                    // go to dm's page
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => DM(activeUser: _activeUser, otherUser: userMatches[index])));
+                  },
+                  child: ContactCard(
+                    contact: userMatches[index],
+                  ),
                 ),
               );
             }));
