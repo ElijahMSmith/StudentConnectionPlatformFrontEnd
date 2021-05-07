@@ -48,7 +48,8 @@ class _ContactsPageState extends State<ContactsPage> {
   Widget build(BuildContext context) {
     List<Account> userMatches = _activeUser.matchedUsers;
 
-// dummy03 Dumdum1!
+// dummy04 Dumdum1!
+// dummy05 Dumdum1!
     return Scaffold(
         appBar: AppBar(
           title: Column(
@@ -136,50 +137,6 @@ class _ContactsPageState extends State<ContactsPage> {
                       );
                     },
                   );
-
-                  // switch (direction)
-                  // {
-                  //   case DismissDirection.startToEnd:
-                  //   case DismissDirection.endToStart:
-                  //     await showDialog(
-                  //       context: context,
-                  //       builder: (BuildContext context)
-                  //       {
-                  //         return AlertDialog(
-                  //           content: Text("Are you sure you want to delete this contact? :("),
-                  //           actions: [
-                  //             TextButton(child: Text('No'), onPressed: ()
-                  //             {
-                  //               Navigator.of(context).pop(false);
-                  //               // because of async and await, this print statement will only
-                  //               // execute once the alert dialog above is closed by the user
-                  //               print('alert dialog closed');
-                  //               setState(() {
-                  //                 didDelete = false;
-                  //               });
-                  //             }),
-                  //             TextButton(child: Text('Yes'), onPressed: ()
-                  //             {
-                  //               ChatModel deletedModel = contacts[index];
-                  //               // deletes the user tapped
-                  //               setState(()
-                  //               {
-                  //                 // contacts.removeAt(index);
-                  //                 didDelete = true;
-                  //               });
-                  //               Navigator.of(context).pop(true);
-                  //               // Then show a snackbar.
-                  //               ScaffoldMessenger.of(context)
-                  //               .showSnackBar(SnackBar(content: Text("you unmatched with ${deletedModel.name}")));
-                  //             }),
-                  //           ],
-                  //         );
-                  //       },
-                  //     );
-                  //     return didDelete;
-                  //   default:
-                  //     return false;
-                  // }
                 },
                 // show a red background as the item is swiped away
                 background: Container(
@@ -188,6 +145,9 @@ class _ContactsPageState extends State<ContactsPage> {
                 child: InkWell(
                   onTap: ()
                   {
+                    // Connect to a WebSocket server
+                    // don't pass the websocket channel down this widget. Instead, declare and initialze
+                    // it inside.
                     // go to dm's page
                     Navigator.push(
                         context, MaterialPageRoute(builder: (context) => DM(activeUser: _activeUser, otherUser: userMatches[index])));

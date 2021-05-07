@@ -28,11 +28,6 @@ class _NavigationHelperWidgetState extends State<NavigationHelperWidget>
   final List<Widget> pages =
   [
     PostPage(),
-    // Connect to a WebSocket server
-    // don't pass the websocket channel down this widget. Instead, declare and initialze
-    // it inside
-    // DM(),
-
     ContactsPage(_userAccount),
     MatchMaker(_userAccount),
     ProfilePage(_userAccount),
