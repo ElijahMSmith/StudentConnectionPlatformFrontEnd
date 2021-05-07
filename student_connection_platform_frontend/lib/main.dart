@@ -11,6 +11,14 @@ final String appName = "NameTBD";
 // Will be updated with filled version when signin or signup finishes
 Account _userAccount = Account.empty();
 
+
+/*
+two accounts to use for testing chat functionality
+dummy04 Dumdum1!
+dummy05 Dumdum1!
+*/
+
+
 void main()
 {
   runApp(AppHome());

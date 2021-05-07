@@ -31,7 +31,8 @@ class DM extends StatefulWidget {
 
 class _DMState extends State<DM> {
   var controller = TextEditingController();
-  final String ipAddyAndPortNum = 'ws://localhost:3000'; // 192.168.1.84
+  // final String ipAddyAndPortNum = 'ws://rruiz.dev:5000'; // 192.168.1.84
+  final String ipAddyAndPortNum = 'http://192.168.1.84:5000'; // 192.168.1.84
   IO.Socket socket;
   List<MessageModel> messages = [];
   DateTime now = DateTime.now();
@@ -39,19 +40,29 @@ class _DMState extends State<DM> {
   void connect() {
     socket = IO.io(ipAddyAndPortNum, <String, dynamic>{
       'transports': ['websocket'],
-      'autoConnect': false,
+      // 'autoConnect': false,
     });
-    socket.connect();
-    socket.onConnect((data) {
-      print('connected');
-      socket.on('message', (msg) {
-        print(msg);
-        setMessage('destination', msg['message']);
-      });
-    });
-    print(socket.connected);
 
-    socket.emit('/test', 'hello there!');
+    socket.on('connect', (_) {
+      print('connected');
+      socket.emit('msg', 'test');
+    });
+    socket.on('event', (data) => print(data));
+    socket.on('disconnect', (_) => print('disconnect'));
+    socket.on('fromServer', (_) => print(_));
+
+    // socket.connect();
+    // socket.onConnect((data) {
+    //   print('connected');
+    //   socket.on('message', (msg) {
+    //     print(msg);
+    //     setMessage('destination', msg['message']);
+    //   });
+    // });
+
+    // print(socket.connected);
+
+    // socket.emit('/test', 'hello there!');
   }
 
   // message to send to the other person by you
@@ -99,14 +110,17 @@ class _DMState extends State<DM> {
                         if (messages[index].type == 'source') {
                           return OwnMessageBubble(
                             message: messages[index].message,
-                            time: now.hour.toString() + ":"+now.minute.toString(),
+                            time: now.hour.toString() +
+                                ":" +
+                                now.minute.toString(),
                           );
                         }
 
                         // the other person's will be aligned to the left of the screen
                         return ReplyBubble(
                           message: messages[index].message,
-                          time: now.hour.toString() + ":"+now.minute.toString(),
+                          time:
+                              now.hour.toString() + ":" + now.minute.toString(),
                         );
                       },
                     ),
