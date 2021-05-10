@@ -43,24 +43,36 @@ class _DMState extends State<DM> {
       // 'autoConnect': false,
     });
 
-    socket.on('connect', (_) {
-      print('connected');
-      socket.emit('msg', 'test');
-    });
-    socket.on('event', (data) => print(data));
-    socket.on('disconnect', (_) => print('disconnect'));
-    socket.on('fromServer', (_) => print(_));
+    socket.connect();
+    // socket.on('connect', (msg) {
+    //   print('connected to socket');
 
-    // socket.connect();
-    // socket.onConnect((data) {
-    //   print('connected');
-    //   socket.on('message', (msg) {
-    //     print(msg);
-    //     setMessage('destination', msg['message']);
-    //   });
+    //   // message sent to you from the other person
+    //   setMessage('destination', msg['message']);
+    //   socket.emit('msg', 'test');
     // });
 
+    socket.onConnect((data) {
+      print('connected to socket');
+
+      socket.on('message', (msg) {
+        print(msg);
+        print('receiving message from the other user');
+        setMessage('destination', msg['message']);
+      });
+    });
+    // socket.on('message', (msg) {
+    //     print(msg);
+    //     print('receiving message from the other user');
+    //     setMessage('destination', msg['message']);
+    //   });
+    socket.on('event', (data) => print(data));
+    socket.on('disconnect', (_) => print('disconnected'));
+    socket.on('fromServer', (_) => print(_));
+
     // print(socket.connected);
+
+    socket.emit('signin', widget.activeUser.userID);
 
     // socket.emit('/test', 'hello there!');
   }
@@ -70,6 +82,7 @@ class _DMState extends State<DM> {
   // targetId: who's receiving the message
   void sendMessage(String message, String sourceId, String targetId) {
     setMessage('source', message);
+
     socket.emit('message',
         {'message': message, 'sourceId': sourceId, 'targetId': targetId});
   }
@@ -108,6 +121,7 @@ class _DMState extends State<DM> {
                       itemBuilder: (context, index) {
                         // your own message will be aligned to the right of the screen
                         if (messages[index].type == 'source') {
+                          print(messages.length);
                           return OwnMessageBubble(
                             message: messages[index].message,
                             time: now.hour.toString() +
@@ -196,6 +210,11 @@ class _DMState extends State<DM> {
   @override
   void dispose() {
     super.dispose();
+    controller.dispose();
+
+    // socket.close() gave an error, so I commented it out
+    socket.dispose();
+    // socket.disconnect();
   }
 }
 
