@@ -56,9 +56,15 @@ class _DMState extends State<DM> {
       print('connected to socket');
 
       socket.on('message', (msg) {
-        print(msg);
-        print('receiving message from the other user');
-        setMessage('destination', msg['message']);
+        //// json map => map<string,string>
+        print(msg.runtimeType);
+        print('received message from the other user');
+        // setMessage('destination', msg['message']);
+
+        for (var obj in msg) {
+          print(obj.runtimeType);
+          setMessage('destination', obj['message']);
+        }
       });
     });
     // socket.on('message', (msg) {
@@ -72,6 +78,7 @@ class _DMState extends State<DM> {
 
     // print(socket.connected);
 
+    // tell the socket server that this user has signed in
     socket.emit('signin', widget.activeUser.userID);
 
     // socket.emit('/test', 'hello there!');
@@ -211,6 +218,8 @@ class _DMState extends State<DM> {
   void dispose() {
     super.dispose();
     controller.dispose();
+    print('left the dm chat');
+    socket.emit('signedout', widget.activeUser.userID);
 
     // socket.close() gave an error, so I commented it out
     socket.dispose();

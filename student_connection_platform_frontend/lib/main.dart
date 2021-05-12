@@ -14,8 +14,8 @@ Account _userAccount = Account.empty();
 
 /*
 two accounts to use for testing chat functionality
-// dummy04 Dumdum1!
-// dummy05 Dumdum1!
+dummy04 Dumdum1!
+dummy05 Dumdum1!
 */
 
 
