@@ -46,7 +46,7 @@ class AppHome extends StatelessWidget
           ),
           initialRoute: SigninForm.routeID,
           routes: {
-            //use static strings for the route id as a way to avoid typos
+            // use static strings for the route id as a way to avoid typos
             SigninForm.routeID: (context) => SigninForm(appName, this),
             SignupForm.routeID: (context) => SignupForm(appName, this),
             NavigationHelperWidget.routeID: (context) =>
