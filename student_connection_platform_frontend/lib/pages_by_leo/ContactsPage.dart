@@ -47,9 +47,6 @@ class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
     List<Account> userMatches = _activeUser.matchedUsers;
-
-// dummy04 Dumdum1!
-// dummy05 Dumdum1!
     return Scaffold(
         appBar: AppBar(
           title: Column(

@@ -35,7 +35,6 @@ class _DMState extends State<DM> {
   final String ipAddyAndPortNum = 'http://192.168.1.84:5000'; // 192.168.1.84
   IO.Socket socket;
   List<MessageModel> messages = [];
-  // DateTime now = DateTime.now();
   ScrollController sc = ScrollController();
 
   void connect() {
@@ -71,12 +70,8 @@ class _DMState extends State<DM> {
     socket.on('disconnect', (_) => print('disconnected'));
     socket.on('fromServer', (_) => print(_));
 
-    // print(socket.connected);
-
     // tell the socket server that this user has signed in
     socket.emit('signin', widget.activeUser.userID);
-
-    // socket.emit('/test', 'hello there!');
   }
 
   // message to send to the other person by you
@@ -116,131 +111,132 @@ class _DMState extends State<DM> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
-        // background image for dms
-        Image.asset('assets/images/baby_yoda.jpg'),
-        Scaffold(
-          backgroundColor: Colors.blueGrey,
-          body: Column(
-            children: [
-              // messages from both yourself and the other person will be here
-              Container(
-                height: MediaQuery.of(context).size.height - 110,
-                child: ListView.builder(
-                  controller: sc,
-                  itemCount: messages.length + 1,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    // offset for the most recent message to be
-                    // visible without manually scrolling up to see it
-                    if (index == messages.length) {
-                      return Container(
-                        height: 70,
-                      );
-                    }
+        children: [
+    // background image for dms
+    Image.asset('assets/images/baby_yoda.jpg'),
+    Scaffold(
+      backgroundColor: Colors.blueGrey,
+      body: SingleChildScrollView(
+              child: Column(
+          children: [
+            // messages from both yourself and the other person will be here
+            Container(
+              height: MediaQuery.of(context).size.height - 110,
+              child: ListView.builder(
+                controller: sc,
+                itemCount: messages.length + 1,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  // offset for the most recent message to be
+                  // visible without manually scrolling up to see it
+                  if (index == messages.length) {
+                    return Container(
+                      height: 60,
+                    );
+                  }
 
-                    // your own message will be aligned to the right of the screen
-                    if (messages[index].type == 'source') {
-                      print(messages.length);
-                      return OwnMessageBubble(
-                        message: messages[index].message,
-                        time: messages[index].time,
-                      );
-                    }
-
-                    // the other person's will be aligned to the left of the screen
-                    return ReplyBubble(
+                  // your own message will be aligned to the right of the screen
+                  if (messages[index].type == 'source') {
+                    print(messages.length);
+                    return OwnMessageBubble(
                       message: messages[index].message,
                       time: messages[index].time,
                     );
-                  },
-                ),
-              ),
+                  }
 
-              Align(
-                alignment: Alignment.bottomCenter,
-                // row will be at the bottom of the screen
-                child: Container(
-                  height: 70,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width - 55,
-                            child: Card(
-                              margin: EdgeInsets.only(
-                                left: 2,
-                                right: 2,
-                                bottom: 8,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: TextFormField(
-                                controller: controller,
-                                maxLines: 5,
-                                minLines: 1,
-                                textAlignVertical: TextAlignVertical.center,
-                                keyboardType: TextInputType.multiline,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'Please type a message',
-                                  prefixIcon: IconButton(
-                                    icon: Icon(
-                                      Icons.emoji_emotions,
-                                    ),
-                                    onPressed: () {
-                                      print('pick an emoji');
-                                    },
+                  // the other person's will be aligned to the left of the screen
+                  return ReplyBubble(
+                    message: messages[index].message ?? 'null message',
+                    time: messages[index].time ?? 'null time',
+                  );
+                },
+              ),
+            ),
+
+            Align(
+              alignment: Alignment.bottomCenter,
+              // row will be at the bottom of the screen
+              child: Container(
+                height: 70,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width - 55,
+                          child: Card(
+                            margin: EdgeInsets.only(
+                              left: 2,
+                              right: 2,
+                              bottom: 8,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: TextFormField(
+                              controller: controller,
+                              maxLines: 5,
+                              minLines: 1,
+                              textAlignVertical: TextAlignVertical.center,
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Please type a message',
+                                prefixIcon: IconButton(
+                                  icon: Icon(
+                                    Icons.emoji_emotions,
                                   ),
-                                  contentPadding: EdgeInsets.all(5),
+                                  onPressed: () {
+                                    print('pick an emoji');
+                                  },
                                 ),
+                                contentPadding: EdgeInsets.all(5),
                               ),
                             ),
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: 8.0, right: 2),
-                            child: CircleAvatar(
-                              radius: 25,
-                              child: IconButton(
-                                onPressed: () {
-                                  if (controller.text.isEmpty) {
-                                    print('cannot send blank text');
-                                    return;
-                                  }
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(bottom: 8.0, right: 2),
+                          child: CircleAvatar(
+                            radius: 25,
+                            child: IconButton(
+                              onPressed: () {
+                                if (controller.text.isEmpty) {
+                                  print('cannot send blank text');
+                                  return;
+                                }
 
-                                  scrollToBottom();
-                                  // get account object that holds the id of the user
-                                  sendMessage(
-                                      controller.text,
-                                      widget.activeUser.userID,
-                                      widget.otherUser.userID);
-                                  controller.clear();
-                                },
-                                icon: Icon(Icons.send),
-                              ),
+                                scrollToBottom();
+                                // get account object that holds the id of the user
+                                sendMessage(
+                                    controller.text,
+                                    widget.activeUser.userID,
+                                    widget.otherUser.userID);
+                                controller.clear();
+                              },
+                              icon: Icon(Icons.send),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-          // This trailing comma makes auto-formatting nicer for build methods.
+            ),
+          ],
         ),
-      ],
-    );
+      ),
+      // This trailing comma makes auto-formatting nicer for build methods.
+    ),
+        ],
+      );
   }
 
   @override
-  void dispose()
-  {
+  void dispose() {
     super.dispose();
     controller.dispose();
     sc.dispose();
