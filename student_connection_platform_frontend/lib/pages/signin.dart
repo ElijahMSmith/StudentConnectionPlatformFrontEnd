@@ -45,11 +45,11 @@ class _SigninFormState extends State<SigninForm> {
   _getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     _storeLoginInfo = prefs.getBool("storeLoginInfo") ?? false;
-    print("SP loaded store as $_storeLoginInfo\n");
+    print("Loaded storeLoginInfo as $_storeLoginInfo\n");
     if (_storeLoginInfo) {
       setState(() {
-        _username = prefs.getString("usernameOrEmail");
-        _password = prefs.getString("password");
+        _username = prefs.getString("storedUsername") ?? "";
+        print("Loaded username as $_username\n");
       });
     }
   }
@@ -105,8 +105,10 @@ class _SigninFormState extends State<SigninForm> {
           fontSize: 16.0);
 
       _homeController.updateAccount(user);
+      _password = "";
 
       Navigator.pushNamed(context, NavigationHelperWidget.routeID);
+      _loginAttempts = 0;
 
       return;
     } else if (response.statusCode == 401) {
@@ -183,6 +185,7 @@ class _SigninFormState extends State<SigninForm> {
                 // Username or email field - will validate against database
                 TextFormField(
                   textInputAction: TextInputAction.next,
+                  controller: new TextEditingController(text: _username),
                   validator: (value) {
                     if (value.isEmpty) return 'Please enter your username';
                     return null;
@@ -271,8 +274,7 @@ class _SigninFormState extends State<SigninForm> {
                       if (!valid) return;
 
                       setState(() {
-                        prefs.setString("username", _username);
-                        prefs.setString("password", _password);
+                        prefs.setString("storedUsername", _username);
 
                         _attemptSignin();
                       });

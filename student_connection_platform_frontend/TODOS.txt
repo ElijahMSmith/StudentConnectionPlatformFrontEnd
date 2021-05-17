@@ -1,4 +1,9 @@
 TODOS:
+- How do we store in SharedPreferences (what specific format)?
+- Messages sent without recipient will get put in backlog for one specific user object
+- When a user connects through login, we can pull all those things in the backlog, parse them, then delete the ids of the messages we successfully parsed (send a call back to delete at the end)
+- All messages parsed from backlog and received directly from websocket get saved in SharedPreferences
+- Each message object in the backlog will have a senderID, timestamp, message, and index (which is what we will send back for identifying what to delete)
 
 - Matchmaking
 
