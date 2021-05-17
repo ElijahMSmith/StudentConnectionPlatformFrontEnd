@@ -1,14 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'ContactCard.dart';
 import 'models/account.dart';
-import 'package:http/http.dart' as http;
 import 'dm.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 Account _activeUser;
-
-// Map<String, dynamic> matchedUser;
 
 class ContactsPage extends StatefulWidget {
   ContactsPage(Account activeUser) {
@@ -31,7 +26,7 @@ class _ContactsPageState extends State<ContactsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Select Contact",
+                "Pick a match to chat with",
                 style: TextStyle(
                   fontSize: 19,
                   fontWeight: FontWeight.bold,

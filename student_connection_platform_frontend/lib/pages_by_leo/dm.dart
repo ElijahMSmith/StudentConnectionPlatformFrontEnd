@@ -1,14 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/OwnMessageBubble.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/reply_message_bubble.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:flutter/foundation.dart';
-import '../constants.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import 'models/MessageModel.dart';
 import 'models/account.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // https://flutter.dev/docs/cookbook/networking/web-sockets
 /*
@@ -18,7 +16,11 @@ import 'models/account.dart';
   -Close the WebSocket connection.
 */
 
-// this widget will hold the direct message boilerplate for each match in your matchlist
+enum Options {
+  CLEAR_MESSAGES,
+}
+
+/// this widget will hold the direct message boilerplate for each match in your matchlist
 class DM extends StatefulWidget {
   // information at your disposal from both your own account and that of the user you are
   // direct messaging
@@ -40,6 +42,8 @@ class _DMState extends State<DM> {
   List<MessageModel> messages = [];
   IO.Socket socket;
   final String ipAddyAndPortNum = 'http://192.168.1.84:5000';
+  SharedPreferences sp;
+  Options options;
 
   // message to send to the other person by you
   // sourceId: who's sending the message
@@ -60,6 +64,7 @@ class _DMState extends State<DM> {
         // get the hours and the minutes
         time: DateTime.now().toString().substring(10, 16));
     messages.add(msgModel);
+    saveListOfMessages();
     setState(() {});
   }
 
@@ -70,7 +75,6 @@ class _DMState extends State<DM> {
   }
 
   void connect() {
-    print('getting data');
     // tell the socket server that this user has signed in
     socket = IO.io(ipAddyAndPortNum, <String, dynamic>{
       'transports': ['websocket'],
@@ -95,8 +99,49 @@ class _DMState extends State<DM> {
     socket.on('disconnect', (_) => print('disconnected'));
   }
 
+  void saveListOfMessages() {
+    List<String> spList = messages
+        .map((MessageModel message) => json.encode(message.toMap()))
+        .toList();
+    // concatenated unique key of the active user and the other user
+    String uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
+    sp.setStringList(uniqueKey, spList);
+  }
+
+  void loadListOfMessages() {
+    String uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
+    List<String> spList = sp.getStringList(uniqueKey);
+    messages = spList
+        .map((String message) => MessageModel.fromMap(json.decode(message)))
+        .toList();
+    setState(() {});
+  }
+
+  void initSharedPreferences() async {
+    sp = await SharedPreferences.getInstance();
+    String uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
+    // necessary key check or else console throws an error
+    if (sp.containsKey(uniqueKey)) {
+      loadListOfMessages();
+    }
+  }
+
+  /// clears all messages between you and the other user
+  void clearMessages() {
+    String uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
+    if (sp.containsKey(uniqueKey)) {
+      sp.remove(uniqueKey);
+    }
+
+    messages.clear();
+    setState(() {});
+  }
+
   @override
   void initState() {
+    print('entering chat with ${widget.otherUser.name}');
+    initSharedPreferences();
+    print('there are ${messages.length} messages in the chat');
     super.initState();
     connect();
   }
@@ -109,6 +154,103 @@ class _DMState extends State<DM> {
         Image.asset('assets/images/baby_yoda.jpg'),
         Scaffold(
           backgroundColor: Colors.blueGrey,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60),
+            child: AppBar(
+              leadingWidth: 70,
+              titleSpacing: 0,
+              leading: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.arrow_back,
+                      size: 24,
+                    ),
+                    CircleAvatar(
+                      child: Image.asset(
+                        'assets/images/baby_yoda.jpg',
+                        color: Colors.white,
+                        height: 36,
+                        width: 36,
+                      ),
+                      radius: 20,
+                      backgroundColor: Colors.blueGrey,
+                    ),
+                  ],
+                ),
+              ),
+              title: InkWell(
+                onTap: () {},
+                child: Container(
+                  margin: EdgeInsets.all(6),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.otherUser.name,
+                        style: TextStyle(
+                          fontSize: 18.5,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "last seen today at 12:05",
+                        style: TextStyle(
+                          fontSize: 13,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                IconButton(icon: Icon(Icons.videocam), onPressed: () {}),
+                IconButton(icon: Icon(Icons.call), onPressed: () {}),
+                PopupMenuButton<Options>(
+                  padding: EdgeInsets.all(0),
+                  onSelected: (value) {
+                    switch (value) {
+                      case Options.CLEAR_MESSAGES:
+                        clearMessages();
+                        break;
+                    }
+                  },
+                  itemBuilder: (BuildContext contesxt) {
+                    return [
+                      PopupMenuItem(
+                        child: Text("Clear all messages"),
+                        value: Options.CLEAR_MESSAGES,
+                      ),
+                      // PopupMenuItem(
+                      //   child: Text("View Contact"),
+                      //   value: "View Contact",
+                      // ),
+                      // PopupMenuItem(
+                      //   child: Text("Media, links, and docs"),
+                      //   value: "Media, links, and docs",
+                      // ),
+                      // PopupMenuItem(
+                      //   child: Text("Search"),
+                      //   value: "Search",
+                      // ),
+                      // PopupMenuItem(
+                      //   child: Text("Mute Notification"),
+                      //   value: "Mute Notification",
+                      // ),
+                      // PopupMenuItem(
+                      //   child: Text("Wallpaper"),
+                      //   value: "Wallpaper",
+                      // ),
+                    ];
+                  },
+                ),
+              ],
+            ),
+          ),
           body: SingleChildScrollView(
             child: Column(
               children: [
