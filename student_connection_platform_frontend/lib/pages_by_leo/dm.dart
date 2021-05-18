@@ -46,15 +46,15 @@ class _DMState extends State<DM> {
   Options options;
 
   // message to send to the other person by you
-  // sourceId: who's sending the message
+  // senderID: who's sending the message
   // targetId: who's receiving the message
-  void sendMessage(String message, String sourceId, String targetId) {
+  void sendMessage(String message, String senderID, String targetId) {
     // add to list of messages to display on screen
     setMessage('source', message);
 
     // send to the socket server so that the other user can receive it
     socket.emit('message',
-        {'message': message, 'sourceId': sourceId, 'targetId': targetId});
+        {'message': message, 'senderID': senderID, 'targetId': targetId});
   }
 
   void setMessage(String type, String message) {
@@ -80,7 +80,7 @@ class _DMState extends State<DM> {
       'transports': ['websocket'],
       // 'autoConnect': false,
     });
-    socket.emit('signin', widget.activeUser.userID);
+    socket.emit('signin', [widget.activeUser.userID, widget.otherUser.userID]);
 
     socket.connect();
     print('you have signed in to your account');
