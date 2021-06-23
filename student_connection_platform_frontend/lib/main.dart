@@ -13,9 +13,10 @@ Account _userAccount = Account.empty();
 
 
 /*
-two accounts to use for testing chat functionality
+three accounts to use for testing chat functionality
 dummy04 Dumdum1!
 dummy05 Dumdum1!
+dummy06 Dumdum1!
 */
 
 void main()
@@ -37,19 +38,20 @@ class AppHome extends StatelessWidget
     // of the tree in order for this line: final users = Provider.of<Users>(context).users;
     // to work.
     return ChangeNotifierProvider.value(
-      value: MatchMakerStack(),
-      child: MaterialApp(
-          title: appName,
-          theme: ThemeData(
-            primarySwatch: Colors.teal,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
+      value:MatchMakerStack(),
+      child:MaterialApp(
+          title:appName,
+          theme:ThemeData(
+            primarySwatch:Colors.teal,
+            visualDensity:VisualDensity.adaptivePlatformDensity,
           ),
-          initialRoute: SigninForm.routeID,
-          routes: {
+          initialRoute:SigninForm.routeID,
+          routes:
+        {
             // use static strings for the route id as a way to avoid typos
-            SigninForm.routeID: (context) => SigninForm(appName, this),
-            SignupForm.routeID: (context) => SignupForm(appName, this),
-            NavigationHelperWidget.routeID: (context) =>
+            SigninForm.routeID:(context) => SigninForm(appName, this),
+            SignupForm.routeID:(context) => SignupForm(appName, this),
+            NavigationHelperWidget.routeID:(context) =>
                 NavigationHelperWidget(_userAccount),
           }),
     );

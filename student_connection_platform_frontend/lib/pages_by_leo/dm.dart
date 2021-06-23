@@ -41,7 +41,8 @@ class _DMState extends State<DM> {
 
   List<MessageModel> messages = [];
   IO.Socket socket;
-  final String ipAddyAndPortNum = 'http://192.168.1.84:5000';
+  // final String ipAddyAndPortNum = 'http://192.168.1.84:5000';
+  final String ipAddyAndPortNum = 'https://t3-chat.rruiz.dev';
   SharedPreferences sp;
   Options options;
 
