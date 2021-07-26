@@ -6,7 +6,7 @@ import 'pages/signin.dart';
 import 'pages/signup.dart';
 import 'pages_by_leo/models/account.dart';
 
-final String appName = "NameTBD";
+final String appName = "StuConn";
 
 // Will be updated with filled version when signin or signup finishes
 Account _userAccount = Account.empty();
