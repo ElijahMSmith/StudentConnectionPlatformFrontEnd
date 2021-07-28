@@ -33,23 +33,34 @@ class _ProfilePageState extends State<ProfilePage> {
     b.writeAll(l);
   }
 
-  PickedFile imageFile;
-  Image loadedImg;
+  PickedFile pickedFile;
+  Future<PickedFile> willPickFile;
+  Image imageFromPrefs;
   // image picker instance
-  final ImagePicker picker = ImagePicker();
+  final ImagePicker imagePicker = ImagePicker();
   List<TextEditingController> controllers;
   String emptyError;
   String bioError;
   var formKey = GlobalKey<FormState>();
 
   void loadImgFromPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final imageKeyValue = prefs.getString(SaveUtility.IMG_KEY);
-    if (imageKeyValue != null) {
-      final imageString = await SaveUtility.getImageFromPrefs();
-      setState(() {
-        loadedImg = SaveUtility.getImageFromBase64String(imageString);
-      });
+    await SaveUtility.getImageFromPrefs().then((String image) {
+      if (image == null) {
+        print("image doesn't exist");
+        return;
+      }
+      imageFromPrefs = SaveUtility.getImageFromBase64String(image);
+      setState(() {});
+    });
+    // print('imageFromPrefs is null?: ${imageFromPrefs == null}');
+    // print('imageFromPrefs: $imageFromPrefs');
+  }
+
+  void pickImageFromGallery(ImageSource source) {
+    willPickFile = imagePicker.getImage(source: source);
+    setState(() {});
+    if (willPickFile != null) {
+      print('willPickFile: $willPickFile');
     }
   }
 
@@ -57,17 +68,18 @@ class _ProfilePageState extends State<ProfilePage> {
   // this has to be awaited because we don't know when the user will capture
   // the photo
   void savePhoto(ImageSource source) async {
-    final pickedFile = await picker.getImage(source: source);
-    if (pickedFile == null) {
+    final getImage = await imagePicker.getImage(source: source);
+    if (getImage == null) {
       print('error picking image');
       return;
     }
     setState(() {
-      imageFile = pickedFile;
+      pickedFile = getImage;
     });
     // save image to prefs
-    SaveUtility.saveImageToPreferences(
-        SaveUtility.base64String(File(imageFile.path).readAsBytesSync()));
+    var didSave = await SaveUtility.saveImageToPreferences(
+        SaveUtility.base64String(File(pickedFile.path).readAsBytesSync()));
+    print('did save picked image file: $didSave');
   }
 
   String emptyValidator(String field) {
@@ -173,14 +185,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   label: Text('Camera'),
                   onPressed: () {
                     // taken from the camera
-                    savePhoto(ImageSource.camera);
+                    // savePhoto(ImageSource.camera);
+                    print(
+                        'camera temporarily not working for some unknown reason');
                   },
                   icon: Icon(Icons.camera),
                 ),
                 ElevatedButton.icon(
                   onPressed: () {
                     // taken from the camera gallery
-                    savePhoto(ImageSource.gallery);
+                    // savePhoto(ImageSource.gallery);
+                    pickImageFromGallery(ImageSource.gallery);
+                    // imageFromPrefs = null;
                   },
                   icon: Icon(Icons.image),
                   label: Text('Gallery'),
@@ -192,14 +208,50 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     }
 
+    Widget profilePic({@required double radius}) {
+      return FutureBuilder<PickedFile>(
+        future: willPickFile,
+        builder: (BuildContext context, AsyncSnapshot<PickedFile> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            // save image to prefs
+            var didSave = SaveUtility.saveImageToPreferences(
+                SaveUtility.base64String(
+                    File(snapshot.data.path).readAsBytesSync()));
+            print("didSave ${Future.value(didSave)}");
+
+            return CircleAvatar(
+                backgroundImage: (snapshot.data == null)
+                    ? AssetImage('assets/images/baby_yoda.jpg')
+                    : FileImage(File(snapshot.data.path)),
+                radius: radius);
+          }
+
+          // if (snapshot.error != null) {
+          //   return CircleAvatar(
+          //     backgroundImage: (snapshot.data == null)
+          //         ? AssetImage('assets/images/baby_yoda.jpg')
+          //         : FileImage(
+          //             File(snapshot.data.path),
+          //           ),
+          //     radius: 40,
+          //   );
+          // }
+
+          // get image from last time
+          return CircleAvatar(
+            backgroundImage: (imageFromPrefs == null)
+                ? AssetImage('assets/images/anakin.png')
+                : imageFromPrefs.image,
+            radius: radius,
+          );
+        },
+      );
+    }
+
     Widget imageProfile() {
       return Stack(
         children: [
-          CircleAvatar(
-              backgroundImage: imageFile == null
-                  ? AssetImage('assets/images/baby_yoda.jpg')
-                  : loadedImg?.image,
-              radius: 40),
+          profilePic(radius: 50),
           Positioned(
               bottom: 0.0,
               right: 25.0,
@@ -253,17 +305,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PreviewProfile(
-                                    userAccount: _userAccount,
-                                    contents: [
-                                      for (int i = 0; i < 9; ++i)
-                                        controllers[i].text
-                                    ],
-                                    image: imageFile == null
-                                        ? AssetImage(
-                                            'assets/images/baby_yoda.jpg')
-                                        // : FileImage(
-                                        //     File(imageFile.path),
-                                        : loadedImg),
+                                  userAccount: _userAccount,
+                                  contents: [
+                                    for (int i = 0; i < 9; ++i)
+                                      controllers[i].text
+                                  ],
+                                  profilePic: profilePic(radius: 70),
+                                ),
                               ),
                             );
                           },

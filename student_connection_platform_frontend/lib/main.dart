@@ -41,10 +41,12 @@ class AppHome extends StatelessWidget
       value:MatchMakerStack(),
       child:MaterialApp(
           title:appName,
-          theme:ThemeData(
-            primarySwatch:Colors.teal,
-            visualDensity:VisualDensity.adaptivePlatformDensity,
-          ),
+          // theme:ThemeData(
+          //   primarySwatch:Colors.teal,
+          //   visualDensity:VisualDensity.adaptivePlatformDensity,
+          // ),
+          // TODO give the user to toggle between light and dark theme in settings
+          theme: ThemeData.dark(),
           initialRoute:SigninForm.routeID,
           routes:
         {

@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import './models/account.dart';
 import 'models/account.dart';
 
-class PreviewProfile extends StatelessWidget
-{
+class PreviewProfile extends StatelessWidget {
   // contents will be from the profile page
   final List<String> contents;
-  final ImageProvider image;
+  final Widget profilePic;
   final Account userAccount;
 
   PreviewProfile(
       {@required this.contents,
-      @required this.image,
+      @required this.profilePic,
       @required this.userAccount});
 
   @override
@@ -20,7 +19,7 @@ class PreviewProfile extends StatelessWidget
       body: SafeArea(
         child: ListView(
           children: [
-            previewHeader(image),
+            previewHeader(this.profilePic),
             Divider(
               thickness: 0.8,
             ),
@@ -67,16 +66,13 @@ class PreviewProfile extends StatelessWidget
     );
   }
 
-  Widget previewHeader(ImageProvider image) {
+  Widget previewHeader(Widget profilePic) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(
-            backgroundImage: image,
-            radius: 50,
-          ),
+          profilePic,
           Text(
             userAccount.username,
             style: TextStyle(

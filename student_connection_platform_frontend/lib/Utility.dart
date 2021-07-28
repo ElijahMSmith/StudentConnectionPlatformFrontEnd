@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SaveUtility {
-  static const String IMG_KEY = "";
+  static const String IMG_KEY = "IMG_KEY";
 
   static Future<bool> saveImageToPreferences(String value) async {
     final prefs = await SharedPreferences.getInstance();
