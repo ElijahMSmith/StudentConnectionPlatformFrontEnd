@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../Utility.dart';
 import 'models/account.dart';
 
 Account _userAccount;
@@ -32,6 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   PickedFile imageFile;
+  Image loadedImg;
   // image picker instance
   final ImagePicker picker = ImagePicker();
   List<TextEditingController> controllers;
@@ -39,15 +42,32 @@ class _ProfilePageState extends State<ProfilePage> {
   String bioError;
   var formKey = GlobalKey<FormState>();
 
-  void takePhoto(ImageSource source) async {
-    // gets users taken photo
-    // this has to be awaited because we don't know when the user will capture
-    // the photo
-    final pickedFile = await picker.getImage(source: source);
+  void loadImgFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final imageKeyValue = prefs.getString(SaveUtility.IMG_KEY);
+    if (imageKeyValue != null) {
+      final imageString = await SaveUtility.getImageFromPrefs();
+      setState(() {
+        loadedImg = SaveUtility.getImageFromBase64String(imageString);
+      });
+    }
+  }
 
+  // gets users taken photo
+  // this has to be awaited because we don't know when the user will capture
+  // the photo
+  void savePhoto(ImageSource source) async {
+    final pickedFile = await picker.getImage(source: source);
+    if (pickedFile == null) {
+      print('error picking image');
+      return;
+    }
     setState(() {
       imageFile = pickedFile;
     });
+    // save image to prefs
+    SaveUtility.saveImageToPreferences(
+        SaveUtility.base64String(File(imageFile.path).readAsBytesSync()));
   }
 
   String emptyValidator(String field) {
@@ -73,6 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    loadImgFromPrefs();
 
     // list comprehension for dart language
     // if you've used python, you probably are
@@ -148,18 +169,18 @@ class _ProfilePageState extends State<ProfilePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FlatButton.icon(
+                ElevatedButton.icon(
+                  label: Text('Camera'),
                   onPressed: () {
                     // taken from the camera
-                    takePhoto(ImageSource.camera);
+                    savePhoto(ImageSource.camera);
                   },
                   icon: Icon(Icons.camera),
-                  label: Text('Camera'),
                 ),
-                FlatButton.icon(
+                ElevatedButton.icon(
                   onPressed: () {
                     // taken from the camera gallery
-                    takePhoto(ImageSource.gallery);
+                    savePhoto(ImageSource.gallery);
                   },
                   icon: Icon(Icons.image),
                   label: Text('Gallery'),
@@ -177,7 +198,7 @@ class _ProfilePageState extends State<ProfilePage> {
           CircleAvatar(
               backgroundImage: imageFile == null
                   ? AssetImage('assets/images/baby_yoda.jpg')
-                  : FileImage(File(imageFile.path)),
+                  : loadedImg?.image,
               radius: 40),
           Positioned(
               bottom: 0.0,
@@ -211,20 +232,27 @@ class _ProfilePageState extends State<ProfilePage> {
                         imageProfile(),
                         SizedBox(width: 30),
                         ElevatedButton(
-                            onPressed: () {
-                              // validate name input before continuing
-                              if (!formKey.currentState.validate()) {
-                                print(
-                                    'Please make sure all fields are valid before previewing');
-                                return;
-                              }
+                          onPressed: () {
+                            // validate name input before continuing
+                            if (!formKey.currentState.validate()) {
+                              Fluttertoast.showToast(
+                                  msg:
+                                      "Please make sure all fields are valid before previewing",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.green,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                              return;
+                            }
 
-                              setState(() {});
+                            setState(() {});
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PreviewProfile(
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PreviewProfile(
                                     userAccount: _userAccount,
                                     contents: [
                                       for (int i = 0; i < 9; ++i)
@@ -233,14 +261,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     image: imageFile == null
                                         ? AssetImage(
                                             'assets/images/baby_yoda.jpg')
-                                        : FileImage(
-                                            File(imageFile.path),
-                                          ),
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Text('Preview Profile'))
+                                        // : FileImage(
+                                        //     File(imageFile.path),
+                                        : loadedImg),
+                              ),
+                            );
+                          },
+                          child: Text('Preview Profile'),
+                        ),
                       ],
                     ),
                   ),
@@ -365,7 +393,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          // todo settings page
+                          // TODO settings page
                         },
                         icon: Icon(Icons.settings),
                         label: Text('Settings'),

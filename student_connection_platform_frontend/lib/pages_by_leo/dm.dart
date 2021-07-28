@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/OwnMessageBubble.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/reply_message_bubble.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-
 import 'models/MessageModel.dart';
 import 'models/account.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,6 +45,8 @@ class _DMState extends State<DM> {
   final String ipAddyAndPortNum = 'https://t3-chat.rruiz.dev';
   SharedPreferences sp;
   Options options;
+  FocusNode msgField;
+  bool show = false;
 
   // message to send to the other person by you
   // senderID: who's sending the message
@@ -69,8 +71,8 @@ class _DMState extends State<DM> {
     setState(() {});
   }
 
+  // scrolls the list view to the bottom of everytime a new message is sent
   void scrollToBottom({int milliseconds = 300}) {
-    // scrolls the list view to the bottom of everytime a new message is sent
     sc.animateTo(sc.position.maxScrollExtent,
         duration: Duration(milliseconds: milliseconds), curve: Curves.easeOut);
   }
@@ -92,9 +94,10 @@ class _DMState extends State<DM> {
 
         for (var obj in msg) {
           setMessage('destination', obj['message']);
-          scrollToBottom();
+          // scrollToBottom();
         }
       });
+      scrollToBottom();
     });
 
     socket.on('disconnect', (_) => print('disconnected'));
@@ -140,11 +143,31 @@ class _DMState extends State<DM> {
 
   @override
   void initState() {
-    print('entering chat with ${widget.otherUser.name}');
+    // print('entering chat with ${widget.otherUser.name}');
     initSharedPreferences();
-    print('there are ${messages.length} messages in the chat');
+    // print('there are ${messages.length} messages in the chat');
     super.initState();
     connect();
+    msgField = FocusNode();
+    msgField.addListener(() {
+      if (msgField.hasFocus) {
+        show = false;
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    sc.dispose();
+    msgField.dispose();
+
+    // print('you have signed out of your account');
+    socket.emit('signedout', widget.activeUser.userID);
+    // socket.close() gave an error, so I commented it out
+    socket.dispose();
   }
 
   @override
@@ -226,142 +249,162 @@ class _DMState extends State<DM> {
                         child: Text("Clear all messages"),
                         value: Options.CLEAR_MESSAGES,
                       ),
-                      // PopupMenuItem(
-                      //   child: Text("View Contact"),
-                      //   value: "View Contact",
-                      // ),
-                      // PopupMenuItem(
-                      //   child: Text("Media, links, and docs"),
-                      //   value: "Media, links, and docs",
-                      // ),
-                      // PopupMenuItem(
-                      //   child: Text("Search"),
-                      //   value: "Search",
-                      // ),
-                      // PopupMenuItem(
-                      //   child: Text("Mute Notification"),
-                      //   value: "Mute Notification",
-                      // ),
-                      // PopupMenuItem(
-                      //   child: Text("Wallpaper"),
-                      //   value: "Wallpaper",
-                      // ),
                     ];
                   },
                 ),
               ],
             ),
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                // messages from both yourself and the other person will be here
-                Container(
-                  height: MediaQuery.of(context).size.height - 110,
-                  child: ListView.builder(
-                    controller: sc,
-                    itemCount: messages.length + 1,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      // offset for the most recent message to be
-                      // visible without manually scrolling up to see it
-                      if (index == messages.length) {
-                        return Container(
-                          height: 60,
-                        );
-                      }
+          body: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: WillPopScope(
+              onWillPop: () {
+                if (show) {
+                  setState(() {
+                    show = false;
+                  });
+                } else {
+                  Navigator.pop(context);
+                }
+                return Future.value(false);
+              },
+              child: Column(
+                children: [
+                  // messages from both yourself and the other person will be here
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      controller: sc,
+                      itemCount: messages.length + 1,
+                      itemBuilder: (context, index) {
+                        // offset for the most recent message to be
+                        // visible without manually scrolling up to see it
+                        if (index == messages.length) {
+                          return Container(
+                            height: 35,
+                          );
+                        }
+                        // your own message will be aligned to the right of the screen
+                        if (messages[index].type == 'source') {
+                          print(messages.length);
+                          return OwnMessageBubble(
+                            message: messages[index].message,
+                            time: messages[index].time,
+                          );
+                        }
 
-                      // your own message will be aligned to the right of the screen
-                      if (messages[index].type == 'source') {
-                        print(messages.length);
-                        return OwnMessageBubble(
-                          message: messages[index].message,
-                          time: messages[index].time,
+                        // the other person's will be aligned to the left of the screen
+                        return ReplyBubble(
+                          message: messages[index].message ?? 'null message',
+                          time: messages[index].time ?? 'null time',
                         );
-                      }
-
-                      // the other person's will be aligned to the left of the screen
-                      return ReplyBubble(
-                        message: messages[index].message ?? 'null message',
-                        time: messages[index].time ?? 'null time',
-                      );
-                    },
+                      },
+                    ),
                   ),
-                ),
-
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  // row will be at the bottom of the screen
-                  child: Container(
-                    height: 70,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width - 55,
-                              child: Card(
-                                margin: EdgeInsets.only(
-                                  left: 2,
-                                  right: 2,
-                                  bottom: 8,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                                child: TextFormField(
-                                  controller: controller,
-                                  maxLines: 5,
-                                  minLines: 1,
-                                  textAlignVertical: TextAlignVertical.center,
-                                  keyboardType: TextInputType.multiline,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: 'Please type a message',
-                                    prefixIcon: IconButton(
-                                      icon: Icon(
-                                        Icons.emoji_emotions,
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    // row will be at the bottom of the screen
+                    child: Container(
+                      height: 70,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width - 60,
+                                child: Card(
+                                  margin: EdgeInsets.only(
+                                    left: 2,
+                                    right: 2,
+                                    bottom: 8,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  child: TextFormField(
+                                    autofocus: true,
+                                    focusNode: msgField,
+                                    controller: controller,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: 5,
+                                    minLines: 1,
+                                    onChanged: (value) {},
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Please type a message',
+                                      prefixIcon: IconButton(
+                                        icon: Icon(
+                                          show
+                                              ? Icons.keyboard
+                                              : Icons.emoji_emotions_outlined,
+                                        ),
+                                        onPressed: () {
+                                          if (!show) {
+                                            msgField.unfocus();
+                                            msgField.canRequestFocus = false;
+                                          }
+                                          show = !show;
+                                          print('show: $show');
+                                          setState(() {});
+                                        },
                                       ),
-                                      onPressed: () {
-                                        print('pick an emoji');
-                                      },
+                                      suffixIcon: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(Icons.attach_file),
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  context: context,
+                                                  builder: (builder) {
+                                                    return bottomSheet();
+                                                  });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      contentPadding: EdgeInsets.all(5),
                                     ),
-                                    contentPadding: EdgeInsets.all(5),
                                   ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: 8.0, right: 2),
-                              child: CircleAvatar(
-                                radius: 25,
-                                child: IconButton(
-                                  onPressed: () {
-                                    if (controller.text.isEmpty) {
-                                      print('cannot send blank text');
-                                      return;
-                                    }
-                                    scrollToBottom();
-                                    // get account object that holds the id of the user
-                                    sendMessage(
-                                        controller.text,
-                                        widget.activeUser.userID,
-                                        widget.otherUser.userID);
-                                    controller.clear();
-                                  },
-                                  icon: Icon(Icons.send),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 8.0, right: 2, left: 2),
+                                child: CircleAvatar(
+                                  radius: 25,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      if (controller.text.isEmpty) {
+                                        print('cannot send blank text');
+                                        return;
+                                      }
+                                      scrollToBottom();
+                                      // get account object that holds the id of the user
+                                      sendMessage(
+                                          controller.text,
+                                          widget.activeUser.userID,
+                                          widget.otherUser.userID);
+                                      controller.clear();
+                                    },
+                                    icon: Icon(Icons.send),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  show ? emojiSelect() : Container()
+                ],
+              ),
             ),
           ),
           // This trailing comma makes auto-formatting nicer for build methods.
@@ -370,15 +413,92 @@ class _DMState extends State<DM> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    controller.dispose();
-    sc.dispose();
+  Widget emojiSelect() {
+    return EmojiPicker(
+        rows: 4,
+        columns: 7,
+        onEmojiSelected: (emoji, category) {
+          // print(emoji);
+          controller.text = '${controller.text}${emoji.emoji}';
+          setState(() {});
+        });
+  }
 
-    print('you have signed out of your account');
-    socket.emit('signedout', widget.activeUser.userID);
-    // socket.close() gave an error, so I commented it out
-    socket.dispose();
+  Widget bottomSheet() {
+    return Container(
+      height: 278,
+      width: MediaQuery.of(context).size.width,
+      child: Card(
+        margin: const EdgeInsets.all(18.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  iconCreation(
+                      Icons.insert_drive_file, Colors.indigo, "Document"),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  iconCreation(Icons.camera_alt, Colors.pink, "Camera"),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  iconCreation(Icons.insert_photo, Colors.purple, "Gallery"),
+                ],
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  iconCreation(Icons.headset, Colors.orange, "Audio"),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  iconCreation(Icons.location_pin, Colors.teal, "Location"),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  iconCreation(Icons.person, Colors.blue, "Contact"),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget iconCreation(IconData icons, Color color, String text) {
+    return InkWell(
+      onTap: () {},
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: color,
+            child: Icon(
+              icons,
+              size: 29,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

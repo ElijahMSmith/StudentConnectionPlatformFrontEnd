@@ -65,7 +65,7 @@ class _SigninFormState extends State<SigninForm> {
       _showLoginTimeout = true;
 
       // After one minute, let them try again
-      Future.delayed(const Duration(milliseconds: 60000), () {
+      await Future.delayed(const Duration(milliseconds: 60000), () {
         setState(() {
           _showLoginTimeout = false;
           _loginAttempts = 0;

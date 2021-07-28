@@ -11,7 +11,6 @@ final String appName = "StuConn";
 // Will be updated with filled version when signin or signup finishes
 Account _userAccount = Account.empty();
 
-
 /*
 three accounts to use for testing chat functionality
 dummy04 Dumdum1!
@@ -19,6 +18,7 @@ dummy05 Dumdum1!
 dummy06 Dumdum1!
 */
 
+// app icon by eucalyp: https://www.flaticon.com/authors/eucalyp
 void main()
 {
   runApp(AppHome());

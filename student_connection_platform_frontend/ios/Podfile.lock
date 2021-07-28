@@ -1,4 +1,6 @@
 PODS:
+  - emoji_picker (0.0.3):
+    - Flutter
   - Flutter (1.0.0)
   - fluttertoast (0.0.2):
     - Flutter
@@ -14,6 +16,7 @@ PODS:
   - TOCropViewController (2.6.0)
 
 DEPENDENCIES:
+  - emoji_picker (from `.symlinks/plugins/emoji_picker/ios`)
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
@@ -26,6 +29,8 @@ SPEC REPOS:
     - TOCropViewController
 
 EXTERNAL SOURCES:
+  emoji_picker:
+    :path: ".symlinks/plugins/emoji_picker/ios"
   Flutter:
     :path: Flutter
   fluttertoast:
@@ -38,6 +43,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences/ios"
 
 SPEC CHECKSUMS:
+  emoji_picker: 0e868059aa18f9473d234f3d0701fbd4d5fd310c
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb

@@ -33,10 +33,6 @@ class UserAccounts with ChangeNotifier
   }
 }
 
-
-
-
-
 class Account
 {
   // Validation and setting values handled by forms, so leaving these public
