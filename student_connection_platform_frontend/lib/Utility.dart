@@ -31,9 +31,14 @@ class SaveUtility {
   }
 }
 
-class Style {
-  static ThemeData themeData(bool isDarkTheme) {
-    return ThemeData(primaryColor: isDarkTheme ? Colors.black : Colors.blue,
-    scaffoldBackgroundColor: isDarkTheme ? Color(0xFF222222) : Colors.white);
-  }
+class MyThemes {
+  static final darkTheme = ThemeData(
+    scaffoldBackgroundColor: Colors.grey.shade900,
+    colorScheme: ColorScheme.dark(),
+  );
+
+  static final lightTheme = ThemeData(
+    scaffoldBackgroundColor: Colors.white,
+    colorScheme: ColorScheme.light(),
+  );
 }

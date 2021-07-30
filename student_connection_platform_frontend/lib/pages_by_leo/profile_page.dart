@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/settings.dart';
 import '../Utility.dart';
 import 'models/account.dart';
 
@@ -232,17 +233,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 radius: radius);
           }
 
-          // if (snapshot.error != null) {
-          //   return CircleAvatar(
-          //     backgroundImage: (snapshot.data == null)
-          //         ? AssetImage('assets/images/baby_yoda.jpg')
-          //         : FileImage(
-          //             File(snapshot.data.path),
-          //           ),
-          //     radius: 40,
-          //   );
-          // }
-
           // get image from last time
           return CircleAvatar(
             backgroundImage: (imageFromPrefs == null)
@@ -447,7 +437,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          // TODO settings page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Settings(),
+                            ),
+                          );
                         },
                         icon: Icon(Icons.settings),
                         label: Text('Settings'),

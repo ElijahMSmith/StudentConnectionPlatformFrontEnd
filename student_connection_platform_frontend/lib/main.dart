@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:student_connection_platform_frontend/Utility.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/matchmaker_stack.dart';
+import 'package:student_connection_platform_frontend/theme_provider.dart';
 import 'navigator.dart';
 import 'pages/signin.dart';
 import 'pages/signup.dart';
@@ -19,43 +21,48 @@ dummy06 Dumdum1!
 */
 
 // app icon by eucalyp: https://www.flaticon.com/authors/eucalyp
-void main()
-{
+void main() {
   runApp(AppHome());
 }
 
-class AppHome extends StatelessWidget
-{
-  void updateAccount(Account newAccount)
-  {
+class AppHome extends StatelessWidget {
+  void updateAccount(Account newAccount) {
     _userAccount = newAccount;
   }
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     // We must have change notifier provider at the top
     // of the tree in order for this line: final users = Provider.of<Users>(context).users;
     // to work.
-    return ChangeNotifierProvider.value(
-      value:MatchMakerStack(),
-      child:MaterialApp(
-          title:appName,
-          // theme:ThemeData(
-          //   primarySwatch:Colors.teal,
-          //   visualDensity:VisualDensity.adaptivePlatformDensity,
-          // ),
-          // TODO give the user to toggle between light and dark theme in settings
-          theme: ThemeData.dark(),
-          initialRoute:SigninForm.routeID,
-          routes:
-        {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<MatchMakerStack>(
+          create: (_) => MatchMakerStack(),
+        ),
+        ChangeNotifierProvider<ThemeProvider>(
+          create: (_) => ThemeProvider(),
+        ),
+      ],
+      builder: (context, _) {
+        var themeProvider = Provider.of<ThemeProvider>(
+          context,
+        );
+        return MaterialApp(
+          title: appName,
+          themeMode: themeProvider.themeMode,
+          theme: MyThemes.lightTheme,
+          darkTheme: MyThemes.darkTheme,
+          initialRoute: SigninForm.routeID,
+          routes: {
             // use static strings for the route id as a way to avoid typos
-            SigninForm.routeID:(context) => SigninForm(appName, this),
-            SignupForm.routeID:(context) => SignupForm(appName, this),
-            NavigationHelperWidget.routeID:(context) =>
+            SigninForm.routeID: (context) => SigninForm(appName, this),
+            SignupForm.routeID: (context) => SignupForm(appName, this),
+            NavigationHelperWidget.routeID: (context) =>
                 NavigationHelperWidget(_userAccount),
-          }),
+          },
+        );
+      },
     );
   }
 }

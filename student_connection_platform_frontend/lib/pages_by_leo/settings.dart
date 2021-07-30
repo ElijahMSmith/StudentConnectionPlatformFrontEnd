@@ -13,8 +13,11 @@ class Settings extends StatelessWidget {
       body: ListView(
         children: [
           Switch.adaptive(
-              value: themeProvider.isDarkTheme, onChanged: (value) {
-                
+              value: themeProvider.isDarkTheme,
+              onChanged: (value) {
+                final localThemeProvider =
+                    Provider.of<ThemeProvider>(context, listen: false);
+                localThemeProvider.toggleTheme(value);
               }),
         ],
       ),
