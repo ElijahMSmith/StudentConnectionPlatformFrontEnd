@@ -37,6 +37,8 @@ class AppHome extends StatelessWidget {
     // to work.
     return MultiProvider(
       providers: [
+
+        // MUST BE ChangeNotifierProvider instead of Provider in order to work
         ChangeNotifierProvider<MatchMakerStack>(
           create: (_) => MatchMakerStack(),
         ),
@@ -45,7 +47,7 @@ class AppHome extends StatelessWidget {
         ),
       ],
       builder: (context, _) {
-        var themeProvider = Provider.of<ThemeProvider>(
+        final themeProvider = Provider.of<ThemeProvider>(
           context,
         );
         return MaterialApp(
