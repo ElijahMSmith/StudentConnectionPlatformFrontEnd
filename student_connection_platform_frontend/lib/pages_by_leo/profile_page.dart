@@ -217,7 +217,13 @@ class _ProfilePageState extends State<ProfilePage> {
             var didSave = SaveUtility.saveImageToPreferences(
                 SaveUtility.base64String(
                     File(snapshot.data.path).readAsBytesSync()));
-            print("didSave ${Future.value(didSave)}");
+            // debugging
+            didSave.then((didSaveValue) {
+              if (didSaveValue)
+                print('picture successfully swapped');
+              else
+                print('failed to swap picture');
+            });
 
             return CircleAvatar(
                 backgroundImage: (snapshot.data == null)
