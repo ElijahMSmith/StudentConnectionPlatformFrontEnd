@@ -4,7 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:student_connection_platform_frontend/theme_shared_prefs.dart';
 
 class ThemeProvider with ChangeNotifier {
-  ThemeMode themeMode = ThemeMode.system;
+  ThemeMode themeMode = ThemeMode.dark;
   ThemePreference themePreference = ThemePreference();
 
   // getter

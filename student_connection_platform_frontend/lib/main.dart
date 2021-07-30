@@ -37,7 +37,6 @@ class AppHome extends StatelessWidget {
     // to work.
     return MultiProvider(
       providers: [
-
         // MUST BE ChangeNotifierProvider instead of Provider in order to work
         ChangeNotifierProvider<MatchMakerStack>(
           create: (_) => MatchMakerStack(),
