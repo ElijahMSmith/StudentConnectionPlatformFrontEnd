@@ -7,12 +7,14 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    // final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
       body: ListView(
         children: [
-          SizedBox(height: 40,),
+          SizedBox(
+            height: 40,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -20,14 +22,19 @@ class Settings extends StatelessWidget {
                 'light theme/ dark theme',
                 style: TextStyle(fontSize: 15),
               ),
-              SizedBox(width: 20,),
-              Switch.adaptive(
-                  value: themeProvider.isDarkTheme,
-                  onChanged: (value) {
-                    final localThemeProvider =
-                        Provider.of<ThemeProvider>(context, listen: false);
-                    localThemeProvider.toggleTheme(value);
-                  }),
+              SizedBox(
+                width: 20,
+              ),
+              Consumer<ThemeProvider>(
+                  builder: (context, themeProvider, child) {
+                return Switch.adaptive(
+                    value: themeProvider.isDarkTheme,
+                    onChanged: (value) {
+                      final localThemeProvider =
+                          Provider.of<ThemeProvider>(context, listen: false);
+                      localThemeProvider.toggleTheme(value);
+                    });
+              }),
             ],
           )
         ],

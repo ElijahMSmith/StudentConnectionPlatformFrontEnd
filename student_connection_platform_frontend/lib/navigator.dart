@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:student_connection_platform_frontend/constants.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/match_maker.dart';
-import 'package:student_connection_platform_frontend/pages_by_leo/post_page.dart';
 import 'pages_by_leo/ContactsPage.dart';
 import 'pages_by_leo/profile_page.dart';
 import 'pages_by_leo/models/account.dart';
