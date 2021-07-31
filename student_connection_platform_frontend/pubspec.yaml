@@ -29,6 +29,9 @@ dependencies:
   fluttertoast: ^8.0.3
   jwt_decoder: ^2.0.1
   emoji_picker: ^0.1.0
+  # flutter_platform_widgets: ^1.9.5
+  adaptive_dialog: ^1.1.0
+  profanity_filter: ^2.0.0
 
 dev_dependencies:
   flutter_test:

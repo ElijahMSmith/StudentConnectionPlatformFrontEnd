@@ -25,10 +25,10 @@ class _NavigationHelperWidgetState extends State<NavigationHelperWidget> {
   int _selectedIndex = 0;
 
   final List<Widget> pages = [
-    PostPage(),
-    ContactsPage(_userAccount),
-    MatchMaker(_userAccount),
+    // PostPage(),
     ProfilePage(_userAccount),
+    MatchMaker(_userAccount),
+    ContactsPage(_userAccount),
   ];
 
   // void signIn() {

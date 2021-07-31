@@ -16,7 +16,7 @@ SharedPreferences prefs;
 AppHome _homeController;
 
 class SigninForm extends StatefulWidget {
-  static const String routeID = '/Signin';
+  static const String routeID = '/';
 
   SigninForm(String appName, AppHome homeController) {
     _appName = appName;

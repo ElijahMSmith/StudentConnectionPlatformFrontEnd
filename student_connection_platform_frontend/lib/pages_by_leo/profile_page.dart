@@ -192,6 +192,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   icon: Icon(Icons.camera),
                 ),
+                SizedBox(
+                  width: 20,
+                ),
                 ElevatedButton.icon(
                   onPressed: () {
                     // taken from the camera gallery

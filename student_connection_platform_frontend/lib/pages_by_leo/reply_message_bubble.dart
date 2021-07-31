@@ -31,6 +31,7 @@ class ReplyBubble extends StatelessWidget {
                   message,
                   style: TextStyle(
                     fontSize: 16,
+                    color: Colors.grey[900],
                   ),
                 ),
               ),

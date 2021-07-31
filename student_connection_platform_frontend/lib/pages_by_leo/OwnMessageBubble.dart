@@ -11,11 +11,11 @@ class OwnMessageBubble extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width - 45,
+          maxWidth: MediaQuery.of(context).size.width - 40,
         ),
         child: Card(
           elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           color: Color(0xffdcf8c6),
           margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
@@ -31,6 +31,7 @@ class OwnMessageBubble extends StatelessWidget {
                   message,
                   style: TextStyle(
                     fontSize: 16,
+                    color: Colors.grey[900],
                   ),
                 ),
               ),

@@ -12,13 +12,24 @@ class Settings extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          Switch.adaptive(
-              value: themeProvider.isDarkTheme,
-              onChanged: (value) {
-                final localThemeProvider =
-                    Provider.of<ThemeProvider>(context, listen: false);
-                localThemeProvider.toggleTheme(value);
-              }),
+          SizedBox(height: 40,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'light theme/ dark theme',
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(width: 20,),
+              Switch.adaptive(
+                  value: themeProvider.isDarkTheme,
+                  onChanged: (value) {
+                    final localThemeProvider =
+                        Provider.of<ThemeProvider>(context, listen: false);
+                    localThemeProvider.toggleTheme(value);
+                  }),
+            ],
+          )
         ],
       ),
     );

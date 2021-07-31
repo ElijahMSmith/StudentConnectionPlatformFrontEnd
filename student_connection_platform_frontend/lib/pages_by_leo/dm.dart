@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/OwnMessageBubble.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/reply_message_bubble.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'models/MessageModel.dart';
 import 'models/account.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:profanity_filter/profanity_filter.dart';
 
 // https://flutter.dev/docs/cookbook/networking/web-sockets
 /*
@@ -43,10 +45,15 @@ class _DMState extends State<DM> {
   IO.Socket socket;
   // final String ipAddyAndPortNum = 'http://192.168.1.84:5000';
   final String ipAddyAndPortNum = 'https://t3-chat.rruiz.dev';
+
+  //? this pattern can be built upon for filtering out more curse words and misspelled variations of curse words that aren't handled by the profanity filter package
+  final String pattern = r"([FfSs]uck)|(fu)|(fagot)|(d[iy]ke)";
   SharedPreferences sp;
   Options options;
   FocusNode msgField;
   bool show = false;
+  ProfanityFilter filter;
+  RegExp profanityRegex;
 
   // message to send to the other person by you
   // senderID: who's sending the message
@@ -147,6 +154,10 @@ class _DMState extends State<DM> {
     initSharedPreferences();
     // print('there are ${messages.length} messages in the chat');
     super.initState();
+    filter = ProfanityFilter();
+    // print('list of curse words: ${filter.wordsToFilterOutList}');
+    // print(filter.wordsToFilterOutList.length);
+    profanityRegex = RegExp(pattern, caseSensitive: false, multiLine: false);
     connect();
     msgField = FocusNode();
     msgField.addListener(() {
@@ -262,11 +273,15 @@ class _DMState extends State<DM> {
               onWillPop: () {
                 if (show) {
                   setState(() {
+                    print('wont pop');
                     show = false;
                   });
                 } else {
-                  Navigator.pop(context);
+                  print('here about to pop');
+                  Navigator.pop(context, false);
                 }
+
+                print('here i am');
                 return Future.value(false);
               },
               child: Column(
@@ -287,7 +302,7 @@ class _DMState extends State<DM> {
                         }
                         // your own message will be aligned to the right of the screen
                         if (messages[index].type == 'source') {
-                          print(messages.length);
+                          // print(messages.length);
                           return OwnMessageBubble(
                             message: messages[index].message,
                             time: messages[index].time,
@@ -384,6 +399,22 @@ class _DMState extends State<DM> {
                                         print('cannot send blank text');
                                         return;
                                       }
+                                      if (profanityRegex
+                                              .hasMatch(controller.text) ||
+                                          filter
+                                              .hasProfanity(controller.text)) {
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "Please do not type any profanity",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER,
+                                            timeInSecForIosWeb: 1,
+                                            backgroundColor: Colors.green,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0);
+                                        return;
+                                      }
+
                                       scrollToBottom();
                                       // get account object that holds the id of the user
                                       sendMessage(
