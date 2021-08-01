@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:student_connection_platform_frontend/theme_provider.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/models/theme_provider.dart';
 
 class Settings extends StatelessWidget {
   const Settings({Key key}) : super(key: key);

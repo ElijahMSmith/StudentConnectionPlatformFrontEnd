@@ -1,12 +1,10 @@
-import 'dart:io' show Platform;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_connection_platform_frontend/Utility.dart';
-import 'package:student_connection_platform_frontend/constants.dart';
-import 'package:student_connection_platform_frontend/pages_by_leo/matchmaker_stack.dart';
-import 'package:student_connection_platform_frontend/theme_provider.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/models/matchmaker_stack.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/models/theme_provider.dart';
 import 'navigator.dart';
 import 'pages/signin.dart';
 import 'pages/signup.dart';

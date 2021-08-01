@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
-import 'package:student_connection_platform_frontend/pages_by_leo/matchmaker_stack.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/models/matchmaker_stack.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_match_profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'match_maker.dart';
@@ -85,7 +85,7 @@ class _AnimatedCardState extends State<AnimatedCard>
   @override
   void didChangeDependencies() {
     width = MediaQuery.of(context).size.width;
-    // todo nice to have: try to only remove the card from the stack once the user has removed his/her finger from the screen when on drag and that the drag has been far enough to the right or left of the screen
+    // TODO nice to have: try to only remove the card from the stack once the user has removed his/her finger from the screen when on drag and that the drag has been far enough to the right or left of the screen
 
     // initialize controllers
     swipeRightController = AnimationController(
@@ -282,7 +282,7 @@ class _AnimatedCardState extends State<AnimatedCard>
                 ),
                 elevation: 3,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(10),
@@ -335,9 +335,8 @@ class _AnimatedCardState extends State<AnimatedCard>
                   ],
                 ),
               ),
-              // todo maybe change to media query height & width and do some division for reponsive UI???
-              height: 400,
-              width: 400,
+              height: MediaQuery.of(context).size.height / 1.5,
+              width: MediaQuery.of(context).size.width,
               transform: dir == SwipeDirection.right
                   ? Matrix4.translationValues(slideRight.value, 0, 0)
                   : Matrix4.translationValues(slideLeft.value, 0, 0),

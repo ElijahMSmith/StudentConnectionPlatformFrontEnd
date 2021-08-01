@@ -6,6 +6,7 @@ import 'package:student_connection_platform_frontend/pages/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:student_connection_platform_frontend/text_recog_test/text_recognition_widget.dart';
 import '../main.dart';
 
 // Reference to the name of the app, when we decide on one
@@ -134,7 +135,7 @@ class _SigninFormState extends State<SigninForm> {
           child: SingleChildScrollView(
             padding: EdgeInsets.all(15),
             child: Column(
-              children: [
+              children: <Widget>[
                 // Welcome message
                 Text('Welcome!',
                     textAlign: TextAlign.center,
@@ -297,6 +298,17 @@ class _SigninFormState extends State<SigninForm> {
                     },
                   ),
                 ),
+
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TextRecognitionWidget(),
+                        ),
+                      );
+                    },
+                    child: Text('Image recognition test'))
               ],
             ),
           ),

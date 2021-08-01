@@ -13,9 +13,10 @@ class AboutPage extends StatelessWidget
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget> [
                     Container(
+                      // developers
                       child: SelectableText(
-                        'Add creators here'
-                      )
+                        'Frontend: Leo Zhang, Elijah Smith\nBackend: Ricardo Ruiz'
+                      ),
                     ),
                     Container(
                       child: SelectableText(
@@ -24,8 +25,9 @@ class AboutPage extends StatelessWidget
                     ),
                     // bio text
                     Container(
+                      // slogan
                       child: SelectableText(
-                        'Add Mission statement here'
+                        'StuConn: Better together'
                       )
                     ),
                     Container(
@@ -35,7 +37,7 @@ class AboutPage extends StatelessWidget
                     ),
                     Container(
                       child: SelectableText(
-                        'Add Github repo link if we go open source here'
+                        'Add Github repo link if we go open source here (if we do open source it, maybe add our venmos on here in case anyone wants to buy us coffee 😉)'
                       )
                     ),
                   ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './models/account.dart';
+import 'account.dart';
 
 class MatchMakerStack with ChangeNotifier {
   List<Account> _usersStack = [];

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:student_connection_platform_frontend/theme_shared_prefs.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/models/theme_shared_prefs.dart';
 
 class ThemeProvider with ChangeNotifier {
   ThemeMode themeMode = ThemeMode.dark;
