@@ -33,8 +33,11 @@ dependencies:
   adaptive_dialog: ^1.1.0
   profanity_filter: ^2.0.0
   # google_ml_kit: ^0.7.0
-  firebase_ml_vision: ^0.9.7
+  # firebase_ml_vision: ^0.9.7
   clipboard: ^0.1.2+8
+  speech_to_text: ^4.2.2
+  highlight_text: ^1.0.0
+  avatar_glow: ^2.0.1
 
 dev_dependencies:
   flutter_test:

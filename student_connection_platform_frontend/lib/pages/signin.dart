@@ -6,6 +6,7 @@ import 'package:student_connection_platform_frontend/pages/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:student_connection_platform_frontend/speech_to_text/speech_to_text.dart';
 import 'package:student_connection_platform_frontend/text_recog_test/text_recognition_widget.dart';
 import '../main.dart';
 
@@ -299,16 +300,26 @@ class _SigninFormState extends State<SigninForm> {
                   ),
                 ),
 
+                // ElevatedButton(
+                //     onPressed: () {
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (context) => TextRecognitionWidget(),
+                //         ),
+                //       );
+                //     },
+                //     child: Text('Image recognition test')),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => TextRecognitionWidget(),
+                          builder: (context) => SpeechScreen(),
                         ),
                       );
                     },
-                    child: Text('Image recognition test'))
+                    child: Text('microphone test')),
               ],
             ),
           ),
