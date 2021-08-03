@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:student_connection_platform_frontend/Utility.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -11,11 +12,38 @@ class NotificationApi {
 
   // android and ios notification details set up
   static Future _notificationDetails() async {
+    //#region android style information setup
+    final largeIconPath = await Utils.downloadFile(
+        'https://images.unsplash.com/photo-1593642634524-b40b5baae6bb?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80',
+        'largeIcon');
+
+    final bigPicturePath = await Utils.downloadFile(
+        'https://images.unsplash.com/photo-1593642634524-b40b5baae6bb?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80',
+        'big pic');
+
+    final styleInformation = BigPictureStyleInformation(
+      FilePathAndroidBitmap(bigPicturePath),
+      largeIcon: FilePathAndroidBitmap(largeIconPath),
+    );
+    //#endregion
+
+    //#region ios style information setup
+    String attachmentPicturePath = await Utils.downloadFile(
+        'https://via.placeholder.com/800x200', 'attachment_img.jpg');
+    //#endregion
+
     return NotificationDetails(
       android: AndroidNotificationDetails(
-          'channel id', 'channel name', 'channel description',
-          importance: Importance.max),
-      iOS: IOSNotificationDetails(),
+        'channel id',
+        'channel name',
+        'channel description',
+        importance: Importance.max,
+        styleInformation: styleInformation,
+        playSound: true,
+      ),
+      iOS: IOSNotificationDetails(
+          presentSound: true,
+          attachments: [IOSNotificationAttachment(attachmentPicturePath)]),
     );
   }
 
@@ -115,4 +143,8 @@ class NotificationApi {
 
     return scheduleDate;
   }
+
+  static void cancel(int id) => _notifications.cancel(id);
+
+  static void cancelAll() => _notifications.cancelAll();
 }

@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
@@ -44,6 +46,26 @@ class MyThemes {
     colorScheme: ColorScheme.light(),
   );
 }
+
+class Utils {
+  // gets file path from provided url
+  static Future<String> downloadFile(String url, String filename) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final response = await http.get(Uri.parse(url));
+    final filePath = '${directory.path}/$filename';
+    final file = File(filePath);
+
+    await file.writeAsBytes(response.bodyBytes);
+    return filePath;
+  }
+}
+
+
+
+
+
+
+
 
 // class FirebaseMLApi {
 //   static Future<String> recogniseText(File imageFile) async {
