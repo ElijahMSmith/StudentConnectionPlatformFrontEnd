@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/models/account.dart';
 import 'package:student_connection_platform_frontend/navigator.dart';
 import 'package:student_connection_platform_frontend/pages/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:student_connection_platform_frontend/push_notifications/notification_api.dart';
 import 'package:student_connection_platform_frontend/speech_to_text/speech_to_text.dart';
-import 'package:student_connection_platform_frontend/text_recog_test/text_recognition_widget.dart';
 import '../main.dart';
 
 // Reference to the name of the app, when we decide on one
@@ -39,6 +40,21 @@ class _SigninFormState extends State<SigninForm> {
   bool _otherError = false;
   bool _showLoginTimeout = false;
   int _loginAttempts = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationApi.init(initScheduled: true);
+    listenToNotifications();
+  }
+
+  void listenToNotifications() {
+    NotificationApi.onNotifications.stream.listen(onClickedNotification);
+  }
+
+  void onClickedNotification(String payload) {
+    print('clicked on notification!');
+  }
 
   _SigninFormState() {
     _getSharedPrefs();
@@ -311,15 +327,38 @@ class _SigninFormState extends State<SigninForm> {
                 //     },
                 //     child: Text('Image recognition test')),
                 ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SpeechScreen(),
-                        ),
-                      );
-                    },
-                    child: Text('microphone test')),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SpeechScreen(),
+                      ),
+                    );
+                  },
+                  child: Text('microphone test'),
+                ),
+
+                ElevatedButton(
+                  onPressed: () {
+                    NotificationApi.showNotification(
+                      title: 'date plans',
+                      body: 'Hey babe, what are we doing tonight? I miss you',
+                      payload: 'Sarah',
+                    );
+                  },
+                  child: Text('simple notification test'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await NotificationApi.showScheduledDailyNotification(
+                      title: 'date plans',
+                      body: 'Hey babe, what are we doing tonight? I miss you',
+                      payload: 'Sarah',
+                      time: Time(22,33)
+                    );
+                  },
+                  child: Text('scheduled notification test'),
+                ),
               ],
             ),
           ),

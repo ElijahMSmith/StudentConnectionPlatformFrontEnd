@@ -5,6 +5,7 @@ publish_to: 'none'
 version: 1.0.0
 
 environment:
+  # sdk: ">=2.12.0 <3.0.0"
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
@@ -38,6 +39,9 @@ dependencies:
   speech_to_text: ^4.2.2
   highlight_text: ^1.0.0
   avatar_glow: ^2.0.1
+  flutter_local_notifications: ^8.0.0
+  rxdart: ^0.27.1
+  flutter_native_timezone: ^2.0.0
 
 dev_dependencies:
   flutter_test:
