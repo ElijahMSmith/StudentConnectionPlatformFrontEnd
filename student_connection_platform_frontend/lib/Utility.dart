@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:student_connection_platform_frontend/pages_by_leo/models/MessageModel.dart';
 // import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 class SaveUtility {
@@ -35,7 +36,45 @@ class SaveUtility {
   }
 }
 
-// class 
+/// Only does saving and deleting list of messags from prefs. The user is responsible for mananging the state in the UI (i.e. knowing when to call setState())
+class ChatMessageSaveUtil {
+  static void initSharedPreferences(
+      String uniqueKey, List<MessageModel> messages) async {
+    final prefs = await SharedPreferences.getInstance();
+    // necessary key check or else console throws an error
+    if (prefs.containsKey(uniqueKey)) {
+      loadListOfMessages(uniqueKey);
+    }
+  }
+
+  static Future<List<String>> loadListOfMessages(String uniqueKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey(uniqueKey)) {
+      return null;
+    }
+    return prefs.getStringList(uniqueKey);
+  }
+
+  static void saveListOfMessages(
+      String uniqueKey, List<MessageModel> messages) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> spList = messages
+        .map((MessageModel message) => json.encode(message.toMap()))
+        .toList();
+
+    prefs.setStringList(uniqueKey, spList);
+  }
+
+  /// clears all messages between you and the other user
+  static void clearMessages(
+      String uniqueKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey(uniqueKey)) {
+      prefs.remove(uniqueKey);
+    }
+    
+  }
+}
 
 class MyThemes {
   static final darkTheme = ThemeData(

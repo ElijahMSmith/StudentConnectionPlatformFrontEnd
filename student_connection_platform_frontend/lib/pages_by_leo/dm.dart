@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:student_connection_platform_frontend/Utility.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/OwnMessageBubble.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/reply_message_bubble.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -40,7 +41,6 @@ class _DMState extends State<DM> {
   TextEditingController controller = TextEditingController();
   ScrollController sc = ScrollController();
   // final String ipAddyAndPortNum = 'ws://rruiz.dev:5000'; // 192.168.1.84
-
   List<MessageModel> messages = [];
   IO.Socket socket;
   // final String ipAddyAndPortNum = 'http://192.168.1.84:5000';
@@ -54,6 +54,7 @@ class _DMState extends State<DM> {
   bool show = false;
   ProfanityFilter filter;
   RegExp profanityRegex;
+  String uniqueKey;
 
   // message to send to the other person by you
   // senderID: who's sending the message
@@ -74,7 +75,7 @@ class _DMState extends State<DM> {
         // get the hours and the minutes
         time: DateTime.now().toString().substring(10, 16));
     messages.add(msgModel);
-    saveListOfMessages();
+    ChatMessageSaveUtil.saveListOfMessages(uniqueKey, messages);
     setState(() {});
   }
 
@@ -110,50 +111,27 @@ class _DMState extends State<DM> {
     socket.on('disconnect', (_) => print('disconnected'));
   }
 
-  void saveListOfMessages() {
-    List<String> spList = messages
-        .map((MessageModel message) => json.encode(message.toMap()))
-        .toList();
-    // concatenated unique key of the active user and the other user
-    String uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
-    sp.setStringList(uniqueKey, spList);
-  }
-
-  void loadListOfMessages() {
-    String uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
-    List<String> spList = sp.getStringList(uniqueKey);
-    messages = spList
-        .map((String message) => MessageModel.fromMap(json.decode(message)))
-        .toList();
-    setState(() {});
-  }
-
-  void initSharedPreferences() async {
-    sp = await SharedPreferences.getInstance();
-    String uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
-    // necessary key check or else console throws an error
-    if (sp.containsKey(uniqueKey)) {
-      loadListOfMessages();
+  void getMessagesFromPrefs() async {
+    var stringList = await ChatMessageSaveUtil.loadListOfMessages(uniqueKey);
+    if (stringList == null) {
+      print('there was no list of messages saved in prefs for this chat');
+    } else {
+      messages = stringList
+          .map((String message) => MessageModel.fromMap(json.decode(message)))
+          .toList();
+      setState(() {});
     }
-  }
-
-  /// clears all messages between you and the other user
-  void clearMessages() {
-    String uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
-    if (sp.containsKey(uniqueKey)) {
-      sp.remove(uniqueKey);
-    }
-
-    messages.clear();
-    setState(() {});
   }
 
   @override
   void initState() {
-    // print('entering chat with ${widget.otherUser.name}');
-    initSharedPreferences();
-    // print('there are ${messages.length} messages in the chat');
     super.initState();
+    // print('entering chat with ${widget.otherUser.name}');
+    // concatenated unique key of the active user and the other user
+    uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
+    getMessagesFromPrefs();
+
+    // print('there are ${messages.length} messages in the chat');
     filter = ProfanityFilter();
     // print('list of curse words: ${filter.wordsToFilterOutList}');
     // print(filter.wordsToFilterOutList.length);
@@ -250,7 +228,11 @@ class _DMState extends State<DM> {
                   onSelected: (value) {
                     switch (value) {
                       case Options.CLEAR_MESSAGES:
-                        clearMessages();
+                        ChatMessageSaveUtil.clearMessages(
+                          uniqueKey,
+                        );
+                        messages.clear();
+                        setState(() {});
                         break;
                     }
                   },

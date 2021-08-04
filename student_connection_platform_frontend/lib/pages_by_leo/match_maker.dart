@@ -10,7 +10,7 @@ import 'models/account.dart';
 Account _activeUser;
 List<Account> allUsers =
     []; // TODO later: Fix this as essentially a second stack
-List<dynamic> parsedBody;
+List<Map<String, dynamic>> parsedBody;
 
 class MatchMaker extends StatelessWidget // should be cardstack.dart
 {

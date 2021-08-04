@@ -8,7 +8,7 @@ Account _activeUser;
 class ContactsPage extends StatefulWidget {
   ContactsPage(Account activeUser) {
     _activeUser = activeUser;
-    print(_activeUser.matchedUsers);
+    // print(_activeUser.matchedUsers);
   }
 
   @override
@@ -46,8 +46,7 @@ class _ContactsPageState extends State<ContactsPage> {
                   Icons.search,
                   size: 26,
                 ),
-                onPressed: () {}
-            ),
+                onPressed: () {}),
             PopupMenuButton<String>(
               padding: EdgeInsets.all(0),
               onSelected: (value) {
@@ -95,7 +94,12 @@ class _ContactsPageState extends State<ContactsPage> {
                             child: const Text("Cancel"),
                           ),
                           TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
+                              onPressed: () {
+                                // TODO delete from list and add back to match making stack
+                                // TODO remove contact from active user's matched users list
+                                // TODO remove contact from match url in the backend as well
+                                Navigator.of(context).pop(true);
+                              },
                               child: const Text("Delete")),
                         ],
                       );
@@ -107,14 +111,18 @@ class _ContactsPageState extends State<ContactsPage> {
                   color: Colors.red,
                 ),
                 child: InkWell(
-                  onTap: ()
-                  {
+                  onTap: () {
                     // Connect to a WebSocket server
                     // don't pass the websocket channel down this widget. Instead, declare and initialze
                     // it inside.
                     // go to dm's page
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => DM(activeUser: _activeUser, otherUser: userMatches[index],)));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DM(
+                                  activeUser: _activeUser,
+                                  otherUser: userMatches[index],
+                                )));
                   },
                   child: ContactCard(
                     contact: userMatches[index],

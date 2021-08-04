@@ -3,38 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
-class UserAccounts with ChangeNotifier
-{
-    List<Account> _users = [
-  ];
+class UserAccounts with ChangeNotifier {
+  List<Account> _users = [];
 
   List<Account> _usersStack = [];
 
-  List<Account> get users
-  {
+  List<Account> get users {
     return [..._users];
   }
 
-  List<Account> get usersStack
-  {
+  List<Account> get usersStack {
     return [..._usersStack];
   }
 
-  void loadUsersStack()
-  {
+  void loadUsersStack() {
     _usersStack = [..._users];
     notifyListeners();
   }
 
-  void deleteFromStack(String id)
-  {
+  void deleteFromStack(String id) {
     _users.removeWhere((user) => user.userID == id);
     notifyListeners();
   }
 }
 
-class Account
-{
+class Account {
   // Validation and setting values handled by forms, so leaving these public
   String email = "";
   bool validEmail = false;
@@ -97,7 +90,8 @@ class Account
     country = user["country"] ?? "";
     school = user["school"] ?? "";
     major = user["major"] ?? "";
-    interests = user["interests"] == Null ? [] : user["interests"].cast<String>();
+    interests =
+        user["interests"] == Null ? [] : user["interests"].cast<String>();
     matchIDs = user["matches"] == Null ? [] : user["matches"].cast<String>();
 
     print("Trying to get matches\n");
@@ -105,34 +99,35 @@ class Account
       print("Trying to retrieve match '$id'");
       Account currentMatch = new Account.empty();
 
-      http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/$id"), headers: {"Content-Type": "application/json"}).then(
-          (matchedResponse) => {
-                print(matchedResponse.statusCode),
-                print("Retrieved match account: '${matchedResponse.body}'\n"),
-                values = jsonDecode(matchedResponse.body),
+      http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/$id"), headers: {
+        "Content-Type": "application/json"
+      }).then((matchedResponse) => {
+            print(matchedResponse.statusCode),
+            print("Retrieved match account: '${matchedResponse.body}'\n"),
+            values = jsonDecode(matchedResponse.body),
 
-                currentMatch.name = values["name"] ?? "",
-                currentMatch.username = values["username"] ?? "",
-                currentMatch.email = values["email"] ?? "",
-                currentMatch.age = values["age"] ?? 18,
-                currentMatch.userID = values["id"] ?? "",
-                currentMatch.job = values["job"] ?? "",
-                currentMatch.bio = values["bio"] ?? "",
-                currentMatch.city = values["city"] ?? "",
-                currentMatch.country = values["country"] ?? "",
-                currentMatch.school = values["school"] ?? "",
-                currentMatch.major = values["major"] ?? "",
+            currentMatch.name = values["name"] ?? "",
+            currentMatch.username = values["username"] ?? "",
+            currentMatch.email = values["email"] ?? "",
+            currentMatch.age = values["age"] ?? 18,
+            currentMatch.userID = values["id"] ?? "",
+            currentMatch.job = values["job"] ?? "",
+            currentMatch.bio = values["bio"] ?? "",
+            currentMatch.city = values["city"] ?? "",
+            currentMatch.country = values["country"] ?? "",
+            currentMatch.school = values["school"] ?? "",
+            currentMatch.major = values["major"] ?? "",
 
-                currentMatch.interests = values["interests"] == Null
-                    ? []
-                    : values["interests"].cast<String>(),
-                // We don't currently care about THEIR matches. Might change with a future feature
-                currentMatch.matchIDs = values["matches"] == Null
-                    ? []
-                    : values["matches"].cast<String>(),
+            currentMatch.interests = values["interests"] == Null
+                ? []
+                : values["interests"].cast<String>(),
+            // We don't currently care about THEIR matches. Might change with a future feature
+            currentMatch.matchIDs = values["matches"] == Null
+                ? []
+                : values["matches"].cast<String>(),
 
-                matchedUsers.add(currentMatch)
-              });
+            matchedUsers.add(currentMatch)
+          });
     }
   }
 
@@ -157,7 +152,6 @@ class Account
   }
 
   Future<http.Response> submitAccountChanges() {
-
     String bodyJSON = jsonEncode(<String, dynamic>{
       "interests": jsonEncode(interests),
       "matches": jsonEncode(matchIDs),
@@ -179,15 +173,16 @@ class Account
   }
 
   Future<http.Response> checkUsernameUnique() {
-    return http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/username/" + username),
+    return http.get(
+        Uri.parse("https://t3-dev.rruiz.dev/api/users/username/" + username),
         headers: {"Content-Type": "application/json"});
   }
 
   Future<http.Response> createMatchWith(Account otherUser) async {
     return await http.post(
-              Uri.parse(
-                  "https://t3-dev.rruiz.dev/api/users/$userID/match/${otherUser.userID}"),
-              headers: {"Content-Type": "application/json"});
+        Uri.parse(
+            "https://t3-dev.rruiz.dev/api/users/$userID/match/${otherUser.userID}"),
+        headers: {"Content-Type": "application/json"});
   }
 
   bool validAccountDetails() {

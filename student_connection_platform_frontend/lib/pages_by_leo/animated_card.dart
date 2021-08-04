@@ -124,6 +124,8 @@ class _AnimatedCardState extends State<AnimatedCard>
                         // populate active user
                         widget.activeUser.matchIDs
                             .add(widget.randomUser.userID),
+                        // add to matchedUsers list so that the current active user
+                        // can see him/her in the contacts page
                         widget.activeUser.matchedUsers.add(widget.randomUser),
                         removeCardOnceFinished()
                       }
@@ -254,7 +256,7 @@ class _AnimatedCardState extends State<AnimatedCard>
               swipeLeftController.forward();
             }
 
-            print(dragDetails.localPosition);
+            // print(dragDetails.localPosition);
           },
           onHorizontalDragEnd: (DragEndDetails dragDetails) {
             print('swipe ended');
