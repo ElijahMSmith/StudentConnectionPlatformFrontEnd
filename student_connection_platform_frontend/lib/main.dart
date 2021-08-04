@@ -35,7 +35,7 @@ Future<void> _configureLocalTimeZone() async {
 Future<void> main() async {
   // must call this if intend to initialize in the `main` function
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await _configureLocalTimeZone();
   runApp(AppHome());
 }
