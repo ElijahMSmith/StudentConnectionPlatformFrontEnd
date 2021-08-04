@@ -55,6 +55,14 @@ class NotificationApi {
     final settings =
         InitializationSettings(android: androidSettings, iOS: iOSSettings);
 
+    //#region handle notifications even when app is closed
+    final details = await _notifications.getNotificationAppLaunchDetails();
+    if (details != null && details.didNotificationLaunchApp) {
+      onNotifications.add(details.payload);
+    }
+
+    //#endregion
+
     await _notifications.initialize(settings,
         onSelectNotification: (String payload) async {
       onNotifications.add(payload);
