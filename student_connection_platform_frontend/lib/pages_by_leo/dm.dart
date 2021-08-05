@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:speech_to_text/speech_recognition_error.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:student_connection_platform_frontend/Utility.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/OwnMessageBubble.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/reply_message_bubble.dart';
@@ -10,6 +13,7 @@ import 'models/MessageModel.dart';
 import 'models/account.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:profanity_filter/profanity_filter.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 // https://flutter.dev/docs/cookbook/networking/web-sockets
 /*
@@ -55,6 +59,9 @@ class _DMState extends State<DM> {
   ProfanityFilter filter;
   RegExp profanityRegex;
   String uniqueKey;
+  stt.SpeechToText _speech;
+  bool _isListening = false;
+  String _text = '';
 
   // message to send to the other person by you
   // senderID: who's sending the message
@@ -126,6 +133,7 @@ class _DMState extends State<DM> {
   @override
   void initState() {
     super.initState();
+    _speech = stt.SpeechToText();
     // print('entering chat with ${widget.otherUser.name}');
     // concatenated unique key of the active user and the other user
     uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
@@ -157,6 +165,166 @@ class _DMState extends State<DM> {
     socket.emit('signedout', widget.activeUser.userID);
     // socket.close() gave an error, so I commented it out
     socket.dispose();
+  }
+
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (String val) => print('onStatus: $val'),
+        onError: (SpeechRecognitionError val) => print('onError: $val'),
+      );
+
+      // check if we can record voice
+      if (available) {
+        _isListening = true;
+        setState(() {});
+        _speech.listen(
+          onResult: (SpeechRecognitionResult val) => setState(() {
+            _text = val.recognizedWords;
+          }),
+        );
+      }
+    } else {
+      controller.text += _text;
+      _text = '';
+      _isListening = false;
+      _speech.stop();
+    }
+
+    setState(() {});
+  }
+
+  Widget emojiSelect() {
+    return EmojiPicker(
+        rows: 4,
+        columns: 7,
+        onEmojiSelected: (emoji, category) {
+          // print(emoji);
+          controller.text = '${controller.text}${emoji.emoji}';
+          setState(() {});
+        });
+  }
+
+  Widget bottomSheet() {
+    return Container(
+      height: 278,
+      width: MediaQuery.of(context).size.width,
+      child: Card(
+        margin: const EdgeInsets.all(18.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  iconCreation(
+                      Icons.insert_drive_file, Colors.indigo, "Document"),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  iconCreation(Icons.camera_alt, Colors.pink, "Camera"),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  iconCreation(Icons.insert_photo, Colors.purple, "Gallery"),
+                ],
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  iconCreation(Icons.headset, Colors.orange, "Audio"),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  iconCreation(Icons.location_pin, Colors.teal, "Location"),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  iconCreation(Icons.person, Colors.blue, "Contact"),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget iconCreation(IconData icons, Color color, String text) {
+    return InkWell(
+      onTap: () {},
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: color,
+            child: Icon(
+              icons,
+              size: 29,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget sendMsgButton() {
+    return IconButton(
+      onPressed: () {
+        if (controller.text.isEmpty) {
+          return;
+        }
+        if (profanityRegex.hasMatch(controller.text) ||
+            filter.hasProfanity(controller.text)) {
+          Fluttertoast.showToast(
+              msg: "Please do not type any profanity",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          return;
+        }
+        scrollToBottom();
+        // get account object that holds the id of the user
+        sendMessage(
+            controller.text, widget.activeUser.userID, widget.otherUser.userID);
+        controller.clear();
+        setState(() {});
+      },
+      icon: Icon(Icons.send),
+    );
+  }
+
+  Widget micButton() {
+    return AvatarGlow(
+      animate: _isListening,
+      glowColor: Colors.red,
+      endRadius: 75.0,
+      duration: const Duration(milliseconds: 2000),
+      repeatPauseDuration: const Duration(milliseconds: 100),
+      repeat: true,
+      child: FloatingActionButton(
+        onPressed: _listen,
+        child: Icon(_isListening ? Icons.mic : Icons.mic_none),
+      ),
+    );
   }
 
   @override
@@ -375,38 +543,9 @@ class _DMState extends State<DM> {
                                     bottom: 8.0, right: 2, left: 2),
                                 child: CircleAvatar(
                                   radius: 25,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      if (controller.text.isEmpty) {
-                                        print('cannot send blank text');
-                                        return;
-                                      }
-                                      if (profanityRegex
-                                              .hasMatch(controller.text) ||
-                                          filter
-                                              .hasProfanity(controller.text)) {
-                                        Fluttertoast.showToast(
-                                            msg:
-                                                "Please do not type any profanity",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.CENTER,
-                                            timeInSecForIosWeb: 1,
-                                            backgroundColor: Colors.green,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0);
-                                        return;
-                                      }
-
-                                      scrollToBottom();
-                                      // get account object that holds the id of the user
-                                      sendMessage(
-                                          controller.text,
-                                          widget.activeUser.userID,
-                                          widget.otherUser.userID);
-                                      controller.clear();
-                                    },
-                                    icon: Icon(Icons.send),
-                                  ),
+                                  child: controller.text.length > 0
+                                      ? sendMsgButton()
+                                      : micButton(),
                                 ),
                               ),
                             ],
@@ -423,95 +562,6 @@ class _DMState extends State<DM> {
           // This trailing comma makes auto-formatting nicer for build methods.
         ),
       ],
-    );
-  }
-
-  Widget emojiSelect() {
-    return EmojiPicker(
-        rows: 4,
-        columns: 7,
-        onEmojiSelected: (emoji, category) {
-          // print(emoji);
-          controller.text = '${controller.text}${emoji.emoji}';
-          setState(() {});
-        });
-  }
-
-  Widget bottomSheet() {
-    return Container(
-      height: 278,
-      width: MediaQuery.of(context).size.width,
-      child: Card(
-        margin: const EdgeInsets.all(18.0),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  iconCreation(
-                      Icons.insert_drive_file, Colors.indigo, "Document"),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  iconCreation(Icons.camera_alt, Colors.pink, "Camera"),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  iconCreation(Icons.insert_photo, Colors.purple, "Gallery"),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  iconCreation(Icons.headset, Colors.orange, "Audio"),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  iconCreation(Icons.location_pin, Colors.teal, "Location"),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  iconCreation(Icons.person, Colors.blue, "Contact"),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget iconCreation(IconData icons, Color color, String text) {
-    return InkWell(
-      onTap: () {},
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: color,
-            child: Icon(
-              icons,
-              size: 29,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 12,
-            ),
-          )
-        ],
-      ),
     );
   }
 }
