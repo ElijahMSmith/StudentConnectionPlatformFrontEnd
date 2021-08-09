@@ -6,6 +6,10 @@ import 'package:http/http.dart' as http;
 
 Account _activeUser;
 
+// class RefInt {
+//   static int hold;
+// }
+
 class ContactsPage extends StatefulWidget {
   ContactsPage(Account activeUser) {
     _activeUser = activeUser;
@@ -20,6 +24,7 @@ class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
     List<Account> userMatches = _activeUser.matchedUsers;
+    // RefInt.hold = userMatches.length;
     return Scaffold(
         appBar: AppBar(
           title: Column(
@@ -81,6 +86,7 @@ class _ContactsPageState extends State<ContactsPage> {
             itemBuilder: (context, index) {
               return Dismissible(
                 key: ValueKey(userMatches[index].userID),
+
                 confirmDismiss: (DismissDirection direction) async {
                   return await showDialog(
                     context: context,
@@ -91,7 +97,11 @@ class _ContactsPageState extends State<ContactsPage> {
                             "Are you sure you want to unmatch this person?"),
                         actions: <Widget>[
                           TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
+                            onPressed: () {
+                              print(
+                                  '\x1B[33muser matches list is not empty\x1B[0m');
+                              Navigator.of(context).pop(false);
+                            },
                             child: const Text("Cancel"),
                           ),
                           TextButton(
@@ -102,6 +112,11 @@ class _ContactsPageState extends State<ContactsPage> {
                                 // TODO add deleted card back to match maker stack?
 
                                 // TODO remove contact from match url in the backend as well
+                                if (userMatches.length == 0) {
+                                  print(
+                                      '\x1B[33muser matches list is empty\x1B[0m');
+                                  return;
+                                }
 
                                 _activeUser
                                     .deleteMatchWith(userMatches[index])
@@ -116,9 +131,12 @@ class _ContactsPageState extends State<ContactsPage> {
                                 });
 
                                 // remove yourself from his/her matched list
-                                userMatches[index].matchedUsers.remove(_activeUser);
+                                userMatches[index]
+                                    .matchedUsers
+                                    .remove(_activeUser);
                                 // remove him/her from your list
                                 userMatches.removeAt(index);
+                                // RefInt.hold--;
 
                                 // if current user unmatched with the selected matched user,
                                 // then the current user should disappear from the selected matched user's // contact list as well,
@@ -134,8 +152,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                   }
                                 });
 
-
-
+                                setState(() {});
                                 Navigator.of(context).pop(true);
                               },
                               child: const Text("Delete")),
