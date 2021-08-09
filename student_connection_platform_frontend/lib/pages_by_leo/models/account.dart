@@ -185,6 +185,13 @@ class Account {
         headers: {"Content-Type": "application/json"});
   }
 
+  Future<http.Response> deleteMatchWith(Account otherUser) async {
+    return await http.delete(
+        Uri.parse(
+            "https://t3-dev.rruiz.dev/api/users/$userID/match/${otherUser.userID}"),
+        headers: {"Content-Type": "application/json"});
+  }
+
   bool validAccountDetails() {
     return validEmail && validPassword && validDOB;
   }

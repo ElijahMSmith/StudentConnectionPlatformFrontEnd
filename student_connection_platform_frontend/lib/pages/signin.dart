@@ -354,7 +354,7 @@ class _SigninFormState extends State<SigninForm> {
                       title: 'date plans',
                       body: 'Hey babe, what are we doing tonight? I miss you',
                       payload: 'Sarah',
-                      time: Time(0,29)
+                      time: Time(0,29),
                     );
                   },
                   child: Text('scheduled notification test'),
