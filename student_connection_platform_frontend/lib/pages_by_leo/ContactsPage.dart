@@ -99,7 +99,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                 // TODO delete from list and add back to match making stack
                                 // TODO remove contact from active user's matched users list
 
-                                // TODO updated
+                                // TODO add deleted card back to match maker stack?
 
                                 // TODO remove contact from match url in the backend as well
 
@@ -109,28 +109,32 @@ class _ContactsPageState extends State<ContactsPage> {
                                   if (value.statusCode == 200) {
                                     print(
                                         "matched user successfully deleted from active user's list");
-                                  }
-                                  else{
-                                    print(
-                                        "");
-                                        // matched user successfully deleted from active user's list
+                                  } else {
+                                    print("");
+                                    // matched user successfully deleted from active user's list
                                   }
                                 });
+
+                                // remove yourself from his/her matched list
+                                userMatches[index].matchedUsers.remove(_activeUser);
+                                // remove him/her from your list
+                                userMatches.removeAt(index);
 
                                 // if current user unmatched with the selected matched user,
                                 // then the current user should disappear from the selected matched user's // contact list as well,
                                 userMatches[index]
                                     .deleteMatchWith(_activeUser)
                                     .then((http.Response value) {
-                                      if (value.statusCode == 200) {
+                                  if (value.statusCode == 200) {
                                     print(
                                         "active user successfully deleted from matched user's list");
-                                  }
-                                  else{
+                                  } else {
                                     print(
                                         "active user unsuccessfully deleted from matched user's list");
                                   }
-                                    });
+                                });
+
+
 
                                 Navigator.of(context).pop(true);
                               },

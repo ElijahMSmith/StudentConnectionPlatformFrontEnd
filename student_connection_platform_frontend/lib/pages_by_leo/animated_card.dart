@@ -108,7 +108,7 @@ class _AnimatedCardState extends State<AnimatedCard>
               .then((response) => {
                     if (response.statusCode == 200)
                       {
-                        print(response.body),
+                        // print(response.body),
                         matchResponse = jsonDecode(response.body),
                         if (matchResponse["message"] == "User liked!")
                           {
@@ -132,7 +132,7 @@ class _AnimatedCardState extends State<AnimatedCard>
                     else
                       {
                         // There was an error
-                        print(response.body),
+                        // print(response.body),
                         Fluttertoast.showToast(
                             msg: "Couldn't accept match!",
                             toastLength: Toast.LENGTH_SHORT,
