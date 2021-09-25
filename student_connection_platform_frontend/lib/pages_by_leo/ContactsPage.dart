@@ -4,14 +4,14 @@ import 'models/account.dart';
 import 'dm.dart';
 import 'package:http/http.dart' as http;
 
-Account _activeUser;
+Account? _activeUser;
 
 // class RefInt {
 //   static int hold;
 // }
 
 class ContactsPage extends StatefulWidget {
-  ContactsPage(Account activeUser) {
+  ContactsPage({required Account? activeUser}) {
     _activeUser = activeUser;
     // print(_activeUser.matchedUsers);
   }
@@ -23,10 +23,11 @@ class ContactsPage extends StatefulWidget {
 class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
-    List<Account> userMatches = _activeUser.matchedUsers;
+    List<Account> userMatches = _activeUser!.matchedUsers;
     // RefInt.hold = userMatches.length;
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,48 +113,65 @@ class _ContactsPageState extends State<ContactsPage> {
                                 // TODO add deleted card back to match maker stack?
 
                                 // TODO remove contact from match url in the backend as well
-                                if (userMatches.length == 0) {
+                                if (userMatches == null ||
+                                    userMatches.length == 0) {
                                   print(
                                       '\x1B[33muser matches list is empty\x1B[0m');
                                   return;
                                 }
+                                if (userMatches.length <= index) {
+                                  print(
+                                      'matched user either already removed or does not exist');
+                                  return;
+                                }
 
-                                _activeUser
-                                    .deleteMatchWith(userMatches[index])
-                                    .then((http.Response value) {
-                                  if (value.statusCode == 200) {
-                                    print(
-                                        "matched user successfully deleted from active user's list");
-                                  } else {
-                                    print("");
-                                    // matched user successfully deleted from active user's list
-                                  }
-                                });
+                                try {
+                                  _activeUser
+                                      !.deleteMatchWith(userMatches[index])
+                                      .then((http.Response value) {
+                                    if (value.statusCode == 200) {
+                                      print(
+                                          "matched user successfully deleted from active user's list");
+                                    } else {
+                                      print(
+                                          "matched user unsuccessfully deleted from active user's list");
+                                    }
+                                  });
 
-                                // remove yourself from his/her matched list
-                                userMatches[index]
-                                    .matchedUsers
-                                    .remove(_activeUser);
-                                // remove him/her from your list
-                                userMatches.removeAt(index);
-                                // RefInt.hold--;
+                                  // if current user unmatched with the selected matched user,
+                                  // then the current user should disappear from the selected matched user's // contact list as well,
+                                  userMatches[index]
+                                      .deleteMatchWith(_activeUser!)
+                                      .then((http.Response value) {
+                                    if (value.statusCode == 200) {
+                                      print(
+                                          "active user successfully deleted from matched user's list");
+                                    } else {
+                                      print(
+                                          "active user unsuccessfully deleted from matched user's list");
+                                    }
+                                  });
+                                } catch (e) {
+                                  print('error with delete requests');
+                                  print(e);
+                                }
 
-                                // if current user unmatched with the selected matched user,
-                                // then the current user should disappear from the selected matched user's // contact list as well,
-                                userMatches[index]
-                                    .deleteMatchWith(_activeUser)
-                                    .then((http.Response value) {
-                                  if (value.statusCode == 200) {
-                                    print(
-                                        "active user successfully deleted from matched user's list");
-                                  } else {
-                                    print(
-                                        "active user unsuccessfully deleted from matched user's list");
-                                  }
-                                });
+                                try {
+                                  // remove yourself from his/her matched list
+                                  userMatches[index]
+                                      .matchedUsers
+                                      .remove(_activeUser);
+                                  // remove him/her from your list
+                                  userMatches.remove(userMatches[index]);
+                                } catch (e) {
+                                  print(
+                                      'error with updating matches arrays on the front end');
+                                  print(e);
+                                }
 
                                 setState(() {});
                                 Navigator.of(context).pop(true);
+                                // print('popped');
                               },
                               child: const Text("Delete")),
                         ],

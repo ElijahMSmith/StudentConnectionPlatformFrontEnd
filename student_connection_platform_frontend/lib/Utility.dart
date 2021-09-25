@@ -19,7 +19,7 @@ class SaveUtility {
     return prefs.setString(IMG_KEY, value);
   }
 
-  static Future<String> getImageFromPrefs() async {
+  static Future<String?> getImageFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(IMG_KEY);
   }
@@ -47,7 +47,7 @@ class ChatMessageSaveUtil {
     }
   }
 
-  static Future<List<String>> loadListOfMessages(String uniqueKey) async {
+  static Future<List<String>?> loadListOfMessages(String uniqueKey) async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(uniqueKey)) {
       return null;
@@ -72,7 +72,7 @@ class ChatMessageSaveUtil {
     if (prefs.containsKey(uniqueKey)) {
       prefs.remove(uniqueKey);
     }
-    
+
   }
 }
 

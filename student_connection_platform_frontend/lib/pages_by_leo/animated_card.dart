@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:student_connection_platform_frontend/pages_by_leo/preview_match_
 import 'package:fluttertoast/fluttertoast.dart';
 import 'match_maker.dart';
 import 'models/account.dart';
-
 // typedef void DragStart(DragStartDetails dragDetails);
 
 enum SwipeDirection { left, right }

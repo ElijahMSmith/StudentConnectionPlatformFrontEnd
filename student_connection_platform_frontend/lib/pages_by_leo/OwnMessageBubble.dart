@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class OwnMessageBubble extends StatelessWidget {
-  const OwnMessageBubble({Key key, this.message, this.time}) : super(key: key);
-  final String message;
-  final String time;
+  const OwnMessageBubble({Key? key, required this.message, required this.time}) : super(key: key);
+  final String? message;
+  final String? time;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +28,10 @@ class OwnMessageBubble extends StatelessWidget {
                   bottom: 20,
                 ),
                 child: Text(
-                  message,
+                  message!,
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.grey[900],
+                    color: Colors.black,
                   ),
                 ),
               ),
@@ -41,10 +41,10 @@ class OwnMessageBubble extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      time,
+                      time!,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.grey[600],
+                        color: Colors.black,
                       ),
                     ),
                     SizedBox(

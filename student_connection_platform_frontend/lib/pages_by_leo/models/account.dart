@@ -40,9 +40,9 @@ class Account {
   int age = 18;
 
   // Only used when pulled, not when account is created
-  String userID;
+  String? userID;
 
-  File profilePicture;
+  File? profilePicture;
   AssetImage defaultPicture = AssetImage("assets/images/emptyProfileImage.png");
   bool validProfilePicture = false;
 
@@ -102,8 +102,8 @@ class Account {
       http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/$id"), headers: {
         "Content-Type": "application/json"
       }).then((matchedResponse) => {
-            print(matchedResponse.statusCode),
-            print("Retrieved match account: '${matchedResponse.body}'\n"),
+            // print(matchedResponse.statusCode),
+            // print("Retrieved match account: '${matchedResponse.body}'\n"),
             values = jsonDecode(matchedResponse.body),
 
             currentMatch.name = values["name"] ?? "",
@@ -148,7 +148,7 @@ class Account {
     matchIDs =
         values["matches"] == Null ? [] : values["matches"].cast<String>();
 
-    print("Pulled '$username' from GET");
+    // print("Pulled '$username' from GET");
   }
 
   Future<http.Response> submitAccountChanges() {
@@ -168,7 +168,7 @@ class Account {
       "city": city
     });
 
-    return http.put(Uri.parse("https://t3-dev.rruiz.dev/api/users/" + userID),
+    return http.put(Uri.parse("https://t3-dev.rruiz.dev/api/users/" + userID!),
         headers: {"Content-Type": "application/json"}, body: bodyJSON);
   }
 

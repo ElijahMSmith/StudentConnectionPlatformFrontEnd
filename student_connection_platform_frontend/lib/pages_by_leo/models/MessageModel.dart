@@ -1,9 +1,9 @@
 // import 'dart:collection';
 
 class MessageModel {
-  String type;
-  String message;
-  String time;
+  String? type;
+  String? message;
+  String? time;
   MessageModel({this.type, this.message, this.time});
 
   // map to MessageModel object

@@ -11,11 +11,11 @@ import '../main.dart';
 import '../navigator.dart';
 
 // Since it's still highly variable, minimize the places we'll have to change it
-String appName;
+String? appName;
 // Stores all the information about the new account we're creating
-Account _newAccount;
+Account? _newAccount;
 // Reference to app page controller
-AppHome _homeController;
+AppHome? _homeController;
 
 // Failed submission reasons
 enum FailedSubmissionResult { INCOMPLETE_INFORMATION, BAD_REQUEST, OTHER_ERROR }
@@ -35,13 +35,13 @@ class SignupForm extends StatefulWidget {
 
 class SignupFormState extends State<SignupForm> {
   // Holds references to the account details, user overview, and user details page widgets
-  List<Widget> _pages;
+  List<Widget>? _pages;
 
   SignupFormState() {
     _pages = [
       AccountDetails(_newAccount),
       UserOverview(_newAccount),
-      UserDetails(_newAccount)
+      // UserDetails(_newAccount)
     ];
   }
 
@@ -189,22 +189,22 @@ class SignupFormState extends State<SignupForm> {
   }
 
   _attemptSubmit() async {
-    print(jsonEncode(_newAccount.interests).runtimeType);
-    print(jsonEncode(_newAccount.interests).toString());
+    print(jsonEncode(_newAccount!.interests).runtimeType);
+    print(jsonEncode(_newAccount!.interests).toString());
 
     String bodyJSON = jsonEncode(<String, dynamic>{
-      "name": _newAccount.name,
-      "username": _newAccount.username,
-      "email": _newAccount.email,
-      "dob": _newAccount.dateOfBirth,
-      "password": _newAccount.password,
-      "bio": _newAccount.bio,
-      "interests": _newAccount.interests,
-      "school": _newAccount.school,
-      "major": _newAccount.major,
-      "job": _newAccount.job,
-      "country": _newAccount.country,
-      "city": _newAccount.city
+      "name": _newAccount!.name,
+      "username": _newAccount!.username,
+      "email": _newAccount!.email,
+      "dob": _newAccount!.dateOfBirth,
+      "password": _newAccount!.password,
+      "bio": _newAccount!.bio,
+      "interests": _newAccount!.interests,
+      "school": _newAccount!.school,
+      "major": _newAccount!.major,
+      "job": _newAccount!.job,
+      "country": _newAccount!.country,
+      "city": _newAccount!.city
     });
 
     final response = await http.post(
@@ -225,14 +225,14 @@ class SignupFormState extends State<SignupForm> {
           fontSize: 16.0);
 
       // Clear user's password for safety
-      _newAccount.password = "";
+      _newAccount!.password = "";
 
       setState(() {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
-        _newAccount.userID = responseBody["id"];
+        _newAccount!.userID = responseBody["id"];
       });
 
-      _homeController.updateAccount(_newAccount);
+      _homeController!.updateAccount(_newAccount);
 
       Navigator.pushReplacementNamed(context, NavigationHelperWidget.routeID);
     } else if (response.statusCode == 400) {
@@ -247,15 +247,15 @@ class SignupFormState extends State<SignupForm> {
 
   void _nextPage() {
     if (_currentPage == 0) {
-      if (_newAccount.validAccountDetails()) {
+      if (_newAccount!.validAccountDetails()) {
         _currentPage++;
       } else {
         _showFailedSubmissionDialog(
             FailedSubmissionResult.INCOMPLETE_INFORMATION);
       }
     } else if (_currentPage == 1) {
-      if (_newAccount.validUserOverview()) {
-        if (_newAccount.usernameChecked == true) {
+      if (_newAccount!.validUserOverview()) {
+        if (_newAccount!.usernameChecked == true) {
           _currentPage++;
           return;
         }
@@ -266,7 +266,7 @@ class SignupFormState extends State<SignupForm> {
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
             fontSize: 12.0);
-        _newAccount.checkUsernameUnique().then((response) {
+        _newAccount!.checkUsernameUnique().then((response) {
           print(response.body);
           if (response.statusCode == 200) {
             // Username available
@@ -280,7 +280,7 @@ class SignupFormState extends State<SignupForm> {
                 fontSize: 12.0);
             setState(() {
               _currentPage++;
-              _newAccount.usernameChecked = true;
+              _newAccount!.usernameChecked = true;
             });
           } else if (response.statusCode == 500) {
             // Username unavailable
@@ -295,7 +295,7 @@ class SignupFormState extends State<SignupForm> {
             FailedSubmissionResult.INCOMPLETE_INFORMATION);
       }
     } else {
-      if (_newAccount.validUserDetails()) {
+      if (_newAccount!.validUserDetails()) {
         _attemptSubmit();
       } else {
         _showFailedSubmissionDialog(
@@ -315,7 +315,7 @@ class SignupFormState extends State<SignupForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentPage],
+      body: _pages![_currentPage],
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(15),
         child: Row(

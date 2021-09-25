@@ -5,7 +5,7 @@ class PreviewMatchProfile extends StatelessWidget {
   final List<dynamic> contents;
   final ImageProvider image;
 
-  PreviewMatchProfile({@required this.contents, @required this.image});
+  PreviewMatchProfile({required this.contents, required this.image});
 
   @override
   Widget build(BuildContext context) {

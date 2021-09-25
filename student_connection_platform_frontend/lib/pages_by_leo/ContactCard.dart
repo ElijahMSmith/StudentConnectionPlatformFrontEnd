@@ -3,8 +3,8 @@ import 'models/account.dart';
 
 class ContactCard extends StatelessWidget
 {
-  final Account contact;
-  const ContactCard({Key key, this.contact}) : super(key: key);
+  final Account? contact;
+  const ContactCard({Key? key, this.contact}) : super(key: key);
 
   @override
   Widget build(BuildContext context)
@@ -48,7 +48,7 @@ class ContactCard extends StatelessWidget
         ),
       ),
       title: Text(
-        contact.name,
+        contact!.name,
         style: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.bold,

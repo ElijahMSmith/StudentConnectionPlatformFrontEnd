@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/models/account.dart';
 import 'package:student_connection_platform_frontend/navigator.dart';
 import 'package:student_connection_platform_frontend/pages/signup.dart';
@@ -12,11 +14,11 @@ import 'package:student_connection_platform_frontend/speech_to_text/speech_to_te
 import '../main.dart';
 
 // Reference to the name of the app, when we decide on one
-String _appName;
+String? _appName;
 // Local device storage
-SharedPreferences prefs;
+SharedPreferences? prefs;
 // Reference to the page controller
-AppHome _homeController;
+AppHome? _homeController;
 
 class SigninForm extends StatefulWidget {
   static const String routeID = '/';
@@ -34,18 +36,27 @@ class _SigninFormState extends State<SigninForm> {
   final _formKey = GlobalKey<FormState>();
 
   bool _storeLoginInfo = false;
-  String _username;
-  String _password;
+  String? _username;
+  String? _password;
   bool _validationFailed = false;
   bool _otherError = false;
   bool _showLoginTimeout = false;
   int _loginAttempts = 0;
+
+  final textDetector = GoogleMlKit.vision.textDetector();
+  final inputImage = InputImage.fromFile(File('assets/images/text.jpg'));
 
   @override
   void initState() {
     super.initState();
     NotificationApi.init(initScheduled: true);
     listenToNotifications();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    textDetector.close();
   }
 
   void listenToNotifications() {
@@ -62,12 +73,12 @@ class _SigninFormState extends State<SigninForm> {
 
   _getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
-    _storeLoginInfo = prefs.getBool("storeLoginInfo") ?? false;
+    _storeLoginInfo = prefs!.getBool("storeLoginInfo") ?? false;
     print("SP loaded store as $_storeLoginInfo\n");
     if (_storeLoginInfo) {
       setState(() {
-        _username = prefs.getString("usernameOrEmail");
-        _password = prefs.getString("password");
+        _username = prefs!.getString("usernameOrEmail");
+        _password = prefs!.getString("password");
       });
     }
   }
@@ -93,7 +104,7 @@ class _SigninFormState extends State<SigninForm> {
     }
 
     String bodyJSON = jsonEncode(
-        <String, String>{"username": _username, "password": _password});
+        <String?, String?>{"username": _username, "password": _password});
 
     final response = await http.post(
         Uri.parse("https://t3-dev.rruiz.dev/api/login"),
@@ -103,7 +114,7 @@ class _SigninFormState extends State<SigninForm> {
     _validationFailed = false;
     _otherError = false;
 
-    print(response.body);
+    // print(response.body);
 
     if (response.statusCode == 200) {
       // Successful login
@@ -122,7 +133,7 @@ class _SigninFormState extends State<SigninForm> {
           backgroundColor: Colors.greenAccent,
           fontSize: 16.0);
 
-      _homeController.updateAccount(user);
+      _homeController!.updateAccount(user);
 
       Navigator.pushNamed(context, NavigationHelperWidget.routeID);
 
@@ -202,7 +213,7 @@ class _SigninFormState extends State<SigninForm> {
                 TextFormField(
                   textInputAction: TextInputAction.next,
                   validator: (value) {
-                    if (value.isEmpty) return 'Please enter your username';
+                    if (value == null) return 'Please enter your username';
                     return null;
                   },
                   decoration: InputDecoration(
@@ -222,7 +233,7 @@ class _SigninFormState extends State<SigninForm> {
                 // Password field - will validate against database
                 TextFormField(
                   validator: (value) {
-                    if (value.isEmpty) return 'Please enter a password';
+                    if (value == null) return 'Please enter a password';
                     return null;
                   },
                   decoration: InputDecoration(
@@ -254,8 +265,8 @@ class _SigninFormState extends State<SigninForm> {
                               onChanged: (value) {
                                 formFieldState.didChange(value);
                                 setState(() {
-                                  _storeLoginInfo = value;
-                                  prefs.setBool("storeLoginInfo", value);
+                                  _storeLoginInfo = value!;
+                                  prefs!.setBool("storeLoginInfo", value);
                                 });
                               },
                             ),
@@ -285,12 +296,12 @@ class _SigninFormState extends State<SigninForm> {
                             TextStyle(fontSize: 15, color: Colors.white)),
                     onPressed: () {
                       // Checks the input fields are not empty
-                      var valid = _formKey.currentState.validate();
+                      var valid = _formKey.currentState!.validate();
                       if (!valid) return;
 
                       setState(() {
-                        prefs.setString("username", _username);
-                        prefs.setString("password", _password);
+                        prefs!.setString("username", _username!);
+                        prefs!.setString("password", _password!);
 
                         _attemptSignin();
                       });
@@ -326,38 +337,64 @@ class _SigninFormState extends State<SigninForm> {
                 //       );
                 //     },
                 //     child: Text('Image recognition test')),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SpeechScreen(),
-                      ),
-                    );
-                  },
-                  child: Text('microphone test'),
-                ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => SpeechScreen(),
+                //       ),
+                //     );
+                //   },
+                //   child: Text('microphone test'),
+                // ),
+
+                // ElevatedButton(
+                //   onPressed: () {
+                //     NotificationApi.showNotification(
+                //       title: 'date plans',
+                //       body: 'Hey babe, what are we doing tonight? I miss you',
+                //       payload: 'Sarah',
+                //     );
+                //   },
+                //   child: Text('simple notification test'),
+                // ),
+                // ElevatedButton(
+                //   onPressed: () async {
+                //     await NotificationApi.showScheduledDailyNotification(
+                //       title: 'date plans',
+                //       body: 'Hey babe, what are we doing tonight? I miss you',
+                //       payload: 'Sarah',
+                //       time: Time(0,29),
+                //     );
+                //   },
+                //   child: Text('scheduled notification test'),
+                // ),
 
                 ElevatedButton(
-                  onPressed: () {
-                    NotificationApi.showNotification(
-                      title: 'date plans',
-                      body: 'Hey babe, what are we doing tonight? I miss you',
-                      payload: 'Sarah',
-                    );
-                  },
-                  child: Text('simple notification test'),
-                ),
-                ElevatedButton(
                   onPressed: () async {
-                    await NotificationApi.showScheduledDailyNotification(
-                      title: 'date plans',
-                      body: 'Hey babe, what are we doing tonight? I miss you',
-                      payload: 'Sarah',
-                      time: Time(0,29),
-                    );
+                    final RecognisedText recognisedText =
+                        await textDetector.processImage(inputImage);
+
+                    String text = recognisedText.text;
+                    print(text);
+                    // for (TextBlock block in recognisedText.blocks) {
+                    //   final Rect rect = block.rect;
+                    //   final List<Offset> cornerPoints = block.cornerPoints;
+                    //   final String text = block.text;
+                    //   final List<String> languages = block.recognizedLanguages;
+
+                    //   for (TextLine line in block.lines) {
+                    //     print(line.text);
+                    //     // Same getters as TextBlock
+                    //     // for (TextElement element in line.elements) {
+                    //     //   // Same getters as TextBlock
+                    //     //   print(element.text);
+                    //     // }
+                    //   }
+                    // }
                   },
-                  child: Text('scheduled notification test'),
+                  child: Text('image-to-text test'),
                 ),
               ],
             ),

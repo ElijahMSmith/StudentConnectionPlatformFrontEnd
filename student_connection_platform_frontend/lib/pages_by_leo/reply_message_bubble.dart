@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ReplyBubble extends StatelessWidget {
-  const ReplyBubble({Key key, this.message, this.time}) : super(key: key);
+  const ReplyBubble({Key? key, required this.message, required this.time}) : super(key: key);
   final String message;
   final String time;
 
@@ -31,7 +31,7 @@ class ReplyBubble extends StatelessWidget {
                   message,
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.grey[900],
+                    // color: Colors.grey[900],
                   ),
                 ),
               ),
@@ -42,7 +42,7 @@ class ReplyBubble extends StatelessWidget {
                   time,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey[600],
+                    // color: Colors.grey[600],
                   ),
                 ),
               ),

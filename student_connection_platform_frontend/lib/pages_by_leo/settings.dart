@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/models/theme_provider.dart';
 
 class Settings extends StatelessWidget {
-  const Settings({Key key}) : super(key: key);
+  const Settings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

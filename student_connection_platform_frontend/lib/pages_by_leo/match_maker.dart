@@ -7,20 +7,20 @@ import 'package:http/http.dart' as http;
 import 'animated_card.dart';
 import 'models/account.dart';
 
-Account _activeUser;
+Account? _activeUser;
 List<Account> allUsers =
     []; // TODO later: Fix this as essentially a second stack
-List<dynamic> parsedBody;
+List<dynamic> parsedBody = [];
 
 class MatchMaker extends StatelessWidget // should be cardstack.dart
 {
   static const String routeId = 'match_maker';
 
-  void removeMatchedUser(Account user) {
-    allUsers.removeWhere((element) => element.userID == user.userID);
+  void removeMatchedUser(Account? user) {
+    allUsers.removeWhere((element) => element.userID == user!.userID);
   }
 
-  MatchMaker(Account activeUser) {
+  MatchMaker({required Account? activeUser}) {
     _activeUser = activeUser;
 
     http.get(Uri.parse("https://t3-dev.rruiz.dev/api/users/"), headers: {
@@ -32,8 +32,8 @@ class MatchMaker extends StatelessWidget // should be cardstack.dart
               // If the id of this particular user is contained in the matches of the active user, ignore it
               // If the active user IS this user, ignore it
               // Otherwise, add it to the card stack
-              if (!_activeUser.matchIDs.contains(parsedBody[i]["id"]) &&
-                  !(_activeUser.userID == parsedBody[i]["id"]))
+              if (!_activeUser!.matchIDs.contains(parsedBody[i]["id"]) &&
+                  !(_activeUser!.userID == parsedBody[i]["id"]))
                 allUsers.add(Account.fromUserRequest(parsedBody[i]))
             }
         });

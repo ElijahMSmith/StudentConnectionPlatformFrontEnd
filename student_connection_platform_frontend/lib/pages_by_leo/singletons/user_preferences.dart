@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserPreferences {
 
   static final UserPreferences _instance = UserPreferences._ctor();
-  
+
   factory UserPreferences() {
     return _instance;
   }
@@ -11,21 +11,21 @@ class UserPreferences {
   // private contructor
   UserPreferences._ctor();
 
-  SharedPreferences _prefs;
+  SharedPreferences? _prefs;
 
   init() async {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  get data {
-    return _prefs.getString('data') ?? '';
+  String get data {
+    return _prefs!.getString('data') ?? '';
   }
 
   set data(String value) {
-    _prefs.setString('data', value);
+    _prefs!.setString('data', value);
   }
 
   Future setJwtToken(String value) {
-    return _prefs.setString('jwtToken', value);
+    return _prefs!.setString('jwtToken', value);
   }
 }

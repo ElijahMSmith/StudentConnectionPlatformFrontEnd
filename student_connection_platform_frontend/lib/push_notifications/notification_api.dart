@@ -58,23 +58,23 @@ class NotificationApi {
     //#region handle notifications even when app is closed
     final details = await _notifications.getNotificationAppLaunchDetails();
     if (details != null && details.didNotificationLaunchApp) {
-      onNotifications.add(details.payload);
+      onNotifications.add(details.payload!);
     }
 
     //#endregion
 
     await _notifications.initialize(settings,
-        onSelectNotification: (String payload) async {
-      onNotifications.add(payload);
+        onSelectNotification: (String? payload) async {
+      onNotifications.add(payload!);
     });
   }
 
   // notification info set up to show the client
   static Future showNotification({
     int id = 0,
-    String title,
-    String body,
-    String payload,
+    String? title,
+    String? body,
+    String? payload,
   }) async {
     return _notifications.show(
       id,
@@ -87,15 +87,15 @@ class NotificationApi {
 
   static Future showScheduledDailyNotification(
       {int id = 0,
-      String title,
-      String body,
-      String payload,
-      @required Time time}) async {
+      String? title,
+      String? body,
+      String? payload,
+      @required Time? time}) async {
     return _notifications.zonedSchedule(
       id,
       title,
       body,
-      _scheduleDaily(time),
+      _scheduleDaily(time!),
       await _notificationDetails(),
       payload: payload,
       androidAllowWhileIdle: true,
@@ -107,15 +107,15 @@ class NotificationApi {
 
   static Future showScheduledWeeklyNotification(
       {int id = 0,
-      String title,
-      String body,
-      String payload,
-      @required Time time}) async {
+      String? title,
+      String? body,
+      String? payload,
+      @required Time? time}) async {
     return _notifications.zonedSchedule(
       id,
       title,
       body,
-      _scheduleWeekly(time, days: [DateTime.monday, DateTime.tuesday]),
+      _scheduleWeekly(time!, days: [DateTime.monday, DateTime.tuesday]),
       await _notificationDetails(),
       payload: payload,
       androidAllowWhileIdle: true,
@@ -143,10 +143,10 @@ class NotificationApi {
         : scheduleDate;
   }
 
-  static tz.TZDateTime _scheduleWeekly(Time time, {@required List<int> days}) {
+  static tz.TZDateTime _scheduleWeekly(Time time, {@required List<int>? days}) {
     tz.TZDateTime scheduleDate = _scheduleDaily(time);
 
-    for (; !days.contains(scheduleDate.weekday);)
+    for (; !days!.contains(scheduleDate.weekday);)
       scheduleDate.add(Duration(days: 1));
 
     return scheduleDate;

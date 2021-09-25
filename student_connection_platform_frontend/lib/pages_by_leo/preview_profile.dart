@@ -9,9 +9,9 @@ class PreviewProfile extends StatelessWidget {
   final Account userAccount;
 
   PreviewProfile(
-      {@required this.contents,
-      @required this.profilePic,
-      @required this.userAccount});
+      {required this.contents,
+      required this.profilePic,
+      required this.userAccount});
 
   @override
   Widget build(BuildContext context) {

@@ -4,12 +4,12 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
-Account _newAccount;
+Account? _newAccount;
 
 class AccountDetails extends StatefulWidget {
   static String routeID = "/AccountDetails";
 
-  AccountDetails(Account account) {
+  AccountDetails(Account? account) {
     _newAccount = account;
     initializeDateFormatting();
   }
@@ -100,11 +100,11 @@ class _AccountDetailsState extends State<AccountDetails> {
             // Email input field
             TextFormField(
               autofocus: true,
-              initialValue: _newAccount.email,
+              initialValue: _newAccount!.email,
               textInputAction: TextInputAction.next,
               maxLines: 1,
               validator: (value) {
-                if (value.isEmpty)
+                if (value!.isEmpty)
                   return 'Please enter an email for this account';
 
                 RegExp emailRegex =
@@ -117,7 +117,7 @@ class _AccountDetailsState extends State<AccountDetails> {
 
                 // Eventual TODO (elsewhere in the code) - validate the email for this account
 
-                _newAccount.validEmail = true;
+                _newAccount!.validEmail = true;
                 return null;
               },
               decoration: InputDecoration(
@@ -125,8 +125,8 @@ class _AccountDetailsState extends State<AccountDetails> {
                 labelText: 'Account email',
               ),
               onChanged: (value) {
-                _newAccount.email = value;
-                _newAccount.validEmail = false;
+                _newAccount!.email = value;
+                _newAccount!.validEmail = false;
               },
               textAlign: TextAlign.center,
             ),
@@ -137,10 +137,10 @@ class _AccountDetailsState extends State<AccountDetails> {
 
             // Password field
             TextFormField(
-              initialValue: _newAccount.password,
+              initialValue: _newAccount!.password,
               obscureText: true,
               validator: (value) {
-                if (value.isEmpty) return 'Please enter a password';
+                if (value!.isEmpty) return 'Please enter a password';
                 if (value.length < 7)
                   return 'Passwords must be at least 7 characters';
 
@@ -169,8 +169,8 @@ class _AccountDetailsState extends State<AccountDetails> {
                 labelText: 'Choose a password',
               ),
               onChanged: (value) {
-                _newAccount.password = value;
-                _newAccount.validPassword = false;
+                _newAccount!.password = value;
+                _newAccount!.validPassword = false;
               },
               textAlign: TextAlign.center,
             ),
@@ -181,13 +181,13 @@ class _AccountDetailsState extends State<AccountDetails> {
 
             // Password confirmation field
             TextFormField(
-                initialValue: _newAccount.password,
+                initialValue: _newAccount!.password,
                 obscureText: true,
                 validator: (value) {
-                  if (value != _newAccount.password)
+                  if (value != _newAccount!.password)
                     return 'Passwords don\'t match!';
 
-                  _newAccount.validPassword = true;
+                  _newAccount!.validPassword = true;
                   return null;
                 },
                 decoration: InputDecoration(
@@ -197,7 +197,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                 ),
                 textAlign: TextAlign.center,
                 onChanged: (value) {
-                  _newAccount.validPassword = false;
+                  _newAccount!.validPassword = false;
                 }),
 
             SizedBox(
@@ -205,9 +205,9 @@ class _AccountDetailsState extends State<AccountDetails> {
             ),
 
             TextFormField(
-              initialValue: _newAccount.dateOfBirth,
+              initialValue: _newAccount!.dateOfBirth,
               validator: (value) {
-                if (!_isValidDOB(value))
+                if (!_isValidDOB(value!))
                   return 'Invalid Format - Must be mm/dd/yyyy';
 
                 if (!_isValidDay(value))
@@ -216,7 +216,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                 if (!_isAdult(value))
                   return 'You must be at least 18 years old to sign up!';
 
-                _newAccount.validDOB = true;
+                _newAccount!.validDOB = true;
 
                 return null;
               },
@@ -226,8 +226,8 @@ class _AccountDetailsState extends State<AccountDetails> {
                   hintText: 'mm/dd/yyyy'),
               textAlign: TextAlign.center,
               onChanged: (value) {
-                _newAccount.dateOfBirth = value;
-                _newAccount.validDOB = false;
+                _newAccount!.dateOfBirth = value;
+                _newAccount!.validDOB = false;
               },
             ),
           ],

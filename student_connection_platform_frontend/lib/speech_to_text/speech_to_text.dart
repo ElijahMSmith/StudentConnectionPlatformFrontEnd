@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:highlight_text/highlight_text.dart';
@@ -50,7 +52,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
     ),
   };
 
-  stt.SpeechToText _speech;
+  stt.SpeechToText? _speech;
   bool _isListening = false;
   String _text = 'Press the button and start speaking';
   double _confidence = 1.0;
@@ -63,13 +65,13 @@ class _SpeechScreenState extends State<SpeechScreen> {
 
   void _listen() async {
     if (!_isListening) {
-      bool available = await _speech.initialize(
+      bool available = await _speech!.initialize(
         onStatus: (String val) => print('onStatus: $val'),
         onError: (SpeechRecognitionError val) => print('onError: $val'),
       );
       if (available) {
         setState(() => _isListening = true);
-        _speech.listen(
+        _speech!.listen(
           onResult: (SpeechRecognitionResult val) => setState(() {
             _text = val.recognizedWords;
             if (val.hasConfidenceRating && val.confidence > 0) {
@@ -80,7 +82,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       }
     } else {
       setState(() => _isListening = false);
-      _speech.stop();
+      _speech!.stop();
     }
   }
 
@@ -110,7 +112,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
           child: TextHighlight(
             enableCaseSensitive: true,
             text: _text,
-            words: _highlights,
+            words: LinkedHashMap.from(_highlights),
             textStyle: const TextStyle(
               fontSize: 32.0,
               fontWeight: FontWeight.w400,

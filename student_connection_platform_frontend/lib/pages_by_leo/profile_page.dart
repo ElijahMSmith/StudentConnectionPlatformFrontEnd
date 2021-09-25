@@ -1,7 +1,7 @@
+// @dart=2.9
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/preview_profile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_connection_platform_frontend/pages_by_leo/settings.dart';
@@ -13,7 +13,7 @@ Account _userAccount;
 class ProfilePage extends StatefulWidget {
   static const String routeID = '/ProfilePage';
 
-  ProfilePage(Account userAccount) {
+  ProfilePage({@required Account userAccount}) {
     _userAccount = userAccount;
   }
 
@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void pickImageFromGallery(ImageSource source) {
-    willPickFile = imagePicker.getImage(source: source);
+    willPickFile = imagePicker.pickImage(source: source) as Future<PickedFile>;
     setState(() {});
     if (willPickFile != null) {
       print('willPickFile: $willPickFile');
@@ -69,13 +69,13 @@ class _ProfilePageState extends State<ProfilePage> {
   // this has to be awaited because we don't know when the user will capture
   // the photo
   void savePhoto(ImageSource source) async {
-    final getImage = await imagePicker.getImage(source: source);
+    final getImage = await imagePicker.pickImage(source: source) as Future<PickedFile>;
     if (getImage == null) {
       print('error picking image');
       return;
     }
     setState(() {
-      pickedFile = getImage;
+      pickedFile = getImage as PickedFile;
     });
     // save image to prefs
     var didSave = await SaveUtility.saveImageToPreferences(

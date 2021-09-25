@@ -6,13 +6,13 @@ import 'pages_by_leo/profile_page.dart';
 import 'pages_by_leo/models/account.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-Account _userAccount;
+Account? _userAccount;
 
 // this helper widget will help avoid circular dependencies among the other dart files
 class NavigationHelperWidget extends StatefulWidget {
   static const String routeID = "/UserContent";
 
-  NavigationHelperWidget(Account userAccount) {
+  NavigationHelperWidget(Account? userAccount) {
     _userAccount = userAccount;
   }
 
@@ -25,9 +25,9 @@ class _NavigationHelperWidgetState extends State<NavigationHelperWidget> {
 
   final List<Widget> pages = [
     // PostPage(),
-    ProfilePage(_userAccount),
-    MatchMaker(_userAccount),
-    ContactsPage(_userAccount),
+    ProfilePage(userAccount: _userAccount),
+    MatchMaker(activeUser: _userAccount),
+    ContactsPage(activeUser: _userAccount),
   ];
 
   // void signIn() {

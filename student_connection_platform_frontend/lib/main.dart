@@ -15,7 +15,7 @@ import 'package:timezone/timezone.dart' as tz;
 final String appName = "StuConn";
 
 // Will be updated with filled version when signin or signup finishes
-Account _userAccount = Account.empty();
+Account? _userAccount = Account.empty();
 
 /*
 three accounts to use for testing chat functionality
@@ -41,7 +41,7 @@ Future<void> main() async {
 }
 
 class AppHome extends StatelessWidget {
-  void updateAccount(Account newAccount) {
+  void updateAccount(Account? newAccount) {
     _userAccount = newAccount;
   }
 

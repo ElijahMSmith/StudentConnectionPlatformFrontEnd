@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
@@ -31,9 +30,10 @@ enum Options {
 class DM extends StatefulWidget {
   // information at your disposal from both your own account and that of the user you are
   // direct messaging
-  final Account activeUser, otherUser;
-  DM({
+  final Account? activeUser, otherUser;
+  DM({ required
     this.activeUser,
+    required
     this.otherUser,
   });
 
@@ -46,22 +46,24 @@ class _DMState extends State<DM> {
   ScrollController sc = ScrollController();
   // final String ipAddyAndPortNum = 'ws://rruiz.dev:5000'; // 192.168.1.84
   List<MessageModel> messages = [];
-  IO.Socket socket;
+  IO.Socket? socket;
   // final String ipAddyAndPortNum = 'http://192.168.1.84:5000';
-  final String ipAddyAndPortNum = 'https://t3-chat.rruiz.dev';
+  final String ipAddyAndPortNum = 'https://t3-dev.rruiz.dev';
 
   //? this pattern can be built upon for filtering out more curse words and misspelled variations of curse words that aren't handled by the profanity filter package
   final String pattern = r"([FfSs]uck)|(fu)|(fagot)|(d[iy]ke)";
-  SharedPreferences sp;
-  Options options;
-  FocusNode msgField;
+  SharedPreferences? sp;
+  Options? options;
+  FocusNode? msgField;
   bool show = false;
-  ProfanityFilter filter;
-  RegExp profanityRegex;
-  String uniqueKey;
-  stt.SpeechToText _speech;
+  ProfanityFilter? filter;
+  RegExp? profanityRegex;
+  String? uniqueKey;
+  stt.SpeechToText? _speech;
   bool _isListening = false;
   String _text = '';
+
+  bool canSendMsg = false;
 
   // message to send to the other person by you
   // senderID: who's sending the message
@@ -71,18 +73,19 @@ class _DMState extends State<DM> {
     setMessage('source', message);
 
     // send to the socket server so that the other user can receive it
-    socket.emit('message',
+    socket!.emit('message',
         {'message': message, 'senderID': senderID, 'targetId': targetId});
   }
 
   void setMessage(String type, String message) {
+    if (!mounted) return;
     var msgModel = MessageModel(
         type: type,
         message: message,
         // get the hours and the minutes
         time: DateTime.now().toString().substring(10, 16));
     messages.add(msgModel);
-    ChatMessageSaveUtil.saveListOfMessages(uniqueKey, messages);
+    ChatMessageSaveUtil.saveListOfMessages(uniqueKey!, messages);
     setState(() {});
   }
 
@@ -96,30 +99,30 @@ class _DMState extends State<DM> {
     // tell the socket server that this user has signed in
     socket = IO.io(ipAddyAndPortNum, <String, dynamic>{
       'transports': ['websocket'],
-      // 'autoConnect': false,
+      'autoConnect': false,
     });
-    socket.emit('signin', [widget.activeUser.userID, widget.otherUser.userID]);
 
-    socket.connect();
+    socket!.connect();
+    socket!.emit('signin', [widget.activeUser!.userID, widget.otherUser!.userID]);
     print('you have signed in to your account');
-    socket.onConnect((data) {
-      // the code inside runs when a user signs into the socket server
-      socket.on('message', (msg) {
-        print('received message from the other user');
 
-        for (var obj in msg) {
-          setMessage('destination', obj['message']);
-          // scrollToBottom();
-        }
-      });
-      scrollToBottom();
+    // the code inside runs when a user signs into the socket server
+    socket!.on('message', (msg) {
+      print('received message from the other user');
+
+      for (var obj in msg) {
+        setMessage('destination', obj['message']);
+        // scrollToBottom();
+      }
     });
+    // scrollToBottom();
 
-    socket.on('disconnect', (_) => print('disconnected'));
+    // socket.on('disconnect', (_) => print('disconnected'));
   }
 
   void getMessagesFromPrefs() async {
-    var stringList = await ChatMessageSaveUtil.loadListOfMessages(uniqueKey);
+    if (!mounted) return;
+    var stringList = await ChatMessageSaveUtil.loadListOfMessages(uniqueKey!);
     if (stringList == null) {
       print('there was no list of messages saved in prefs for this chat');
     } else {
@@ -133,10 +136,11 @@ class _DMState extends State<DM> {
   @override
   void initState() {
     super.initState();
+    connect();
     _speech = stt.SpeechToText();
     // print('entering chat with ${widget.otherUser.name}');
     // concatenated unique key of the active user and the other user
-    uniqueKey = widget.activeUser.userID + widget.otherUser.userID;
+    uniqueKey = (widget.activeUser!.userID! + widget.otherUser!.userID!);
     getMessagesFromPrefs();
 
     // print('there are ${messages.length} messages in the chat');
@@ -144,10 +148,10 @@ class _DMState extends State<DM> {
     // print('list of curse words: ${filter.wordsToFilterOutList}');
     // print(filter.wordsToFilterOutList.length);
     profanityRegex = RegExp(pattern, caseSensitive: false, multiLine: false);
-    connect();
     msgField = FocusNode();
-    msgField.addListener(() {
-      if (msgField.hasFocus) {
+    msgField!.addListener(() {
+      if (msgField!.hasFocus) {
+        if (!mounted) return;
         show = false;
         setState(() {});
       }
@@ -159,51 +163,53 @@ class _DMState extends State<DM> {
     super.dispose();
     controller.dispose();
     sc.dispose();
-    msgField.dispose();
+    msgField!.dispose();
 
     // print('you have signed out of your account');
-    socket.emit('signedout', widget.activeUser.userID);
+    socket!.emit('signedout', widget.activeUser!.userID);
     // socket.close() gave an error, so I commented it out
-    socket.dispose();
+    socket!.dispose();
   }
 
   void _listen() async {
     if (!_isListening) {
-      bool available = await _speech.initialize(
+      bool available = await _speech!.initialize(
         onStatus: (String val) => print('onStatus: $val'),
         onError: (SpeechRecognitionError val) => print('onError: $val'),
       );
 
       // check if we can record voice
       if (available) {
+        if (!mounted) return;
         _isListening = true;
         setState(() {});
-        _speech.listen(
-          onResult: (SpeechRecognitionResult val) => setState(() {
-            _text = val.recognizedWords;
-          }),
-        );
+        _speech!.listen(onResult: (SpeechRecognitionResult val) {
+          if (!mounted) return;
+          _text = val.recognizedWords;
+          setState(() {});
+        });
       }
     } else {
       controller.text += _text;
       _text = '';
       _isListening = false;
-      _speech.stop();
+      _speech!.stop();
     }
-
+    if (!mounted) return;
     setState(() {});
   }
 
-  Widget emojiSelect() {
-    return EmojiPicker(
-        rows: 4,
-        columns: 7,
-        onEmojiSelected: (emoji, category) {
-          // print(emoji);
-          controller.text = '${controller.text}${emoji.emoji}';
-          setState(() {});
-        });
-  }
+  // Widget emojiSelect() {
+  //   return EmojiPicker(
+  //       rows: 3,
+  //       columns: 7,
+  //       onEmojiSelected: (emoji, category) {
+  //         if (!mounted) return;
+  //         controller.text = '${controller.text}${emoji.emoji}';
+  //         canSendMsg = controller.text.length > 0;
+  //         setState(() {});
+  //       });
+  // }
 
   Widget bottomSheet() {
     return Container(
@@ -286,11 +292,12 @@ class _DMState extends State<DM> {
   Widget sendMsgButton() {
     return IconButton(
       onPressed: () {
+        if (!mounted) return;
         if (controller.text.isEmpty) {
           return;
         }
-        if (profanityRegex.hasMatch(controller.text) ||
-            filter.hasProfanity(controller.text)) {
+        if (profanityRegex!.hasMatch(controller.text) ||
+            filter!.hasProfanity(controller.text)) {
           Fluttertoast.showToast(
               msg: "Please do not type any profanity",
               toastLength: Toast.LENGTH_SHORT,
@@ -304,7 +311,7 @@ class _DMState extends State<DM> {
         scrollToBottom();
         // get account object that holds the id of the user
         sendMessage(
-            controller.text, widget.activeUser.userID, widget.otherUser.userID);
+            controller.text, widget.activeUser!.userID!, widget.otherUser!.userID!);
         controller.clear();
         setState(() {});
       },
@@ -372,7 +379,7 @@ class _DMState extends State<DM> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.otherUser.name,
+                        widget.otherUser!.name,
                         style: TextStyle(
                           fontSize: 18.5,
                           fontWeight: FontWeight.bold,
@@ -396,8 +403,9 @@ class _DMState extends State<DM> {
                   onSelected: (value) {
                     switch (value) {
                       case Options.CLEAR_MESSAGES:
+                        if (!mounted) return;
                         ChatMessageSaveUtil.clearMessages(
-                          uniqueKey,
+                          uniqueKey!,
                         );
                         messages.clear();
                         setState(() {});
@@ -422,16 +430,14 @@ class _DMState extends State<DM> {
             child: WillPopScope(
               onWillPop: () {
                 if (show) {
-                  setState(() {
-                    print('wont pop');
-                    show = false;
-                  });
+                  if (!mounted) return Future.value(false);
+                  print('wont pop');
+                  show = false;
+                  setState(() {});
                 } else {
                   print('here about to pop');
                   Navigator.pop(context, false);
                 }
-
-                print('here i am');
                 return Future.value(false);
               },
               child: Column(
@@ -454,8 +460,8 @@ class _DMState extends State<DM> {
                         if (messages[index].type == 'source') {
                           // print(messages.length);
                           return OwnMessageBubble(
-                            message: messages[index].message,
-                            time: messages[index].time,
+                            message: messages[index].message!,
+                            time: messages[index].time!,
                           );
                         }
 
@@ -496,7 +502,15 @@ class _DMState extends State<DM> {
                                     keyboardType: TextInputType.multiline,
                                     maxLines: 5,
                                     minLines: 1,
-                                    onChanged: (value) {},
+                                    onChanged: (value) {
+                                      if (!mounted) return;
+                                      if (value.length > 0) {
+                                        canSendMsg = true;
+                                      } else {
+                                        canSendMsg = false;
+                                      }
+                                      setState(() {});
+                                    },
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       hintText: 'Please type a message',
@@ -507,9 +521,10 @@ class _DMState extends State<DM> {
                                               : Icons.emoji_emotions_outlined,
                                         ),
                                         onPressed: () {
+                                          if (!mounted) return;
                                           if (!show) {
-                                            msgField.unfocus();
-                                            msgField.canRequestFocus = false;
+                                            msgField!.unfocus();
+                                            msgField!.canRequestFocus = false;
                                           }
                                           show = !show;
                                           print('show: $show');
@@ -543,7 +558,7 @@ class _DMState extends State<DM> {
                                     bottom: 8.0, right: 2, left: 2),
                                 child: CircleAvatar(
                                   radius: 25,
-                                  child: controller.text.length > 0
+                                  child: canSendMsg
                                       ? sendMsgButton()
                                       : micButton(),
                                 ),
@@ -554,7 +569,7 @@ class _DMState extends State<DM> {
                       ),
                     ),
                   ),
-                  show ? emojiSelect() : Container()
+                  // show ? emojiSelect() : Container()
                 ],
               ),
             ),

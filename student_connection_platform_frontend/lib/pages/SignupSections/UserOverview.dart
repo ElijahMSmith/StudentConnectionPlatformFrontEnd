@@ -4,12 +4,12 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-Account _newAccount;
+Account? _newAccount;
 
 class UserOverview extends StatefulWidget {
   static String routeID = "/UserOverview";
 
-  UserOverview(Account account) {
+  UserOverview(Account? account) {
     _newAccount = account;
   }
 
@@ -22,19 +22,19 @@ class _UserOverviewState extends State<UserOverview> {
   AssetImage _choosePictureAsset =
       AssetImage('assets/images/choosePicture.png');
   final picker = ImagePicker();
-  PickedFile _imageFile;
+  PickedFile? _imageFile;
 
   Future getImage(ImageSource source) async {
     _imageFile = await picker.getImage(source: source);
     if (_imageFile != null)
       _cropImage();
     else
-      _newAccount.validProfilePicture = false;
+      _newAccount!.validProfilePicture = false;
   }
 
   Future<Null> _cropImage() async {
-    File croppedFile = await ImageCropper.cropImage(
-      sourcePath: _imageFile.path,
+    File? croppedFile = await ImageCropper.cropImage(
+      sourcePath: _imageFile!.path,
       aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: 'Cropper',
@@ -48,12 +48,12 @@ class _UserOverviewState extends State<UserOverview> {
     );
     if (croppedFile != null) {
       setState(() {
-        _newAccount.profilePicture = croppedFile;
-        _newAccount.validProfilePicture = true;
+        _newAccount!.profilePicture = croppedFile;
+        _newAccount!.validProfilePicture = true;
       });
     } else {
       print('No image selected.');
-      _newAccount.validProfilePicture = false;
+      _newAccount!.validProfilePicture = false;
     }
   }
 
@@ -127,9 +127,7 @@ class _UserOverviewState extends State<UserOverview> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
                         child: Image(
-                          image: _newAccount.profilePicture != null
-                              ? FileImage(_newAccount.profilePicture)
-                              : _choosePictureAsset,
+                          image: FileImage(_newAccount!.profilePicture!),
                           fit: BoxFit.fill,
                           width: 100,
                           height: 100,
@@ -168,10 +166,10 @@ class _UserOverviewState extends State<UserOverview> {
                       height: 10,
                     ),
                     TextFormField(
-                      initialValue: _newAccount.job,
+                      initialValue: _newAccount!.job,
                       validator: (value) {
-                        if (value.length == 0) return 'This cannot be blank!';
-                        _newAccount.validName = true;
+                        if (value!.length == 0) return 'This cannot be blank!';
+                        _newAccount!.validName = true;
                         return null; //Anything here is valid
                       },
                       textAlign: TextAlign.start,
@@ -180,8 +178,8 @@ class _UserOverviewState extends State<UserOverview> {
                           filled: true,
                           hintText: 'First and/or last name is acceptable.'),
                       onChanged: (value) {
-                        _newAccount.name = value;
-                        _newAccount.validName = false;
+                        _newAccount!.name = value;
+                        _newAccount!.validName = false;
                       },
                     ),
                   ],
@@ -201,10 +199,10 @@ class _UserOverviewState extends State<UserOverview> {
                       height: 10,
                     ),
                     TextFormField(
-                      initialValue: _newAccount.username,
+                      initialValue: _newAccount!.username,
                       validator: (value) {
-                        _newAccount.validUsername = false;
-                        if (value.length < 7)
+                        _newAccount!.validUsername = false;
+                        if (value!.length < 7)
                           return 'Username is too short! Use at least 7 characters';
 
                         RegExp invalidSymbolRegex =
@@ -212,22 +210,22 @@ class _UserOverviewState extends State<UserOverview> {
                         if (invalidSymbolRegex.hasMatch(value))
                           return 'Invalid character used in username! Use \'!@#&*,.?~`\' and alphanumeric characters only';
 
-                        _newAccount.validUsername = true;
+                        _newAccount!.validUsername = true;
                         return null;
                       },
                       textAlign: TextAlign.start,
                       maxLength: 20,
                       decoration: InputDecoration(
-                          fillColor: _newAccount.validUsername
+                          fillColor: _newAccount!.validUsername
                               ? Color.fromRGBO(58, 181, 119, 1)
                               : Color.fromRGBO(240, 240, 240, 1),
                           filled: true,
                           hintText:
                               'Pick a unique username of at least 7 characters'),
                       onChanged: (value) {
-                        _newAccount.username = value;
-                        _newAccount.validUsername = false;
-                        _newAccount.usernameChecked = false;
+                        _newAccount!.username = value;
+                        _newAccount!.validUsername = false;
+                        _newAccount!.usernameChecked = false;
                       },
                     ),
                   ],
@@ -247,7 +245,7 @@ class _UserOverviewState extends State<UserOverview> {
                       height: 10,
                     ),
                     TextFormField(
-                      initialValue: _newAccount.job,
+                      initialValue: _newAccount!.job,
                       validator: (value) {
                         return null; //Anything here is valid
                       },
@@ -257,7 +255,7 @@ class _UserOverviewState extends State<UserOverview> {
                           filled: true,
                           hintText: 'Put your job title here if you have one.'),
                       onChanged: (value) {
-                        _newAccount.job = value;
+                        _newAccount!.job = value;
                       },
                     ),
                   ],
@@ -278,12 +276,12 @@ class _UserOverviewState extends State<UserOverview> {
                     ),
                     Expanded(
                       child: TextFormField(
-                        initialValue: _newAccount.bio,
+                        initialValue: _newAccount!.bio,
                         validator: (value) {
-                          if (value.isEmpty || value.length < 40)
+                          if (value!.isEmpty || value.length < 40)
                             return 'Please include at least 40 characters in your bio.';
 
-                          _newAccount.validBio = true;
+                          _newAccount!.validBio = true;
                           return null;
                         },
                         textAlign: TextAlign.start,
@@ -295,8 +293,8 @@ class _UserOverviewState extends State<UserOverview> {
                             hintText:
                                 'Write anything you want! What makes you who you are?'),
                         onChanged: (value) {
-                          _newAccount.validBio = false;
-                          _newAccount.bio = value;
+                          _newAccount!.validBio = false;
+                          _newAccount!.bio = value;
                         },
                       ),
                     ),
